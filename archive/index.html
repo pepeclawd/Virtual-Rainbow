@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Rainbow | Metaverse Experiences for Brands</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+</head>
+<body>
+    <!-- Floating 3D Elements -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🌈</span>
+            <span class="logo-text">Virtual Rainbow</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a href="#contact" class="cta-button">Let's Talk</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="platform-badge">
+                <span class="platform-dot"></span>
+                Building on The Otherside
+            </div>
+            <h1 class="hero-title">
+                <span class="gradient-text">Build Your Brand</span>
+                <br>in the Metaverse
+            </h1>
+            <p class="hero-subtitle">
+                We create immersive virtual worlds, stunning avatars, and unforgettable
+                digital experiences that connect brands with the next generation of consumers.
+            </p>
+            <div class="hero-buttons">
+                <a href="#services" class="btn btn-primary">Explore Services</a>
+                <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <model-viewer
+                src="holographic_character.glb"
+                auto-rotate
+                camera-controls
+                disable-zoom
+                auto-rotate-delay="0"
+                rotation-per-second="25deg"
+                style="width: 100%; height: 600px; background: transparent;"
+                shadow-intensity="0"
+            ></model-viewer>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <h2 class="section-title">What We <span class="gradient-text">Create</span></h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon" style="--holo-delay: 0s">🌍</div>
+                <h3>Virtual Worlds</h3>
+                <p>Custom-designed immersive environments that bring your brand story to life in the metaverse.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon" style="--holo-delay: 0.75s">👤</div>
+                <h3>3D Avatars</h3>
+                <p>Unique digital identities and collectible characters that represent your brand's personality.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon" style="--holo-delay: 1.5s">✨</div>
+                <h3>Experiences</h3>
+                <p>Interactive events, games, and social spaces that engage and delight your community.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon" style="--holo-delay: 2.25s">💎</div>
+                <h3>Digital Collectibles</h3>
+                <p>Exclusive digital assets that create new revenue streams and reward loyal customers.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="about-content">
+            <h2 class="section-title">Why <span class="gradient-text">Virtual Rainbow</span>?</h2>
+            <p class="about-text">
+                The Otherside is the most ambitious virtual world being built right now — and we know
+                how to build inside it. From 3D modeling to deploying live interactive worlds and custom
+                avatar collections, we own the full pipeline.
+            </p>
+            <p class="about-text">
+                Brands get a world-class presence in The Otherside without ever touching MML, GLB files,
+                or a crypto wallet. We handle all of it.
+            </p>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="contact" class="contact">
+        <div class="contact-content">
+            <h2 class="section-title">Ready to <span class="gradient-text">Step In</span>?</h2>
+            <p class="contact-text">
+                Let's build something extraordinary together. Tell us about your brand and
+                we'll show you what's possible.
+            </p>
+            <form class="contact-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Email Address" required>
+                <input type="text" placeholder="Company / Brand">
+                <textarea placeholder="Tell us about your vision..." rows="4"></textarea>
+                <button type="submit" class="btn btn-primary btn-large">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">🌈</span>
+                <span class="logo-text">Virtual Rainbow</span>
+            </div>
+            <p class="footer-tagline">Building bridges to virtual worlds.</p>
+            <div class="footer-links">
+                <a href="#">Twitter</a>
+                <a href="#">Discord</a>
+                <a href="#">LinkedIn</a>
+            </div>
+            <p class="copyright">© 2026 Virtual Rainbow. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
