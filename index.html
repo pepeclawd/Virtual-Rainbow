@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Rainbow</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --border: rgba(255,255,255,0.07);
+      --text: #f0f0ff;
+      --muted: rgba(240,240,255,0.45);
+      --vr-gradient: linear-gradient(135deg, #7b2fff, #ff2fa0, #ff9f2f, #2fffb0);
+      --lane1: #7b2fff;
+      --lane1-soft: rgba(123, 47, 255, 0.12);
+      --lane2: #2fffb0;
+      --lane2-soft: rgba(47, 255, 176, 0.10);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 60px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(8,8,16,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--vr-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 36px;
+    }
+
+    nav ul a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: white;
+      color: #080810 !important;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      -webkit-text-fill-color: #080810 !important;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 120px 40px 80px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse at center, rgba(123,47,255,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    h1 .gradient {
+      background: var(--vr-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+
+    /* LANES */
+    .lanes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 100px;
+    }
+
+    .lane {
+      position: relative;
+      padding: 56px 48px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.3s, background 0.3s;
+      overflow: hidden;
+    }
+
+    .lane:first-child { border-radius: 16px 0 0 16px; }
+    .lane:last-child  { border-radius: 0 16px 16px 0; }
+
+    .lane::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .lane-1::before { background: var(--lane1-soft); }
+    .lane-2::before { background: var(--lane2-soft); }
+
+    .lane:hover::before { opacity: 1; }
+    .lane:hover { border-color: rgba(255,255,255,0.15); }
+
+    .lane-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    .lane-1 .lane-tag {
+      background: rgba(123,47,255,0.2);
+      color: #a97dff;
+      border: 1px solid rgba(123,47,255,0.3);
+    }
+
+    .lane-2 .lane-tag {
+      background: rgba(47,255,176,0.12);
+      color: #2fffb0;
+      border: 1px solid rgba(47,255,176,0.25);
+    }
+
+    .lane h2 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .lane p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+      margin-bottom: 32px;
+    }
+
+    .lane-features {
+      list-style: none;
+      margin-bottom: 40px;
+    }
+
+    .lane-features li {
+      font-size: 0.875rem;
+      color: var(--muted);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lane-features li::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .lane-1 .lane-features li::before { background: var(--lane1); }
+    .lane-2 .lane-features li::before { background: var(--lane2); }
+
+    .lane-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: gap 0.2s;
+    }
+
+    .lane:hover .lane-cta { gap: 12px; }
+
+    .lane-1 .lane-cta { color: #a97dff; }
+    .lane-2 .lane-cta { color: #2fffb0; }
+
+    .lane-icon {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    /* FOOTER STRIP */
+    .footer-strip {
+      border-top: 1px solid var(--border);
+      padding: 32px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-strip span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .rainbow-bar {
+      height: 3px;
+      background: var(--vr-gradient);
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      nav ul { display: none; }
+      .hero { padding: 80px 24px 60px; }
+      .lanes { grid-template-columns: 1fr; padding: 0 24px 80px; }
+      .lane:first-child { border-radius: 16px 16px 0 0; }
+      .lane:last-child  { border-radius: 0 0 16px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="rainbow-bar"></div>
+
+  <nav>
+    <div class="logo">Virtual Rainbow</div>
+    <ul>
+      <li><a href="#">StreamlineAI</a></li>
+      <li><a href="#">Digital Worlds</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#" class="nav-cta">Get in touch</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <p class="eyebrow">Virtual Rainbow</p>
+    <h1>
+      Building across the<br /><span class="gradient">full digital spectrum</span>
+    </h1>
+    <p class="hero-sub">
+      We build AI-powered systems and digital worlds —
+      for businesses ready to automate, and brands ready to expand their digital presence in immersive worlds.
+    </p>
+  </section>
+
+  <div class="lanes">
+
+    <!-- Lane 1: StreamlineAI Solutions -->
+    <div class="lane lane-1">
+      <span class="lane-icon">⚡</span>
+      <span class="lane-tag">Streamline AI Solutions</span>
+      <h2>Automate your business with AI</h2>
+      <p>
+        Custom AI agents, automated workflows, and intelligent systems —
+        built and deployed for your business. Less manual work, more output.
+      </p>
+      <ul class="lane-features">
+        <li>AI agents that handle repetitive tasks end-to-end</li>
+        <li>Your AI employee — knows your docs, Slack, emails & ops</li>
+        <li>Custom apps and tools built for your workflow</li>
+        <li>Ongoing support and iteration</li>
+      </ul>
+      <a href="#" class="lane-cta">Explore StreamlineAI →</a>
+    </div>
+
+    <!-- Lane 2: Digital Worlds -->
+    <div class="lane lane-2">
+      <span class="lane-icon">🌐</span>
+      <span class="lane-tag">Digital Worlds</span>
+      <h2>Expand your presence into immersive digital worlds</h2>
+      <p>
+        Immersive experiences, AI-powered NPCs, and digital assets —
+        for brands and creators ready to grow their presence in virtual spaces.
+      </p>
+      <ul class="lane-features">
+        <li>Interactive metaverse environments & experiences</li>
+        <li>AI-driven NPC characters with real personality</li>
+        <li>Digital collectibles and on-chain assets</li>
+        <li>Otherside & open metaverse integrations</li>
+      </ul>
+      <a href="#" class="lane-cta">Explore Digital Worlds →</a>
+    </div>
+
+  </div>
+
+  <div class="footer-strip">
+    <span>© 2026 Virtual Rainbow</span>
+    <span>Full spectrum. Fully digital.</span>
+  </div>
+
+  <div class="rainbow-bar"></div>
+
+</body>
+</html>
