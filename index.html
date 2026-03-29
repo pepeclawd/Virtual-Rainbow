@@ -284,6 +284,10 @@
       cursor: pointer;
       transition: transform 0.25s, box-shadow 0.25s, background 0.3s;
       overflow: hidden;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      color: var(--text);
     }
 
     .lane-1 { background: var(--card-bg); box-shadow: 0 2px 24px var(--lane1-shadow); }
@@ -440,7 +444,7 @@
 
   <div class="lanes">
 
-    <div class="lane lane-1">
+    <a href="streamline-ai.html" class="lane lane-1">
       <span class="lane-icon">⚡</span>
       <span class="lane-tag">Streamline AI Solutions</span>
       <h2>Automate your business with AI</h2>
@@ -454,10 +458,10 @@
         <li>Custom apps and tools built for your workflow</li>
         <li>Ongoing support and iteration</li>
       </ul>
-      <a href="streamline-ai.html" class="lane-cta">Explore StreamlineAI →</a>
-    </div>
+      <span class="lane-cta">Explore StreamlineAI →</span>
+    </a>
 
-    <div class="lane lane-2">
+    <a href="digital-worlds.html" class="lane lane-2">
       <span class="lane-icon">🌐</span>
       <span class="lane-tag">Digital Worlds</span>
       <h2>Expand your presence into immersive worlds</h2>
@@ -471,10 +475,10 @@
         <li>Digital collectibles and on-chain assets</li>
         <li>Otherside & open metaverse integrations</li>
       </ul>
-      <a href="digital-worlds.html" class="lane-cta">Explore Digital Worlds →</a>
-    </div>
+      <span class="lane-cta">Explore Digital Worlds →</span>
+    </a>
 
-    <div class="lane lane-3">
+    <a href="web3-advisory.html" class="lane lane-3">
       <span class="lane-icon">🔷</span>
       <span class="lane-tag">Web3 Advisory</span>
       <h2>Navigate blockchain before you build on it</h2>
@@ -488,8 +492,8 @@
         <li>Use case mapping across your industry</li>
         <li>Vendor & partner selection guidance</li>
       </ul>
-      <a href="web3-advisory.html" class="lane-cta">Explore Web3 Advisory →</a>
-    </div>
+      <span class="lane-cta">Explore Web3 Advisory →</span>
+    </a>
 
   </div>
 
