@@ -10,6 +10,8 @@
       if (localStorage.getItem('vr-theme') === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
       }
+      const lang = localStorage.getItem('vr-lang');
+      if (lang) document.documentElement.lang = lang;
     })();
   </script>
   <style>
@@ -196,6 +198,9 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      font-family: inherit;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
     .theme-toggle:hover { border-color: var(--text); color: var(--text); }
 
@@ -434,20 +439,21 @@
     <div class="logo">Virtual Rainbow</div>
     <ul>
       <li><a href="streamline-ai.html">StreamlineAI</a></li>
-      <li><a href="digital-worlds.html">Digital Worlds</a></li>
-      <li><a href="web3-advisory.html">Web3 Advisory</a></li>
+      <li><a href="digital-worlds.html" data-i18n="nav-digital-worlds">Digital Worlds</a></li>
+      <li><a href="web3-advisory.html" data-i18n="nav-web3">Web3 Advisory</a></li>
       <li><a href="vr-studios.html">VR Studios</a></li>
-      <li><a href="#" class="nav-cta">Get in touch</a></li>
+      <li><a href="#" class="nav-cta" data-i18n="nav-cta">Get in touch</a></li>
       <li><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button></li>
+      <li><button class="theme-toggle" id="lang-toggle" onclick="toggleLang()" aria-label="Switch language">DA</button></li>
     </ul>
   </nav>
 
   <section class="hero">
     <div class="hero-badge">Virtual Rainbow</div>
-    <h1>
+    <h1 data-i18n-html="hero-h1">
       Building across the<br /><span class="gradient">full digital spectrum</span>
     </h1>
-    <p class="hero-sub">
+    <p class="hero-sub" data-i18n="hero-sub">
       AI automation, immersive digital worlds, blockchain strategy, and cinematic brand films —
       built for businesses ready to lead across every layer of the digital future.
     </p>
@@ -462,82 +468,184 @@
 
     <a href="streamline-ai.html" class="lane lane-1">
       <span class="lane-icon">⚡</span>
-      <span class="lane-tag">Streamline AI Solutions</span>
-      <h2>Automate your business with AI</h2>
-      <p>
+      <span class="lane-tag" data-i18n="l1-tag">Streamline AI Solutions</span>
+      <h2 data-i18n="l1-h2">Automate your business with AI</h2>
+      <p data-i18n="l1-p">
         Custom AI agents, automated workflows, and intelligent systems —
         built and deployed for your business. Less manual work, more output.
       </p>
       <ul class="lane-features">
-        <li>AI agents that handle repetitive tasks end-to-end</li>
-        <li>Your AI employee — knows your docs, Slack, emails & ops</li>
-        <li>Custom apps and tools built for your workflow</li>
-        <li>Ongoing support and iteration</li>
+        <li data-i18n="l1-f1">AI agents that handle repetitive tasks end-to-end</li>
+        <li data-i18n="l1-f2">Your AI employee — knows your docs, Slack, emails &amp; ops</li>
+        <li data-i18n="l1-f3">Custom apps and tools built for your workflow</li>
+        <li data-i18n="l1-f4">Ongoing support and iteration</li>
       </ul>
-      <span class="lane-cta">Explore StreamlineAI →</span>
+      <span class="lane-cta" data-i18n="l1-cta">Explore StreamlineAI →</span>
     </a>
 
     <a href="digital-worlds.html" class="lane lane-2">
       <span class="lane-icon">🌐</span>
-      <span class="lane-tag">Digital Worlds</span>
-      <h2>Expand your presence into immersive worlds</h2>
-      <p>
+      <span class="lane-tag" data-i18n="l2-tag">Digital Worlds</span>
+      <h2 data-i18n="l2-h2">Expand your presence into immersive worlds</h2>
+      <p data-i18n="l2-p">
         Immersive experiences, AI-powered NPCs, and digital assets —
         for brands and creators ready to grow their presence in virtual spaces.
       </p>
       <ul class="lane-features">
-        <li>Interactive metaverse environments & experiences</li>
-        <li>AI-driven NPC characters with real personality</li>
-        <li>Digital collectibles and on-chain assets</li>
-        <li>Otherside & open metaverse integrations</li>
+        <li data-i18n="l2-f1">Interactive metaverse environments &amp; experiences</li>
+        <li data-i18n="l2-f2">AI-driven NPC characters with real personality</li>
+        <li data-i18n="l2-f3">Digital collectibles and on-chain assets</li>
+        <li data-i18n="l2-f4">Otherside &amp; open metaverse integrations</li>
       </ul>
-      <span class="lane-cta">Explore Digital Worlds →</span>
+      <span class="lane-cta" data-i18n="l2-cta">Explore Digital Worlds →</span>
     </a>
 
     <a href="web3-advisory.html" class="lane lane-3">
       <span class="lane-icon">🔷</span>
-      <span class="lane-tag">Web3 Advisory</span>
-      <h2>Navigate blockchain before you build on it</h2>
-      <p>
+      <span class="lane-tag" data-i18n="l3-tag">Web3 Advisory</span>
+      <h2 data-i18n="l3-h2">Navigate blockchain before you build on it</h2>
+      <p data-i18n="l3-p">
         8 years deep in crypto, DeFi, NFTs, and Web3 — no agenda.
         Just clarity on what's real, what's noise, and where your business actually fits.
       </p>
       <ul class="lane-features">
-        <li>Is blockchain relevant to your business — honest answer</li>
-        <li>Leadership workshops: hype vs. reality, decoded</li>
-        <li>Use case mapping across your industry</li>
-        <li>Vendor & partner selection guidance</li>
+        <li data-i18n="l3-f1">Is blockchain relevant to your business — honest answer</li>
+        <li data-i18n="l3-f2">Leadership workshops: hype vs. reality, decoded</li>
+        <li data-i18n="l3-f3">Use case mapping across your industry</li>
+        <li data-i18n="l3-f4">Vendor &amp; partner selection guidance</li>
       </ul>
-      <span class="lane-cta">Explore Web3 Advisory →</span>
+      <span class="lane-cta" data-i18n="l3-cta">Explore Web3 Advisory →</span>
     </a>
 
     <a href="vr-studios.html" class="lane lane-4">
       <span class="lane-icon">🎬</span>
       <span class="lane-tag">VR Studios</span>
-      <h2>Brand films and commercials, reimagined with AI</h2>
-      <p>
+      <h2 data-i18n="l4-h2">Brand films and commercials, reimagined with AI</h2>
+      <p data-i18n="l4-p">
         Cinematic storytelling powered by AI — combined with real-world filmmaking craft.
         Brand videos, commercials, and campaign content that actually stops the scroll.
       </p>
       <ul class="lane-features">
-        <li>AI-generated cinematics & visual storytelling</li>
-        <li>Brand films and commercial production</li>
-        <li>Real + AI hybrid filmmaking</li>
-        <li>Social campaign content & reels</li>
+        <li data-i18n="l4-f1">AI-generated cinematics &amp; visual storytelling</li>
+        <li data-i18n="l4-f2">Brand films and commercial production</li>
+        <li data-i18n="l4-f3">Real + AI hybrid filmmaking</li>
+        <li data-i18n="l4-f4">Social campaign content &amp; reels</li>
       </ul>
-      <span class="lane-cta">Explore VR Studios →</span>
+      <span class="lane-cta" data-i18n="l4-cta">Explore VR Studios →</span>
     </a>
 
   </div>
 
   <div class="footer-strip">
     <span>© 2026 Virtual Rainbow</span>
-    <span>Full spectrum. Fully digital.</span>
+    <span data-i18n="footer-tag">Full spectrum. Fully digital.</span>
   </div>
 
   <div class="rainbow-bar"></div>
 
   <script>
+    const translations = {
+      en: {
+        'nav-digital-worlds': 'Digital Worlds',
+        'nav-web3': 'Web3 Advisory',
+        'nav-cta': 'Get in touch',
+        'hero-h1': 'Building across the<br /><span class="gradient">full digital spectrum</span>',
+        'hero-sub': 'AI automation, immersive digital worlds, blockchain strategy, and cinematic brand films — built for businesses ready to lead across every layer of the digital future.',
+        'l1-tag': 'Streamline AI Solutions',
+        'l1-h2': 'Automate your business with AI',
+        'l1-p': 'Custom AI agents, automated workflows, and intelligent systems — built and deployed for your business. Less manual work, more output.',
+        'l1-f1': 'AI agents that handle repetitive tasks end-to-end',
+        'l1-f2': 'Your AI employee — knows your docs, Slack, emails & ops',
+        'l1-f3': 'Custom apps and tools built for your workflow',
+        'l1-f4': 'Ongoing support and iteration',
+        'l1-cta': 'Explore StreamlineAI →',
+        'l2-tag': 'Digital Worlds',
+        'l2-h2': 'Expand your presence into immersive worlds',
+        'l2-p': 'Immersive experiences, AI-powered NPCs, and digital assets — for brands and creators ready to grow their presence in virtual spaces.',
+        'l2-f1': 'Interactive metaverse environments & experiences',
+        'l2-f2': 'AI-driven NPC characters with real personality',
+        'l2-f3': 'Digital collectibles and on-chain assets',
+        'l2-f4': 'Otherside & open metaverse integrations',
+        'l2-cta': 'Explore Digital Worlds →',
+        'l3-tag': 'Web3 Advisory',
+        'l3-h2': 'Navigate blockchain before you build on it',
+        'l3-p': '8 years deep in crypto, DeFi, NFTs, and Web3 — no agenda. Just clarity on what\'s real, what\'s noise, and where your business actually fits.',
+        'l3-f1': 'Is blockchain relevant to your business — honest answer',
+        'l3-f2': 'Leadership workshops: hype vs. reality, decoded',
+        'l3-f3': 'Use case mapping across your industry',
+        'l3-f4': 'Vendor & partner selection guidance',
+        'l3-cta': 'Explore Web3 Advisory →',
+        'l4-h2': 'Brand films and commercials, reimagined with AI',
+        'l4-p': 'Cinematic storytelling powered by AI — combined with real-world filmmaking craft. Brand videos, commercials, and campaign content that actually stops the scroll.',
+        'l4-f1': 'AI-generated cinematics & visual storytelling',
+        'l4-f2': 'Brand films and commercial production',
+        'l4-f3': 'Real + AI hybrid filmmaking',
+        'l4-f4': 'Social campaign content & reels',
+        'l4-cta': 'Explore VR Studios →',
+        'footer-tag': 'Full spectrum. Fully digital.',
+      },
+      da: {
+        'nav-digital-worlds': 'Digitale Verdener',
+        'nav-web3': 'Web3 Rådgivning',
+        'nav-cta': 'Kontakt os',
+        'hero-h1': 'Vi bygger på tværs af<br /><span class="gradient">det fulde digitale spektrum</span>',
+        'hero-sub': 'AI-automatisering, immersive digitale verdener, blockchain-strategi og filmiske brandvideoer — til virksomheder klar til at lede på tværs af ethvert lag af den digitale fremtid.',
+        'l1-tag': 'Streamline AI Løsninger',
+        'l1-h2': 'Automatiser din virksomhed med AI',
+        'l1-p': 'Skræddersyede AI-agenter, automatiserede arbejdsgange og intelligente systemer — bygget og implementeret til din virksomhed. Mindre manuelt arbejde, mere output.',
+        'l1-f1': 'AI-agenter der håndterer gentagne opgaver fra ende til anden',
+        'l1-f2': 'Din AI-medarbejder — kender dine dokumenter, Slack, e-mails og drift',
+        'l1-f3': 'Skræddersyede apps og værktøjer til din arbejdsgang',
+        'l1-f4': 'Løbende support og iteration',
+        'l1-cta': 'Udforsk StreamlineAI →',
+        'l2-tag': 'Digitale Verdener',
+        'l2-h2': 'Udvid din tilstedeværelse til immersive verdener',
+        'l2-p': 'Immersive oplevelser, AI-drevne NPC\'er og digitale assets — til brands og skabere klar til at vokse i virtuelle rum.',
+        'l2-f1': 'Interaktive metaverse-miljøer og oplevelser',
+        'l2-f2': 'AI-drevne NPC-karakterer med ægte personlighed',
+        'l2-f3': 'Digitale samlerobjekter og on-chain assets',
+        'l2-f4': 'Otherside og åbne metaverse-integrationer',
+        'l2-cta': 'Udforsk Digitale Verdener →',
+        'l3-tag': 'Web3 Rådgivning',
+        'l3-h2': 'Forstå blockchain inden du bygger på det',
+        'l3-p': '8 år dybt i crypto, DeFi, NFTs og Web3 — ingen agenda. Kun klarhed om hvad der er reelt, hvad der er støj, og hvor din virksomhed faktisk passer ind.',
+        'l3-f1': 'Er blockchain relevant for din virksomhed — ærligt svar',
+        'l3-f2': 'Lederworkshops: hype vs. virkelighed, afkodet',
+        'l3-f3': 'Use case mapping på tværs af din branche',
+        'l3-f4': 'Vejledning i valg af leverandører og partnere',
+        'l3-cta': 'Udforsk Web3 Rådgivning →',
+        'l4-h2': 'Brandfilm og reklamer, genopfundet med AI',
+        'l4-p': 'Filmisk fortælling drevet af AI — kombineret med rigtig filmhåndværk. Brandvideoer, reklamer og kampagneindhold der rent faktisk stopper rullet.',
+        'l4-f1': 'AI-genererede cinematics og visuel storytelling',
+        'l4-f2': 'Brandfilm og reklamproduktion',
+        'l4-f3': 'Rigtig + AI hybrid-filmproduktion',
+        'l4-f4': 'Sociale kampagneindhold og reels',
+        'l4-cta': 'Udforsk VR Studios →',
+        'footer-tag': 'Fuldt spektrum. Fuldt digitalt.',
+      }
+    };
+
+    function applyLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang]?.[key] !== undefined) el.textContent = translations[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (translations[lang]?.[key] !== undefined) el.innerHTML = translations[lang][key];
+      });
+      document.documentElement.lang = lang;
+      const btn = document.getElementById('lang-toggle');
+      if (btn) btn.textContent = lang === 'en' ? 'DA' : 'EN';
+    }
+
+    function toggleLang() {
+      const current = localStorage.getItem('vr-lang') || 'en';
+      const next = current === 'en' ? 'da' : 'en';
+      localStorage.setItem('vr-lang', next);
+      applyLanguage(next);
+    }
+
     function toggleTheme() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       if (isDark) {
@@ -557,6 +665,7 @@
     }
 
     updateToggle();
+    applyLanguage(localStorage.getItem('vr-lang') || 'en');
   </script>
 
 </body>

@@ -10,6 +10,8 @@
       if (localStorage.getItem('vr-theme') === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
       }
+      const lang = localStorage.getItem('vr-lang');
+      if (lang) document.documentElement.lang = lang;
     })();
   </script>
   <style>
@@ -138,6 +140,9 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      font-family: inherit;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
     .theme-toggle:hover { border-color: var(--text); color: var(--text); }
 
@@ -501,11 +506,12 @@
     <a href="index.html" class="vr-logo">Virtual Rainbow</a>
     <ul>
       <li><a href="streamline-ai.html">StreamlineAI</a></li>
-      <li><a href="digital-worlds.html">Digital Worlds</a></li>
-      <li><a href="web3-advisory.html">Web3 Advisory</a></li>
+      <li><a href="digital-worlds.html" data-i18n="nav-digital-worlds">Digital Worlds</a></li>
+      <li><a href="web3-advisory.html" data-i18n="nav-web3">Web3 Advisory</a></li>
       <li><a href="vr-studios.html">VR Studios</a></li>
-      <li><a href="#contact" class="nav-cta">Get in touch</a></li>
+      <li><a href="#contact" class="nav-cta" data-i18n="nav-cta">Get in touch</a></li>
       <li><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button></li>
+      <li><button class="theme-toggle" id="lang-toggle" onclick="toggleLang()" aria-label="Switch language">DA</button></li>
     </ul>
   </nav>
 
@@ -516,68 +522,68 @@
         <div class="breadcrumb">
           <a href="index.html">Virtual Rainbow</a>
           <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">Digital Worlds</span>
+          <span class="breadcrumb-current" data-i18n="breadcrumb">Digital Worlds</span>
         </div>
-        <h1>
+        <h1 data-i18n-html="hero-h1">
           Your brand,<br />
           built inside<br />
           <span class="accent-line">the metaverse</span>
         </h1>
-        <p class="hero-sub">
+        <p class="hero-sub" data-i18n="hero-sub">
           We create immersive virtual worlds, AI-powered characters, and digital collectibles
           that grow your brand's presence where the next generation lives.
         </p>
         <div class="hero-actions">
-          <a href="#contact" class="btn-primary">Let's talk</a>
-          <a href="#pipeline" class="btn-ghost">See what we create →</a>
+          <a href="#contact" class="btn-primary" data-i18n="btn-primary">Let's talk</a>
+          <a href="#pipeline" class="btn-ghost" data-i18n="btn-ghost">See what we create →</a>
         </div>
       </div>
 
       <div class="hero-panel">
         <div class="panel-top">
           <div class="panel-dot"></div>
-          <span>Live on The Otherside</span>
+          <span data-i18n="panel-title">Live on The Otherside</span>
         </div>
         <div class="panel-items">
           <div class="panel-item">
             <div class="panel-item-left">
               <div class="panel-item-icon">🌍</div>
               <div>
-                <div class="panel-item-name">Virtual World</div>
-                <div class="panel-item-sub">Custom branded environment</div>
+                <div class="panel-item-name" data-i18n="pi1-name">Virtual World</div>
+                <div class="panel-item-sub" data-i18n="pi1-sub">Custom branded environment</div>
               </div>
             </div>
-            <span class="panel-item-badge">Live</span>
+            <span class="panel-item-badge" data-i18n="badge-live">Live</span>
           </div>
           <div class="panel-item">
             <div class="panel-item-left">
               <div class="panel-item-icon">🤖</div>
               <div>
                 <div class="panel-item-name">AI NPC</div>
-                <div class="panel-item-sub">Brand character with personality</div>
+                <div class="panel-item-sub" data-i18n="pi2-sub">Brand character with personality</div>
               </div>
             </div>
-            <span class="panel-item-badge">Active</span>
+            <span class="panel-item-badge" data-i18n="badge-active">Active</span>
           </div>
           <div class="panel-item">
             <div class="panel-item-left">
               <div class="panel-item-icon">✨</div>
               <div>
-                <div class="panel-item-name">Drop Event</div>
-                <div class="panel-item-sub">Interactive community experience</div>
+                <div class="panel-item-name" data-i18n="pi3-name">Drop Event</div>
+                <div class="panel-item-sub" data-i18n="pi3-sub">Interactive community experience</div>
               </div>
             </div>
-            <span class="panel-item-badge">Upcoming</span>
+            <span class="panel-item-badge" data-i18n="badge-upcoming">Upcoming</span>
           </div>
           <div class="panel-item">
             <div class="panel-item-left">
               <div class="panel-item-icon">💎</div>
               <div>
-                <div class="panel-item-name">Collectibles</div>
-                <div class="panel-item-sub">On-chain digital assets</div>
+                <div class="panel-item-name" data-i18n="pi4-name">Collectibles</div>
+                <div class="panel-item-sub" data-i18n="pi4-sub">On-chain digital assets</div>
               </div>
             </div>
-            <span class="panel-item-badge">Minting</span>
+            <span class="panel-item-badge" data-i18n="badge-minting">Minting</span>
           </div>
         </div>
       </div>
@@ -587,29 +593,29 @@
   <!-- PIPELINE -->
   <div class="pipeline" id="pipeline">
     <div class="pipeline-inner">
-      <p class="section-kicker">What we create</p>
-      <h2>Everything your brand needs<br />to exist in virtual spaces</h2>
+      <p class="section-kicker" data-i18n="pipeline-kicker">What we create</p>
+      <h2 data-i18n-html="pipeline-h2">Everything your brand needs<br />to exist in virtual spaces</h2>
 
       <div class="pipeline-steps">
         <div class="step">
           <span class="step-num">01</span>
-          <h3>Virtual Worlds</h3>
-          <p>Custom-designed immersive environments that bring your brand story to life — interactive, on-brand, unforgettable.</p>
+          <h3 data-i18n="s01-h">Virtual Worlds</h3>
+          <p data-i18n="s01-p">Custom-designed immersive environments that bring your brand story to life — interactive, on-brand, unforgettable.</p>
         </div>
         <div class="step">
           <span class="step-num">02</span>
-          <h3>AI-Powered NPCs</h3>
-          <p>Characters with real personality that live inside your world — greeting visitors, telling your story, creating moments worth returning for.</p>
+          <h3 data-i18n="s02-h">AI-Powered NPCs</h3>
+          <p data-i18n="s02-p">Characters with real personality that live inside your world — greeting visitors, telling your story, creating moments worth returning for.</p>
         </div>
         <div class="step">
           <span class="step-num">03</span>
-          <h3>Experiences & Events</h3>
-          <p>Interactive events, games, and social spaces that give your community a reason to keep showing up.</p>
+          <h3 data-i18n="s03-h">Experiences &amp; Events</h3>
+          <p data-i18n="s03-p">Interactive events, games, and social spaces that give your community a reason to keep showing up.</p>
         </div>
         <div class="step">
           <span class="step-num">04</span>
-          <h3>Digital Collectibles</h3>
-          <p>Exclusive on-chain assets and 3D avatars that create new revenue streams and reward your most loyal fans.</p>
+          <h3 data-i18n="s04-h">Digital Collectibles</h3>
+          <p data-i18n="s04-p">Exclusive on-chain assets and 3D avatars that create new revenue streams and reward your most loyal fans.</p>
         </div>
       </div>
     </div>
@@ -619,31 +625,31 @@
   <div class="about" id="about">
     <div class="about-inner">
       <div class="about-sticky">
-        <p class="section-kicker">Why Virtual Rainbow</p>
-        <h2>We know how to<br />build inside it</h2>
-        <p>The Otherside is the most ambitious virtual world being built right now — and we know how to build inside it. We own the full pipeline, so brands show up already looking like they belong.</p>
-        <a href="#contact" class="about-link">Work with us →</a>
+        <p class="section-kicker" data-i18n="about-kicker">Why Virtual Rainbow</p>
+        <h2 data-i18n-html="about-h2">We know how to<br />build inside it</h2>
+        <p data-i18n="about-p">The Otherside is the most ambitious virtual world being built right now — and we know how to build inside it. We own the full pipeline, so brands show up already looking like they belong.</p>
+        <a href="#contact" class="about-link" data-i18n="about-link">Work with us →</a>
       </div>
       <div class="about-points">
         <div class="point">
-          <h4>Full pipeline ownership</h4>
-          <p>3D modeling, world scripting, deployment and live management — all handled in-house, start to finish.</p>
+          <h4 data-i18n="pt1-h">Full pipeline ownership</h4>
+          <p data-i18n="pt1-p">3D modeling, world scripting, deployment and live management — all handled in-house, start to finish.</p>
         </div>
         <div class="point">
-          <h4>Built on open standards</h4>
-          <p>MML-based worlds work across multiple metaverse platforms, not locked to one. Your investment travels further.</p>
+          <h4 data-i18n="pt2-h">Built on open standards</h4>
+          <p data-i18n="pt2-p">MML-based worlds work across multiple metaverse platforms, not locked to one. Your investment travels further.</p>
         </div>
         <div class="point">
-          <h4>No crypto knowledge needed</h4>
-          <p>We handle wallets, on-chain assets, and Web3 integrations entirely on your behalf. You just show up.</p>
+          <h4 data-i18n="pt3-h">No crypto knowledge needed</h4>
+          <p data-i18n="pt3-p">We handle wallets, on-chain assets, and Web3 integrations entirely on your behalf. You just show up.</p>
         </div>
         <div class="point">
-          <h4>Live and always evolving</h4>
-          <p>Worlds aren't static. We iterate, update, and keep your presence fresh — not a one-time build and forget.</p>
+          <h4 data-i18n="pt4-h">Live and always evolving</h4>
+          <p data-i18n="pt4-p">Worlds aren't static. We iterate, update, and keep your presence fresh — not a one-time build and forget.</p>
         </div>
         <div class="point">
-          <h4>AI characters that remember</h4>
-          <p>NPCs powered by AI that can hold conversations, recognise returning visitors, and embody your brand voice.</p>
+          <h4 data-i18n="pt5-h">AI characters that remember</h4>
+          <p data-i18n="pt5-p">NPCs powered by AI that can hold conversations, recognise returning visitors, and embody your brand voice.</p>
         </div>
       </div>
     </div>
@@ -653,24 +659,148 @@
   <div style="border-top: 1px solid var(--border);">
     <div class="cta" id="contact">
       <div>
-        <h2>Ready to step in?</h2>
-        <p>Tell us about your brand and we'll show you what's possible in the metaverse.</p>
+        <h2 data-i18n="cta-h2">Ready to step in?</h2>
+        <p data-i18n="cta-p">Tell us about your brand and we'll show you what's possible in the metaverse.</p>
       </div>
       <div>
-        <a href="mailto:hello@virtualrainbow.xyz" class="btn-primary" style="font-size:1rem; padding: 16px 36px;">Get in touch →</a>
+        <a href="mailto:hello@virtualrainbow.xyz" class="btn-primary" style="font-size:1rem; padding: 16px 36px;" data-i18n="cta-btn">Get in touch →</a>
       </div>
     </div>
   </div>
 
   <div class="footer">
     <a href="index.html" class="footer-logo">Virtual Rainbow</a>
-    <span>Full spectrum. Fully digital.</span>
+    <span data-i18n="footer-tag">Full spectrum. Fully digital.</span>
     <span>© 2026 Virtual Rainbow</span>
   </div>
 
   <div class="rainbow-bar"></div>
 
   <script>
+    const translations = {
+      en: {
+        'nav-digital-worlds': 'Digital Worlds',
+        'nav-web3': 'Web3 Advisory',
+        'nav-cta': 'Get in touch',
+        'breadcrumb': 'Digital Worlds',
+        'hero-h1': 'Your brand,<br />built inside<br /><span class="accent-line">the metaverse</span>',
+        'hero-sub': 'We create immersive virtual worlds, AI-powered characters, and digital collectibles that grow your brand\'s presence where the next generation lives.',
+        'btn-primary': 'Let\'s talk',
+        'btn-ghost': 'See what we create →',
+        'panel-title': 'Live on The Otherside',
+        'pi1-name': 'Virtual World',
+        'pi1-sub': 'Custom branded environment',
+        'badge-live': 'Live',
+        'pi2-sub': 'Brand character with personality',
+        'badge-active': 'Active',
+        'pi3-name': 'Drop Event',
+        'pi3-sub': 'Interactive community experience',
+        'badge-upcoming': 'Upcoming',
+        'pi4-name': 'Collectibles',
+        'pi4-sub': 'On-chain digital assets',
+        'badge-minting': 'Minting',
+        'pipeline-kicker': 'What we create',
+        'pipeline-h2': 'Everything your brand needs<br />to exist in virtual spaces',
+        's01-h': 'Virtual Worlds',
+        's01-p': 'Custom-designed immersive environments that bring your brand story to life — interactive, on-brand, unforgettable.',
+        's02-h': 'AI-Powered NPCs',
+        's02-p': 'Characters with real personality that live inside your world — greeting visitors, telling your story, creating moments worth returning for.',
+        's03-h': 'Experiences & Events',
+        's03-p': 'Interactive events, games, and social spaces that give your community a reason to keep showing up.',
+        's04-h': 'Digital Collectibles',
+        's04-p': 'Exclusive on-chain assets and 3D avatars that create new revenue streams and reward your most loyal fans.',
+        'about-kicker': 'Why Virtual Rainbow',
+        'about-h2': 'We know how to<br />build inside it',
+        'about-p': 'The Otherside is the most ambitious virtual world being built right now — and we know how to build inside it. We own the full pipeline, so brands show up already looking like they belong.',
+        'about-link': 'Work with us →',
+        'pt1-h': 'Full pipeline ownership',
+        'pt1-p': '3D modeling, world scripting, deployment and live management — all handled in-house, start to finish.',
+        'pt2-h': 'Built on open standards',
+        'pt2-p': 'MML-based worlds work across multiple metaverse platforms, not locked to one. Your investment travels further.',
+        'pt3-h': 'No crypto knowledge needed',
+        'pt3-p': 'We handle wallets, on-chain assets, and Web3 integrations entirely on your behalf. You just show up.',
+        'pt4-h': 'Live and always evolving',
+        'pt4-p': 'Worlds aren\'t static. We iterate, update, and keep your presence fresh — not a one-time build and forget.',
+        'pt5-h': 'AI characters that remember',
+        'pt5-p': 'NPCs powered by AI that can hold conversations, recognise returning visitors, and embody your brand voice.',
+        'cta-h2': 'Ready to step in?',
+        'cta-p': 'Tell us about your brand and we\'ll show you what\'s possible in the metaverse.',
+        'cta-btn': 'Get in touch →',
+        'footer-tag': 'Full spectrum. Fully digital.',
+      },
+      da: {
+        'nav-digital-worlds': 'Digitale Verdener',
+        'nav-web3': 'Web3 Rådgivning',
+        'nav-cta': 'Kontakt os',
+        'breadcrumb': 'Digitale Verdener',
+        'hero-h1': 'Dit brand,<br />bygget inde i<br /><span class="accent-line">metaverset</span>',
+        'hero-sub': 'Vi skaber immersive virtuelle verdener, AI-drevne karakterer og digitale samlerobjekter der styrker dit brands tilstedeværelse dér hvor næste generation lever.',
+        'btn-primary': 'Lad os tale',
+        'btn-ghost': 'Se hvad vi skaber →',
+        'panel-title': 'Live på The Otherside',
+        'pi1-name': 'Virtuel Verden',
+        'pi1-sub': 'Skræddersyet branded miljø',
+        'badge-live': 'Live',
+        'pi2-sub': 'Brandkarakter med personlighed',
+        'badge-active': 'Aktiv',
+        'pi3-name': 'Drop Event',
+        'pi3-sub': 'Interaktiv community-oplevelse',
+        'badge-upcoming': 'Kommende',
+        'pi4-name': 'Samlerobjekter',
+        'pi4-sub': 'On-chain digitale assets',
+        'badge-minting': 'Minting',
+        'pipeline-kicker': 'Hvad vi skaber',
+        'pipeline-h2': 'Alt dit brand behøver<br />for at eksistere i virtuelle rum',
+        's01-h': 'Virtuelle Verdener',
+        's01-p': 'Skræddersyede immersive miljøer der bringer din brandhistorie til live — interaktive, on-brand, uforglemmelige.',
+        's02-h': 'AI-drevne NPC\'er',
+        's02-p': 'Karakterer med ægte personlighed der lever i din verden — byder besøgende velkommen, fortæller din historie, skaber øjeblikke det er værd at vende tilbage til.',
+        's03-h': 'Oplevelser og Events',
+        's03-p': 'Interaktive events, spil og sociale rum der giver dit community en grund til at blive ved med at møde op.',
+        's04-h': 'Digitale Samlerobjekter',
+        's04-p': 'Eksklusive on-chain assets og 3D-avatarer der skaber nye indtægtsstrømme og belønner dine mest loyale fans.',
+        'about-kicker': 'Hvorfor Virtual Rainbow',
+        'about-h2': 'Vi ved hvordan<br />man bygger der inde',
+        'about-p': 'The Otherside er den mest ambitiøse virtuelle verden der bygges lige nu — og vi ved hvordan man bygger der inde. Vi ejer hele pipeline\'en, så brands dukker op og ser ud som om de hører til.',
+        'about-link': 'Samarbejd med os →',
+        'pt1-h': 'Fuld pipeline-ejerskab',
+        'pt1-p': '3D-modellering, world scripting, implementering og live management — alt håndteret in-house, fra start til slut.',
+        'pt2-h': 'Bygget på åbne standarder',
+        'pt2-p': 'MML-baserede verdener fungerer på tværs af flere metaverse-platforme, ikke låst til én. Din investering rækker længere.',
+        'pt3-h': 'Ingen krypto-viden nødvendig',
+        'pt3-p': 'Vi håndterer wallets, on-chain assets og Web3-integrationer helt på dine vegne. Du møder bare op.',
+        'pt4-h': 'Live og altid i udvikling',
+        'pt4-p': 'Verdener er ikke statiske. Vi itererer, opdaterer og holder din tilstedeværelse frisk — ikke et engangsprojekt der glemmes.',
+        'pt5-h': 'AI-karakterer der husker',
+        'pt5-p': 'NPC\'er drevet af AI der kan føre samtaler, genkende tilbagevendende besøgende og legemliggøre din brandstemme.',
+        'cta-h2': 'Klar til at træde ind?',
+        'cta-p': 'Fortæl os om dit brand, og vi viser dig hvad der er muligt i metaverset.',
+        'cta-btn': 'Kontakt os →',
+        'footer-tag': 'Fuldt spektrum. Fuldt digitalt.',
+      }
+    };
+
+    function applyLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang]?.[key] !== undefined) el.textContent = translations[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (translations[lang]?.[key] !== undefined) el.innerHTML = translations[lang][key];
+      });
+      document.documentElement.lang = lang;
+      const btn = document.getElementById('lang-toggle');
+      if (btn) btn.textContent = lang === 'en' ? 'DA' : 'EN';
+    }
+
+    function toggleLang() {
+      const current = localStorage.getItem('vr-lang') || 'en';
+      const next = current === 'en' ? 'da' : 'en';
+      localStorage.setItem('vr-lang', next);
+      applyLanguage(next);
+    }
+
     function toggleTheme() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       if (isDark) {
@@ -690,6 +820,7 @@
     }
 
     updateToggle();
+    applyLanguage(localStorage.getItem('vr-lang') || 'en');
   </script>
 
 </body>

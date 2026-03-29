@@ -10,6 +10,8 @@
       if (localStorage.getItem('vr-theme') === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
       }
+      const lang = localStorage.getItem('vr-lang');
+      if (lang) document.documentElement.lang = lang;
     })();
   </script>
   <style>
@@ -128,6 +130,9 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      font-family: inherit;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
     .theme-toggle:hover { border-color: var(--text); color: var(--text); }
 
@@ -466,11 +471,12 @@
     <a href="index.html" class="vr-logo">Virtual Rainbow</a>
     <ul>
       <li><a href="streamline-ai.html">StreamlineAI</a></li>
-      <li><a href="digital-worlds.html">Digital Worlds</a></li>
-      <li><a href="web3-advisory.html">Web3 Advisory</a></li>
+      <li><a href="digital-worlds.html" data-i18n="nav-digital-worlds">Digital Worlds</a></li>
+      <li><a href="web3-advisory.html" data-i18n="nav-web3">Web3 Advisory</a></li>
       <li><a href="vr-studios.html">VR Studios</a></li>
-      <li><a href="#contact" class="nav-cta">Get in touch</a></li>
+      <li><a href="#contact" class="nav-cta" data-i18n="nav-cta">Get in touch</a></li>
       <li><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button></li>
+      <li><button class="theme-toggle" id="lang-toggle" onclick="toggleLang()" aria-label="Switch language">DA</button></li>
     </ul>
   </nav>
 
@@ -481,35 +487,35 @@
         <div class="breadcrumb">
           <a href="index.html">Virtual Rainbow</a>
           <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">Streamline AI Solutions</span>
+          <span class="breadcrumb-current" data-i18n="breadcrumb">Streamline AI Solutions</span>
         </div>
-        <h1>
+        <h1 data-i18n-html="hero-h1">
           Your business<br />
           runs on tasks.<br />
           <span class="accent-line">Let AI handle them.</span>
         </h1>
-        <p class="hero-sub">
+        <p class="hero-sub" data-i18n="hero-sub">
           We build AI agents, automated workflows, and custom tools —
           so your team spends time on what matters, while AI handles everything else.
         </p>
         <div class="hero-actions">
-          <a href="#contact" class="btn-primary">Let's talk</a>
-          <a href="#features" class="btn-ghost">See what we build →</a>
+          <a href="#contact" class="btn-primary" data-i18n="btn-primary">Let's talk</a>
+          <a href="#features" class="btn-ghost" data-i18n="btn-ghost">See what we build →</a>
         </div>
       </div>
 
       <div class="hero-stats">
         <div class="hero-stat">
           <div class="hero-stat-big">$400K+</div>
-          <div class="hero-stat-label">equivalent work automated per year for a 6-person team</div>
+          <div class="hero-stat-label" data-i18n="stat1-label">equivalent work automated per year for a 6-person team</div>
         </div>
         <div class="hero-stat">
           <span class="hero-stat-num">3,200</span>
-          <span class="hero-stat-label">hours reclaimed annually</span>
+          <span class="hero-stat-label" data-i18n="stat2-label">hours reclaimed annually</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat-num">6 → 15</span>
-          <span class="hero-stat-label">team output without new hires</span>
+          <span class="hero-stat-label" data-i18n="stat3-label">team output without new hires</span>
         </div>
       </div>
     </div>
@@ -519,31 +525,31 @@
   <div class="features" id="features">
     <div class="features-header">
       <div>
-        <p class="section-kicker">What we build</p>
-        <h2>The full stack,<br />deployed for your business</h2>
+        <p class="section-kicker" data-i18n="features-kicker">What we build</p>
+        <h2 data-i18n-html="features-h2">The full stack,<br />deployed for your business</h2>
       </div>
     </div>
 
     <div class="features-list">
       <div class="feature">
         <p class="feature-num">01</p>
-        <h3>AI Agents</h3>
-        <p>Repetitive tasks handled end-to-end — email triage, reporting, scheduling, ops. On schedule, every day, without anyone touching a thing.</p>
+        <h3 data-i18n="f01-h">AI Agents</h3>
+        <p data-i18n="f01-p">Repetitive tasks handled end-to-end — email triage, reporting, scheduling, ops. On schedule, every day, without anyone touching a thing.</p>
       </div>
       <div class="feature">
         <p class="feature-num">02</p>
-        <h3>Your AI Employee</h3>
-        <p>We give AI full context of your business — docs, Slack, emails, workflows — and it runs daily tasks autonomously. A team member who never sleeps.</p>
+        <h3 data-i18n="f02-h">Your AI Employee</h3>
+        <p data-i18n="f02-p">We give AI full context of your business — docs, Slack, emails, workflows — and it runs daily tasks autonomously. A team member who never sleeps.</p>
       </div>
       <div class="feature">
         <p class="feature-num">03</p>
-        <h3>Custom Apps & Tools</h3>
-        <p>Purpose-built internal tools and customer-facing apps for your exact workflow. No off-the-shelf compromise, no unused features.</p>
+        <h3 data-i18n="f03-h">Custom Apps &amp; Tools</h3>
+        <p data-i18n="f03-p">Purpose-built internal tools and customer-facing apps for your exact workflow. No off-the-shelf compromise, no unused features.</p>
       </div>
       <div class="feature">
         <p class="feature-num">04</p>
-        <h3>Workflow Automation</h3>
-        <p>Connect your stack. Automate the gaps. Fewer manual steps, less friction, more output — across every tool your team already uses.</p>
+        <h3 data-i18n="f04-h">Workflow Automation</h3>
+        <p data-i18n="f04-p">Connect your stack. Automate the gaps. Fewer manual steps, less friction, more output — across every tool your team already uses.</p>
       </div>
     </div>
   </div>
@@ -552,30 +558,30 @@
   <div class="why" id="why">
     <div class="why-inner">
       <div class="why-text">
-        <p class="section-kicker">Why it works</p>
-        <h2 style="margin-bottom: 28px;">Context is the moat</h2>
-        <p>Most businesses are using AI to summarise articles and write tweets. That's maybe 5% of what it can do.</p>
-        <p>The real unlock is giving AI <strong>deep context</strong> about how your company operates. When it knows your processes, your docs, your emails, your goals — it stops being a chatbot and starts being an operator.</p>
-        <div class="quote">
+        <p class="section-kicker" data-i18n="why-kicker">Why it works</p>
+        <h2 style="margin-bottom: 28px;" data-i18n="why-h2">Context is the moat</h2>
+        <p data-i18n="why-p1">Most businesses are using AI to summarise articles and write tweets. That's maybe 5% of what it can do.</p>
+        <p data-i18n-html="why-p2">The real unlock is giving AI <strong>deep context</strong> about how your company operates. When it knows your processes, your docs, your emails, your goals — it stops being a chatbot and starts being an operator.</p>
+        <div class="quote" data-i18n-html="why-quote">
           "The difference between asking AI to write a marketing email and giving it full access to your brand guidelines, customer segments, and Slack history — then asking — is <strong>night and day</strong>. Context is the moat. Not prompting. Not fine-tuning. Context."
         </div>
       </div>
       <div class="why-aside">
         <div class="aside-card">
-          <p class="aside-card-label">AI Agents</p>
-          <p>Scheduled tasks that run without input — daily digests, reports, outreach, monitoring.</p>
+          <p class="aside-card-label" data-i18n="ac1-label">AI Agents</p>
+          <p data-i18n="ac1-p">Scheduled tasks that run without input — daily digests, reports, outreach, monitoring.</p>
         </div>
         <div class="aside-card">
-          <p class="aside-card-label">AI Employee</p>
-          <p>Knows your whole business. Answers questions, handles ops, improves itself over time.</p>
+          <p class="aside-card-label" data-i18n="ac2-label">AI Employee</p>
+          <p data-i18n="ac2-p">Knows your whole business. Answers questions, handles ops, improves itself over time.</p>
         </div>
         <div class="aside-card">
-          <p class="aside-card-label">Custom Tools</p>
-          <p>Built for your exact stack — web apps, internal dashboards, client-facing products.</p>
+          <p class="aside-card-label" data-i18n="ac3-label">Custom Tools</p>
+          <p data-i18n="ac3-p">Built for your exact stack — web apps, internal dashboards, client-facing products.</p>
         </div>
         <div class="aside-card">
-          <p class="aside-card-label">Automation</p>
-          <p>Connect what you already use. Remove the manual steps in between.</p>
+          <p class="aside-card-label" data-i18n="ac4-label">Automation</p>
+          <p data-i18n="ac4-p">Connect what you already use. Remove the manual steps in between.</p>
         </div>
       </div>
     </div>
@@ -585,24 +591,128 @@
   <div style="border-top: 1px solid var(--border);">
     <div class="cta" id="contact">
       <div>
-        <h2>Ready to streamline?</h2>
-        <p>Tell us what's eating your team's time. We'll show you exactly where AI can take over.</p>
+        <h2 data-i18n="cta-h2">Ready to streamline?</h2>
+        <p data-i18n="cta-p">Tell us what's eating your team's time. We'll show you exactly where AI can take over.</p>
       </div>
       <div class="cta-action">
-        <a href="mailto:hello@virtualrainbow.xyz" class="btn-primary" style="font-size:1rem; padding: 16px 36px;">Get in touch →</a>
+        <a href="mailto:hello@virtualrainbow.xyz" class="btn-primary" style="font-size:1rem; padding: 16px 36px;" data-i18n="cta-btn">Get in touch →</a>
       </div>
     </div>
   </div>
 
   <div class="footer">
     <a href="index.html" class="footer-logo">Virtual Rainbow</a>
-    <span>Full spectrum. Fully digital.</span>
+    <span data-i18n="footer-tag">Full spectrum. Fully digital.</span>
     <span>© 2026 Virtual Rainbow</span>
   </div>
 
   <div class="rainbow-bar"></div>
 
   <script>
+    const translations = {
+      en: {
+        'nav-digital-worlds': 'Digital Worlds',
+        'nav-web3': 'Web3 Advisory',
+        'nav-cta': 'Get in touch',
+        'breadcrumb': 'Streamline AI Solutions',
+        'hero-h1': 'Your business<br />runs on tasks.<br /><span class="accent-line">Let AI handle them.</span>',
+        'hero-sub': 'We build AI agents, automated workflows, and custom tools — so your team spends time on what matters, while AI handles everything else.',
+        'btn-primary': 'Let\'s talk',
+        'btn-ghost': 'See what we build →',
+        'stat1-label': 'equivalent work automated per year for a 6-person team',
+        'stat2-label': 'hours reclaimed annually',
+        'stat3-label': 'team output without new hires',
+        'features-kicker': 'What we build',
+        'features-h2': 'The full stack,<br />deployed for your business',
+        'f01-h': 'AI Agents',
+        'f01-p': 'Repetitive tasks handled end-to-end — email triage, reporting, scheduling, ops. On schedule, every day, without anyone touching a thing.',
+        'f02-h': 'Your AI Employee',
+        'f02-p': 'We give AI full context of your business — docs, Slack, emails, workflows — and it runs daily tasks autonomously. A team member who never sleeps.',
+        'f03-h': 'Custom Apps & Tools',
+        'f03-p': 'Purpose-built internal tools and customer-facing apps for your exact workflow. No off-the-shelf compromise, no unused features.',
+        'f04-h': 'Workflow Automation',
+        'f04-p': 'Connect your stack. Automate the gaps. Fewer manual steps, less friction, more output — across every tool your team already uses.',
+        'why-kicker': 'Why it works',
+        'why-h2': 'Context is the moat',
+        'why-p1': 'Most businesses are using AI to summarise articles and write tweets. That\'s maybe 5% of what it can do.',
+        'why-p2': 'The real unlock is giving AI <strong>deep context</strong> about how your company operates. When it knows your processes, your docs, your emails, your goals — it stops being a chatbot and starts being an operator.',
+        'why-quote': '"The difference between asking AI to write a marketing email and giving it full access to your brand guidelines, customer segments, and Slack history — then asking — is <strong>night and day</strong>. Context is the moat. Not prompting. Not fine-tuning. Context."',
+        'ac1-label': 'AI Agents',
+        'ac1-p': 'Scheduled tasks that run without input — daily digests, reports, outreach, monitoring.',
+        'ac2-label': 'AI Employee',
+        'ac2-p': 'Knows your whole business. Answers questions, handles ops, improves itself over time.',
+        'ac3-label': 'Custom Tools',
+        'ac3-p': 'Built for your exact stack — web apps, internal dashboards, client-facing products.',
+        'ac4-label': 'Automation',
+        'ac4-p': 'Connect what you already use. Remove the manual steps in between.',
+        'cta-h2': 'Ready to streamline?',
+        'cta-p': 'Tell us what\'s eating your team\'s time. We\'ll show you exactly where AI can take over.',
+        'cta-btn': 'Get in touch →',
+        'footer-tag': 'Full spectrum. Fully digital.',
+      },
+      da: {
+        'nav-digital-worlds': 'Digitale Verdener',
+        'nav-web3': 'Web3 Rådgivning',
+        'nav-cta': 'Kontakt os',
+        'breadcrumb': 'Streamline AI Løsninger',
+        'hero-h1': 'Din virksomhed<br />kører på opgaver.<br /><span class="accent-line">Lad AI klare dem.</span>',
+        'hero-sub': 'Vi bygger AI-agenter, automatiserede arbejdsgange og skræddersyede værktøjer — så dit team bruger tid på det der tæller, mens AI klarer resten.',
+        'btn-primary': 'Lad os tale',
+        'btn-ghost': 'Se hvad vi bygger →',
+        'stat1-label': 'tilsvarende arbejde automatiseret per år for et 6-personers team',
+        'stat2-label': 'timer genvundet om året',
+        'stat3-label': 'team-output uden nye ansættelser',
+        'features-kicker': 'Hvad vi bygger',
+        'features-h2': 'Den fulde stak,<br />implementeret til din virksomhed',
+        'f01-h': 'AI-agenter',
+        'f01-p': 'Gentagne opgaver håndteret fra ende til anden — e-mail triage, rapportering, planlægning, drift. Til tiden, hver dag, uden at nogen rører noget.',
+        'f02-h': 'Din AI-medarbejder',
+        'f02-p': 'Vi giver AI fuld kontekst om din virksomhed — dokumenter, Slack, e-mails, arbejdsgange — og den kører daglige opgaver selvstændigt. Et teammedlem der aldrig sover.',
+        'f03-h': 'Skræddersyede Apps og Værktøjer',
+        'f03-p': 'Formålsbyggede interne værktøjer og kunderelaterede apps til din nøjagtige arbejdsgang. Ingen halvfærdige kompromiser, ingen ubrugte funktioner.',
+        'f04-h': 'Arbejdsgangsautomatisering',
+        'f04-p': 'Forbind din stak. Automatiser hullerne. Færre manuelle trin, mindre friktion, mere output — på tværs af alle de værktøjer dit team allerede bruger.',
+        'why-kicker': 'Derfor virker det',
+        'why-h2': 'Kontekst er fortifikationen',
+        'why-p1': 'De fleste virksomheder bruger AI til at opsummere artikler og skrive tweets. Det er måske 5% af hvad det kan.',
+        'why-p2': 'Det virkelige gennembrud er at give AI <strong>dyb kontekst</strong> om hvordan din virksomhed fungerer. Når den kender dine processer, dine dokumenter, dine e-mails, dine mål — holder den op med at være en chatbot og begynder at være en operatør.',
+        'why-quote': '"Forskellen på at bede AI om at skrive en marketing-e-mail og give den fuld adgang til dine brand guidelines, kundesegmenter og Slack-historik — og så spørge — er <strong>nat og dag</strong>. Kontekst er fortifikationen. Ikke prompts. Ikke fine-tuning. Kontekst."',
+        'ac1-label': 'AI-agenter',
+        'ac1-p': 'Planlagte opgaver der kører uden input — daglige resuméer, rapporter, opsøgende arbejde, overvågning.',
+        'ac2-label': 'AI-medarbejder',
+        'ac2-p': 'Kender din hele virksomhed. Besvarer spørgsmål, håndterer drift, forbedrer sig over tid.',
+        'ac3-label': 'Skræddersyede Værktøjer',
+        'ac3-p': 'Bygget til din nøjagtige stak — webapps, interne dashboards, klientvendte produkter.',
+        'ac4-label': 'Automatisering',
+        'ac4-p': 'Forbind det du allerede bruger. Fjern de manuelle trin imellem.',
+        'cta-h2': 'Klar til at strømline?',
+        'cta-p': 'Fortæl os hvad der æder dit teams tid. Vi viser dig præcis hvor AI kan overtage.',
+        'cta-btn': 'Kontakt os →',
+        'footer-tag': 'Fuldt spektrum. Fuldt digitalt.',
+      }
+    };
+
+    function applyLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang]?.[key] !== undefined) el.textContent = translations[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (translations[lang]?.[key] !== undefined) el.innerHTML = translations[lang][key];
+      });
+      document.documentElement.lang = lang;
+      const btn = document.getElementById('lang-toggle');
+      if (btn) btn.textContent = lang === 'en' ? 'DA' : 'EN';
+    }
+
+    function toggleLang() {
+      const current = localStorage.getItem('vr-lang') || 'en';
+      const next = current === 'en' ? 'da' : 'en';
+      localStorage.setItem('vr-lang', next);
+      applyLanguage(next);
+    }
+
     function toggleTheme() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       if (isDark) {
@@ -622,6 +732,7 @@
     }
 
     updateToggle();
+    applyLanguage(localStorage.getItem('vr-lang') || 'en');
   </script>
 
 </body>

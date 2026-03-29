@@ -10,6 +10,8 @@
       if (localStorage.getItem('vr-theme') === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
       }
+      const lang = localStorage.getItem('vr-lang');
+      if (lang) document.documentElement.lang = lang;
     })();
   </script>
   <style>
@@ -128,6 +130,9 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      font-family: inherit;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
     .theme-toggle:hover { border-color: var(--text); color: var(--text); }
 
@@ -458,11 +463,12 @@
     <a href="index.html" class="vr-logo">Virtual Rainbow</a>
     <ul>
       <li><a href="streamline-ai.html">StreamlineAI</a></li>
-      <li><a href="digital-worlds.html">Digital Worlds</a></li>
-      <li><a href="web3-advisory.html">Web3 Advisory</a></li>
+      <li><a href="digital-worlds.html" data-i18n="nav-digital-worlds">Digital Worlds</a></li>
+      <li><a href="web3-advisory.html" data-i18n="nav-web3">Web3 Advisory</a></li>
       <li><a href="vr-studios.html">VR Studios</a></li>
-      <li><a href="#contact" class="nav-cta">Get in touch</a></li>
+      <li><a href="#contact" class="nav-cta" data-i18n="nav-cta">Get in touch</a></li>
       <li><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button></li>
+      <li><button class="theme-toggle" id="lang-toggle" onclick="toggleLang()" aria-label="Switch language">DA</button></li>
     </ul>
   </nav>
 
@@ -475,34 +481,34 @@
           <span class="breadcrumb-sep">/</span>
           <span class="breadcrumb-current">VR Studios</span>
         </div>
-        <h1>
+        <h1 data-i18n-html="hero-h1">
           Brand films that<br />
           weren't possible<br />
           <span class="accent-line">until now.</span>
         </h1>
-        <p class="hero-sub">
+        <p class="hero-sub" data-i18n="hero-sub">
           We combine real-world filmmaking craft with the latest AI cinematic tools —
           to create brand films, commercials, and campaign content that looks like a Hollywood
           production, without the Hollywood budget.
         </p>
         <div class="hero-actions">
-          <a href="#contact" class="btn-primary">Start a project</a>
-          <a href="#what-we-make" class="btn-ghost">See what we make →</a>
+          <a href="#contact" class="btn-primary" data-i18n="btn-primary">Start a project</a>
+          <a href="#what-we-make" class="btn-ghost" data-i18n="btn-ghost">See what we make →</a>
         </div>
       </div>
 
       <div class="hero-stats">
         <div class="hero-stat">
           <div class="hero-stat-big">AI + Real</div>
-          <div class="hero-stat-label">hybrid production — cinematic AI visuals combined with real-world filming for a look nothing else can match</div>
+          <div class="hero-stat-label" data-i18n="stat1-label">hybrid production — cinematic AI visuals combined with real-world filming for a look nothing else can match</div>
         </div>
         <div class="hero-stat">
-          <span class="hero-stat-num">Film background</span>
-          <span class="hero-stat-label">years of real filmmaking craft behind every frame</span>
+          <span class="hero-stat-num" data-i18n="stat2-num">Film background</span>
+          <span class="hero-stat-label" data-i18n="stat2-label">years of real filmmaking craft behind every frame</span>
         </div>
         <div class="hero-stat">
-          <span class="hero-stat-num">Any scale</span>
-          <span class="hero-stat-label">from social reels to full brand campaigns</span>
+          <span class="hero-stat-num" data-i18n="stat3-num">Any scale</span>
+          <span class="hero-stat-label" data-i18n="stat3-label">from social reels to full brand campaigns</span>
         </div>
       </div>
     </div>
@@ -511,30 +517,30 @@
   <!-- WHAT WE MAKE -->
   <div class="features" id="what-we-make">
     <div class="features-header">
-      <p class="section-kicker">What we make</p>
-      <h2>Every format your brand<br />needs to own the screen</h2>
+      <p class="section-kicker" data-i18n="features-kicker">What we make</p>
+      <h2 data-i18n-html="features-h2">Every format your brand<br />needs to own the screen</h2>
     </div>
 
     <div class="features-list">
       <div class="feature">
         <p class="feature-num">01</p>
-        <h3>Brand Films</h3>
-        <p>The definitive visual story of who you are. Cinematic, emotive, and built to last — combining AI-generated sequences with real footage to create something genuinely unforgettable.</p>
+        <h3 data-i18n="f01-h">Brand Films</h3>
+        <p data-i18n="f01-p">The definitive visual story of who you are. Cinematic, emotive, and built to last — combining AI-generated sequences with real footage to create something genuinely unforgettable.</p>
       </div>
       <div class="feature">
         <p class="feature-num">02</p>
-        <h3>AI Commercials</h3>
-        <p>TV and digital commercials produced at a fraction of traditional cost. We use Seedance AI to generate cinematic footage — then direct, grade, and deliver a finished commercial built entirely around your brand.</p>
+        <h3 data-i18n="f02-h">AI Commercials</h3>
+        <p data-i18n="f02-p">TV and digital commercials produced at a fraction of traditional cost. We use Seedance AI to generate cinematic footage — then direct, grade, and deliver a finished commercial built entirely around your brand.</p>
       </div>
       <div class="feature">
         <p class="feature-num">03</p>
-        <h3>Social & Campaign Content</h3>
-        <p>Reels, trailers, teasers, and campaign launches — produced with the same cinematic care as a full brand film, just in a shorter format. Volume and quality, both.</p>
+        <h3 data-i18n="f03-h">Social &amp; Campaign Content</h3>
+        <p data-i18n="f03-p">Reels, trailers, teasers, and campaign launches — produced with the same cinematic care as a full brand film, just in a shorter format. Volume and quality, both.</p>
       </div>
       <div class="feature">
         <p class="feature-num">04</p>
-        <h3>Hybrid Production</h3>
-        <p>Real interviews, real locations, real people — elevated with AI cinematics, motion design, and generated environments woven seamlessly into the edit. The best of both worlds.</p>
+        <h3 data-i18n="f04-h">Hybrid Production</h3>
+        <p data-i18n="f04-p">Real interviews, real locations, real people — elevated with AI cinematics, motion design, and generated environments woven seamlessly into the edit. The best of both worlds.</p>
       </div>
     </div>
   </div>
@@ -543,31 +549,31 @@
   <div class="why" id="why">
     <div class="why-inner">
       <div class="why-text">
-        <p class="section-kicker">How we work</p>
-        <h2 style="margin-bottom: 28px;">Filmmaking instincts. AI superpowers.</h2>
-        <p>Most AI video tools produce content that looks like AI video. The reason is simple: the people using them don't have a filmmaker's eye. They know the tools but not the craft.</p>
-        <p>We come from the opposite direction. <strong>The craft came first.</strong> Years of understanding light, movement, pacing, and storytelling — and now those instincts are applied to a completely new generation of tools that can generate worlds, characters, and shots that were physically impossible to capture before.</p>
-        <p>The result is brand content that feels cinematic and intentional — not generated. The AI handles scale and spectacle. We handle soul.</p>
-        <div class="quote">
+        <p class="section-kicker" data-i18n="why-kicker">How we work</p>
+        <h2 style="margin-bottom: 28px;" data-i18n="why-h2">Filmmaking instincts. AI superpowers.</h2>
+        <p data-i18n="why-p1">Most AI video tools produce content that looks like AI video. The reason is simple: the people using them don't have a filmmaker's eye. They know the tools but not the craft.</p>
+        <p data-i18n-html="why-p2">We come from the opposite direction. <strong>The craft came first.</strong> Years of understanding light, movement, pacing, and storytelling — and now those instincts are applied to a completely new generation of tools that can generate worlds, characters, and shots that were physically impossible to capture before.</p>
+        <p data-i18n="why-p3">The result is brand content that feels cinematic and intentional — not generated. The AI handles scale and spectacle. We handle soul.</p>
+        <div class="quote" data-i18n-html="why-quote">
           "The brands winning on screen right now aren't the ones with the biggest production budgets. They're the ones who understand <strong>story first, technology second</strong> — and who found a way to make both work together."
         </div>
       </div>
       <div class="why-aside">
         <div class="aside-card">
-          <p class="aside-card-label">AI Cinematics</p>
-          <p>Sora, Runway, Kling, and beyond — we use the tools that are right for the shot, not the ones that are easiest.</p>
+          <p class="aside-card-label" data-i18n="ac1-label">AI Cinematics</p>
+          <p data-i18n="ac1-p">Sora, Runway, Kling, and beyond — we use the tools that are right for the shot, not the ones that are easiest.</p>
         </div>
         <div class="aside-card">
-          <p class="aside-card-label">Real Filmmaking</p>
-          <p>Cameras, locations, talent, direction — the physical production side handled with proper craft and care.</p>
+          <p class="aside-card-label" data-i18n="ac2-label">Real Filmmaking</p>
+          <p data-i18n="ac2-p">Cameras, locations, talent, direction — the physical production side handled with proper craft and care.</p>
         </div>
         <div class="aside-card">
-          <p class="aside-card-label">Edit & Post</p>
-          <p>Colour, sound design, music, and pacing — the finishing that turns footage into a film.</p>
+          <p class="aside-card-label" data-i18n="ac3-label">Edit &amp; Post</p>
+          <p data-i18n="ac3-p">Colour, sound design, music, and pacing — the finishing that turns footage into a film.</p>
         </div>
         <div class="aside-card">
-          <p class="aside-card-label">Strategy</p>
-          <p>We think about where the content lives and what it needs to do — not just how it looks.</p>
+          <p class="aside-card-label" data-i18n="ac4-label">Strategy</p>
+          <p data-i18n="ac4-p">We think about where the content lives and what it needs to do — not just how it looks.</p>
         </div>
       </div>
     </div>
@@ -577,24 +583,132 @@
   <div style="border-top: 1px solid var(--border);">
     <div class="cta" id="contact">
       <div>
-        <h2>Ready to make something?</h2>
-        <p>Tell us about your brand and what you want to say. We'll show you what's possible with the tools we have right now.</p>
+        <h2 data-i18n="cta-h2">Ready to make something?</h2>
+        <p data-i18n="cta-p">Tell us about your brand and what you want to say. We'll show you what's possible with the tools we have right now.</p>
       </div>
       <div class="cta-action">
-        <a href="mailto:hello@virtualrainbow.xyz" class="btn-primary" style="font-size:1rem; padding: 16px 36px;">Get in touch →</a>
+        <a href="mailto:hello@virtualrainbow.xyz" class="btn-primary" style="font-size:1rem; padding: 16px 36px;" data-i18n="cta-btn">Get in touch →</a>
       </div>
     </div>
   </div>
 
   <div class="footer">
     <a href="index.html" class="footer-logo">Virtual Rainbow</a>
-    <span>Full spectrum. Fully digital.</span>
+    <span data-i18n="footer-tag">Full spectrum. Fully digital.</span>
     <span>© 2026 Virtual Rainbow</span>
   </div>
 
   <div class="rainbow-bar"></div>
 
   <script>
+    const translations = {
+      en: {
+        'nav-digital-worlds': 'Digital Worlds',
+        'nav-web3': 'Web3 Advisory',
+        'nav-cta': 'Get in touch',
+        'hero-h1': 'Brand films that<br />weren\'t possible<br /><span class="accent-line">until now.</span>',
+        'hero-sub': 'We combine real-world filmmaking craft with the latest AI cinematic tools — to create brand films, commercials, and campaign content that looks like a Hollywood production, without the Hollywood budget.',
+        'btn-primary': 'Start a project',
+        'btn-ghost': 'See what we make →',
+        'stat1-label': 'hybrid production — cinematic AI visuals combined with real-world filming for a look nothing else can match',
+        'stat2-num': 'Film background',
+        'stat2-label': 'years of real filmmaking craft behind every frame',
+        'stat3-num': 'Any scale',
+        'stat3-label': 'from social reels to full brand campaigns',
+        'features-kicker': 'What we make',
+        'features-h2': 'Every format your brand<br />needs to own the screen',
+        'f01-h': 'Brand Films',
+        'f01-p': 'The definitive visual story of who you are. Cinematic, emotive, and built to last — combining AI-generated sequences with real footage to create something genuinely unforgettable.',
+        'f02-h': 'AI Commercials',
+        'f02-p': 'TV and digital commercials produced at a fraction of traditional cost. We use Seedance AI to generate cinematic footage — then direct, grade, and deliver a finished commercial built entirely around your brand.',
+        'f03-h': 'Social & Campaign Content',
+        'f03-p': 'Reels, trailers, teasers, and campaign launches — produced with the same cinematic care as a full brand film, just in a shorter format. Volume and quality, both.',
+        'f04-h': 'Hybrid Production',
+        'f04-p': 'Real interviews, real locations, real people — elevated with AI cinematics, motion design, and generated environments woven seamlessly into the edit. The best of both worlds.',
+        'why-kicker': 'How we work',
+        'why-h2': 'Filmmaking instincts. AI superpowers.',
+        'why-p1': 'Most AI video tools produce content that looks like AI video. The reason is simple: the people using them don\'t have a filmmaker\'s eye. They know the tools but not the craft.',
+        'why-p2': 'We come from the opposite direction. <strong>The craft came first.</strong> Years of understanding light, movement, pacing, and storytelling — and now those instincts are applied to a completely new generation of tools that can generate worlds, characters, and shots that were physically impossible to capture before.',
+        'why-p3': 'The result is brand content that feels cinematic and intentional — not generated. The AI handles scale and spectacle. We handle soul.',
+        'why-quote': '"The brands winning on screen right now aren\'t the ones with the biggest production budgets. They\'re the ones who understand <strong>story first, technology second</strong> — and who found a way to make both work together."',
+        'ac1-label': 'AI Cinematics',
+        'ac1-p': 'Sora, Runway, Kling, and beyond — we use the tools that are right for the shot, not the ones that are easiest.',
+        'ac2-label': 'Real Filmmaking',
+        'ac2-p': 'Cameras, locations, talent, direction — the physical production side handled with proper craft and care.',
+        'ac3-label': 'Edit & Post',
+        'ac3-p': 'Colour, sound design, music, and pacing — the finishing that turns footage into a film.',
+        'ac4-label': 'Strategy',
+        'ac4-p': 'We think about where the content lives and what it needs to do — not just how it looks.',
+        'cta-h2': 'Ready to make something?',
+        'cta-p': 'Tell us about your brand and what you want to say. We\'ll show you what\'s possible with the tools we have right now.',
+        'cta-btn': 'Get in touch →',
+        'footer-tag': 'Full spectrum. Fully digital.',
+      },
+      da: {
+        'nav-digital-worlds': 'Digitale Verdener',
+        'nav-web3': 'Web3 Rådgivning',
+        'nav-cta': 'Kontakt os',
+        'hero-h1': 'Brandfilm der<br />ikke var mulige<br /><span class="accent-line">indtil nu.</span>',
+        'hero-sub': 'Vi kombinerer rigtig filmhåndværk med de nyeste AI-cinematiske værktøjer — for at skabe brandfilm, reklamer og kampagneindhold der ligner en Hollywood-produktion, uden Hollywood-budgettet.',
+        'btn-primary': 'Start et projekt',
+        'btn-ghost': 'Se hvad vi laver →',
+        'stat1-label': 'hybrid produktion — filmiske AI-visuals kombineret med rigtig optagelse for et look intet andet kan matche',
+        'stat2-num': 'Filmkendskab',
+        'stat2-label': 'år med rigtig filmhåndværk bag hvert billede',
+        'stat3-num': 'Enhver skala',
+        'stat3-label': 'fra sociale reels til fulde brandkampagner',
+        'features-kicker': 'Hvad vi laver',
+        'features-h2': 'Alle formater dit brand<br />behøver for at eje skærmen',
+        'f01-h': 'Brandfilm',
+        'f01-p': 'Den definitive visuelle fortælling om hvem du er. Filmisk, følelsesmæssig og bygget til at holde — kombinerer AI-genererede sekvenser med rigtige optagelser for at skabe noget genuint uforglemmelig.',
+        'f02-h': 'AI-reklamer',
+        'f02-p': 'TV- og digitale reklamer produceret til en brøkdel af den traditionelle pris. Vi bruger Seedance AI til at generere filmisk footage — derefter director, grade og leverer vi en færdig reklame bygget helt om dit brand.',
+        'f03-h': 'Sociale og Kampagneindhold',
+        'f03-p': 'Reels, trailere, teasers og kampagnelanceringer — produceret med samme filmiske omhu som en fuld brandfilm, bare i kortere format. Volumen og kvalitet, begge dele.',
+        'f04-h': 'Hybrid Produktion',
+        'f04-p': 'Rigtige interviews, rigtige steder, rigtige mennesker — løftet med AI-cinematics, motion design og genererede miljøer vævet problemfrit ind i klipningen. Det bedste fra begge verdener.',
+        'why-kicker': 'Sådan arbejder vi',
+        'why-h2': 'Filmintuition. AI-superkræfter.',
+        'why-p1': 'De fleste AI-videoværktøjer producerer indhold der ligner AI-video. Grunden er enkel: de mennesker der bruger dem har ikke en filmmagers øje. De kender værktøjerne men ikke håndværket.',
+        'why-p2': 'Vi kommer fra den modsatte retning. <strong>Håndværket kom først.</strong> År med forståelse af lys, bevægelse, tempo og storytelling — og nu anvendes disse instinkter på en helt ny generation af værktøjer der kan generere verdener, karakterer og shots der var fysisk umulige at optage tidligere.',
+        'why-p3': 'Resultatet er brandindhold der føles filmisk og intentionelt — ikke genereret. AI håndterer skala og spektakel. Vi håndterer sjælen.',
+        'why-quote': '"De brands der vinder på skærmen lige nu er ikke dem med de største produktionsbudgetter. Det er dem der forstår <strong>story først, teknologi næst</strong> — og som fandt en måde at få begge til at arbejde sammen."',
+        'ac1-label': 'AI-Cinematics',
+        'ac1-p': 'Sora, Runway, Kling og mere til — vi bruger de værktøjer der er rigtige til shottet, ikke dem der er nemmest.',
+        'ac2-label': 'Rigtig Filmproduktion',
+        'ac2-p': 'Kameraer, lokationer, talent, instruktion — den fysiske produktionsside håndteret med ordentligt håndværk og omhu.',
+        'ac3-label': 'Klipning & Post',
+        'ac3-p': 'Farve, lyddesign, musik og tempo — the finishing der forvandler footage til en film.',
+        'ac4-label': 'Strategi',
+        'ac4-p': 'Vi tænker over hvor indholdet lever og hvad det skal gøre — ikke bare hvordan det ser ud.',
+        'cta-h2': 'Klar til at lave noget?',
+        'cta-p': 'Fortæl os om dit brand og hvad du vil sige. Vi viser dig hvad der er muligt med de værktøjer vi har lige nu.',
+        'cta-btn': 'Kontakt os →',
+        'footer-tag': 'Fuldt spektrum. Fuldt digitalt.',
+      }
+    };
+
+    function applyLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang]?.[key] !== undefined) el.textContent = translations[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (translations[lang]?.[key] !== undefined) el.innerHTML = translations[lang][key];
+      });
+      document.documentElement.lang = lang;
+      const btn = document.getElementById('lang-toggle');
+      if (btn) btn.textContent = lang === 'en' ? 'DA' : 'EN';
+    }
+
+    function toggleLang() {
+      const current = localStorage.getItem('vr-lang') || 'en';
+      const next = current === 'en' ? 'da' : 'en';
+      localStorage.setItem('vr-lang', next);
+      applyLanguage(next);
+    }
+
     function toggleTheme() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       if (isDark) {
@@ -614,6 +728,7 @@
     }
 
     updateToggle();
+    applyLanguage(localStorage.getItem('vr-lang') || 'en');
   </script>
 
 </body>

@@ -10,6 +10,8 @@
       if (localStorage.getItem('vr-theme') === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
       }
+      const lang = localStorage.getItem('vr-lang');
+      if (lang) document.documentElement.lang = lang;
     })();
   </script>
   <style>
@@ -128,6 +130,9 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      font-family: inherit;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
     .theme-toggle:hover { border-color: var(--text); color: var(--text); }
 
@@ -458,11 +463,12 @@
     <a href="index.html" class="vr-logo">Virtual Rainbow</a>
     <ul>
       <li><a href="streamline-ai.html">StreamlineAI</a></li>
-      <li><a href="digital-worlds.html">Digital Worlds</a></li>
-      <li><a href="web3-advisory.html">Web3 Advisory</a></li>
+      <li><a href="digital-worlds.html" data-i18n="nav-digital-worlds">Digital Worlds</a></li>
+      <li><a href="web3-advisory.html" data-i18n="nav-web3">Web3 Advisory</a></li>
       <li><a href="vr-studios.html">VR Studios</a></li>
-      <li><a href="#contact" class="nav-cta">Get in touch</a></li>
+      <li><a href="#contact" class="nav-cta" data-i18n="nav-cta">Get in touch</a></li>
       <li><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button></li>
+      <li><button class="theme-toggle" id="lang-toggle" onclick="toggleLang()" aria-label="Switch language">DA</button></li>
     </ul>
   </nav>
 
@@ -473,36 +479,36 @@
         <div class="breadcrumb">
           <a href="index.html">Virtual Rainbow</a>
           <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">Web3 Advisory</span>
+          <span class="breadcrumb-current" data-i18n="breadcrumb">Web3 Advisory</span>
         </div>
-        <h1>
+        <h1 data-i18n-html="hero-h1">
           Most of blockchain<br />
           doesn't apply to you.<br />
           <span class="accent-line">Let's find what does.</span>
         </h1>
-        <p class="hero-sub">
+        <p class="hero-sub" data-i18n="hero-sub">
           8 years deep in crypto, DeFi, NFTs, and Web3 — as a user, investor, and observer across
           every cycle. No product to sell. No build to pitch. Just honest clarity on where blockchain
           fits your business, and where it doesn't.
         </p>
         <div class="hero-actions">
-          <a href="#contact" class="btn-primary">Book a session</a>
-          <a href="#what-we-cover" class="btn-ghost">See what we cover →</a>
+          <a href="#contact" class="btn-primary" data-i18n="btn-primary">Book a session</a>
+          <a href="#what-we-cover" class="btn-ghost" data-i18n="btn-ghost">See what we cover →</a>
         </div>
       </div>
 
       <div class="hero-stats">
         <div class="hero-stat">
-          <div class="hero-stat-big">8 years</div>
-          <div class="hero-stat-label">inside the space — as a deep user, investor, and observer across every major cycle</div>
+          <div class="hero-stat-big" data-i18n="stat1-num">8 years</div>
+          <div class="hero-stat-label" data-i18n="stat1-label">inside the space — as a deep user, investor, and observer across every major cycle</div>
         </div>
         <div class="hero-stat">
           <span class="hero-stat-num">3+ cycles</span>
-          <span class="hero-stat-label">2017 · 2021 · 2024 — seen the full arc</span>
+          <span class="hero-stat-label" data-i18n="stat2-label">2017 · 2021 · 2024 — seen the full arc</span>
         </div>
         <div class="hero-stat">
-          <span class="hero-stat-num">Every layer</span>
-          <span class="hero-stat-label">DeFi · NFTs · DAOs · L1s · L2s · Gaming — across the full stack as a user and investor</span>
+          <span class="hero-stat-num" data-i18n="stat3-num">Every layer</span>
+          <span class="hero-stat-label" data-i18n="stat3-label">DeFi · NFTs · DAOs · L1s · L2s · Gaming — across the full stack as a user and investor</span>
         </div>
       </div>
     </div>
@@ -511,30 +517,30 @@
   <!-- WHAT WE COVER -->
   <div class="features" id="what-we-cover">
     <div class="features-header">
-      <p class="section-kicker">What we cover</p>
-      <h2>The questions every business<br />is quietly asking about crypto</h2>
+      <p class="section-kicker" data-i18n="features-kicker">What we cover</p>
+      <h2 data-i18n-html="features-h2">The questions every business<br />is quietly asking about crypto</h2>
     </div>
 
     <div class="features-list">
       <div class="feature">
         <p class="feature-num">01</p>
-        <h3>Strategy Sessions</h3>
-        <p>Is blockchain actually relevant to your business? We give you an honest answer — not a sales pitch. We map your specific use case against what on-chain technology genuinely solves today.</p>
+        <h3 data-i18n="f01-h">Strategy Sessions</h3>
+        <p data-i18n="f01-p">Is blockchain actually relevant to your business? We give you an honest answer — not a sales pitch. We map your specific use case against what on-chain technology genuinely solves today.</p>
       </div>
       <div class="feature">
         <p class="feature-num">02</p>
-        <h3>Leadership Workshops</h3>
-        <p>Get your team aligned on what crypto and Web3 actually are, what's hype, and what decisions your business may face in the next 2–5 years. Translated into plain language, not jargon.</p>
+        <h3 data-i18n="f02-h">Leadership Workshops</h3>
+        <p data-i18n="f02-p">Get your team aligned on what crypto and Web3 actually are, what's hype, and what decisions your business may face in the next 2–5 years. Translated into plain language, not jargon.</p>
       </div>
       <div class="feature">
         <p class="feature-num">03</p>
-        <h3>Hype vs. Reality Audit</h3>
-        <p>Got a blockchain idea, a vendor pitch, or a proposal from your board? Bring it to us. We'll tell you what's real, what's technically feasible, and what the actual risks are — before you commit.</p>
+        <h3 data-i18n="f03-h">Hype vs. Reality Audit</h3>
+        <p data-i18n="f03-p">Got a blockchain idea, a vendor pitch, or a proposal from your board? Bring it to us. We'll tell you what's real, what's technically feasible, and what the actual risks are — before you commit.</p>
       </div>
       <div class="feature">
         <p class="feature-num">04</p>
-        <h3>Use Case Mapping</h3>
-        <p>Tokenisation. Loyalty programs. Payments. Supply chain. Digital ownership. We map where on-chain logic genuinely adds value in your industry — and what to watch that isn't ready yet.</p>
+        <h3 data-i18n="f04-h">Use Case Mapping</h3>
+        <p data-i18n="f04-p">Tokenisation. Loyalty programs. Payments. Supply chain. Digital ownership. We map where on-chain logic genuinely adds value in your industry — and what to watch that isn't ready yet.</p>
       </div>
     </div>
   </div>
@@ -543,30 +549,30 @@
   <div class="why" id="why">
     <div class="why-inner">
       <div class="why-text">
-        <p class="section-kicker">Why it works</p>
-        <h2 style="margin-bottom: 28px;">No product to push changes everything</h2>
-        <p>Most blockchain consultants are selling you a build, a platform, or a token. Their advice points toward a product they profit from. Ours doesn't.</p>
-        <p>The insight we bring comes from 8 years as a <strong>deep user and observer</strong> — across DeFi protocols, NFT ecosystems, DAOs, L1s and L2s, gaming economies, and every major market cycle. We've watched what works, what fails, and what gets overhyped every single time.</p>
-        <div class="quote">
+        <p class="section-kicker" data-i18n="why-kicker">Why it works</p>
+        <h2 style="margin-bottom: 28px;" data-i18n="why-h2">No product to push changes everything</h2>
+        <p data-i18n="why-p1">Most blockchain consultants are selling you a build, a platform, or a token. Their advice points toward a product they profit from. Ours doesn't.</p>
+        <p data-i18n-html="why-p2">The insight we bring comes from 8 years as a <strong>deep user and observer</strong> — across DeFi protocols, NFT ecosystems, DAOs, L1s and L2s, gaming economies, and every major market cycle. We've watched what works, what fails, and what gets overhyped every single time.</p>
+        <div class="quote" data-i18n-html="why-quote">
           "Most businesses asking 'should we do blockchain?' are asking the wrong question. The right question is: <strong>what specific problem do you have, and is on-chain the best way to solve it?</strong> Usually the honest answer is 'not yet' — but recognising the moment when the fit is genuinely real — that's where the opportunity actually is."
         </div>
       </div>
       <div class="why-aside">
         <div class="aside-card">
-          <p class="aside-card-label">DeFi & Tokenisation</p>
-          <p>New financial primitives, programmable money, and tokenised assets — what's mature enough to build on today.</p>
+          <p class="aside-card-label" data-i18n="ac1-label">DeFi &amp; Tokenisation</p>
+          <p data-i18n="ac1-p">New financial primitives, programmable money, and tokenised assets — what's mature enough to build on today.</p>
         </div>
         <div class="aside-card">
-          <p class="aside-card-label">NFTs & Digital Ownership</p>
-          <p>Beyond the hype — where digital ownership models genuinely change the relationship between brands and customers.</p>
+          <p class="aside-card-label" data-i18n="ac2-label">NFTs &amp; Digital Ownership</p>
+          <p data-i18n="ac2-p">Beyond the hype — where digital ownership models genuinely change the relationship between brands and customers.</p>
         </div>
         <div class="aside-card">
-          <p class="aside-card-label">DAOs & Governance</p>
-          <p>Decentralised coordination, community ownership, and on-chain governance — and what they actually look like in practice.</p>
+          <p class="aside-card-label" data-i18n="ac3-label">DAOs &amp; Governance</p>
+          <p data-i18n="ac3-p">Decentralised coordination, community ownership, and on-chain governance — and what they actually look like in practice.</p>
         </div>
         <div class="aside-card">
-          <p class="aside-card-label">Chains & Infrastructure</p>
-          <p>Which blockchain to build on, which wallets matter, which protocols are safe bets vs. experiments.</p>
+          <p class="aside-card-label" data-i18n="ac4-label">Chains &amp; Infrastructure</p>
+          <p data-i18n="ac4-p">Which blockchain to build on, which wallets matter, which protocols are safe bets vs. experiments.</p>
         </div>
       </div>
     </div>
@@ -576,24 +582,132 @@
   <div style="border-top: 1px solid var(--border);">
     <div class="cta" id="contact">
       <div>
-        <h2>Ready to cut through the noise?</h2>
-        <p>Tell us where blockchain has come up for your business — a pitch, an idea, a board question. We'll give you a straight answer.</p>
+        <h2 data-i18n="cta-h2">Ready to cut through the noise?</h2>
+        <p data-i18n="cta-p">Tell us where blockchain has come up for your business — a pitch, an idea, a board question. We'll give you a straight answer.</p>
       </div>
       <div class="cta-action">
-        <a href="mailto:hello@virtualrainbow.xyz" class="btn-primary" style="font-size:1rem; padding: 16px 36px;">Get in touch →</a>
+        <a href="mailto:hello@virtualrainbow.xyz" class="btn-primary" style="font-size:1rem; padding: 16px 36px;" data-i18n="cta-btn">Get in touch →</a>
       </div>
     </div>
   </div>
 
   <div class="footer">
     <a href="index.html" class="footer-logo">Virtual Rainbow</a>
-    <span>Full spectrum. Fully digital.</span>
+    <span data-i18n="footer-tag">Full spectrum. Fully digital.</span>
     <span>© 2026 Virtual Rainbow</span>
   </div>
 
   <div class="rainbow-bar"></div>
 
   <script>
+    const translations = {
+      en: {
+        'nav-digital-worlds': 'Digital Worlds',
+        'nav-web3': 'Web3 Advisory',
+        'nav-cta': 'Get in touch',
+        'breadcrumb': 'Web3 Advisory',
+        'hero-h1': 'Most of blockchain<br />doesn\'t apply to you.<br /><span class="accent-line">Let\'s find what does.</span>',
+        'hero-sub': '8 years deep in crypto, DeFi, NFTs, and Web3 — as a user, investor, and observer across every cycle. No product to sell. No build to pitch. Just honest clarity on where blockchain fits your business, and where it doesn\'t.',
+        'btn-primary': 'Book a session',
+        'btn-ghost': 'See what we cover →',
+        'stat1-num': '8 years',
+        'stat1-label': 'inside the space — as a deep user, investor, and observer across every major cycle',
+        'stat2-label': '2017 · 2021 · 2024 — seen the full arc',
+        'stat3-num': 'Every layer',
+        'stat3-label': 'DeFi · NFTs · DAOs · L1s · L2s · Gaming — across the full stack as a user and investor',
+        'features-kicker': 'What we cover',
+        'features-h2': 'The questions every business<br />is quietly asking about crypto',
+        'f01-h': 'Strategy Sessions',
+        'f01-p': 'Is blockchain actually relevant to your business? We give you an honest answer — not a sales pitch. We map your specific use case against what on-chain technology genuinely solves today.',
+        'f02-h': 'Leadership Workshops',
+        'f02-p': 'Get your team aligned on what crypto and Web3 actually are, what\'s hype, and what decisions your business may face in the next 2–5 years. Translated into plain language, not jargon.',
+        'f03-h': 'Hype vs. Reality Audit',
+        'f03-p': 'Got a blockchain idea, a vendor pitch, or a proposal from your board? Bring it to us. We\'ll tell you what\'s real, what\'s technically feasible, and what the actual risks are — before you commit.',
+        'f04-h': 'Use Case Mapping',
+        'f04-p': 'Tokenisation. Loyalty programs. Payments. Supply chain. Digital ownership. We map where on-chain logic genuinely adds value in your industry — and what to watch that isn\'t ready yet.',
+        'why-kicker': 'Why it works',
+        'why-h2': 'No product to push changes everything',
+        'why-p1': 'Most blockchain consultants are selling you a build, a platform, or a token. Their advice points toward a product they profit from. Ours doesn\'t.',
+        'why-p2': 'The insight we bring comes from 8 years as a <strong>deep user and observer</strong> — across DeFi protocols, NFT ecosystems, DAOs, L1s and L2s, gaming economies, and every major market cycle. We\'ve watched what works, what fails, and what gets overhyped every single time.',
+        'why-quote': '"Most businesses asking \'should we do blockchain?\' are asking the wrong question. The right question is: <strong>what specific problem do you have, and is on-chain the best way to solve it?</strong> Usually the honest answer is \'not yet\' — but recognising the moment when the fit is genuinely real — that\'s where the opportunity actually is."',
+        'ac1-label': 'DeFi & Tokenisation',
+        'ac1-p': 'New financial primitives, programmable money, and tokenised assets — what\'s mature enough to build on today.',
+        'ac2-label': 'NFTs & Digital Ownership',
+        'ac2-p': 'Beyond the hype — where digital ownership models genuinely change the relationship between brands and customers.',
+        'ac3-label': 'DAOs & Governance',
+        'ac3-p': 'Decentralised coordination, community ownership, and on-chain governance — and what they actually look like in practice.',
+        'ac4-label': 'Chains & Infrastructure',
+        'ac4-p': 'Which blockchain to build on, which wallets matter, which protocols are safe bets vs. experiments.',
+        'cta-h2': 'Ready to cut through the noise?',
+        'cta-p': 'Tell us where blockchain has come up for your business — a pitch, an idea, a board question. We\'ll give you a straight answer.',
+        'cta-btn': 'Get in touch →',
+        'footer-tag': 'Full spectrum. Fully digital.',
+      },
+      da: {
+        'nav-digital-worlds': 'Digitale Verdener',
+        'nav-web3': 'Web3 Rådgivning',
+        'nav-cta': 'Kontakt os',
+        'breadcrumb': 'Web3 Rådgivning',
+        'hero-h1': 'Det meste af blockchain<br />gælder ikke for dig.<br /><span class="accent-line">Lad os finde det der gør.</span>',
+        'hero-sub': '8 år dybt i crypto, DeFi, NFTs og Web3 — som bruger, investor og observatør på tværs af alle cyklusser. Intet produkt at sælge. Intet byggeprojekt at pitche. Bare ærlig klarhed om hvor blockchain passer til din virksomhed, og hvor det ikke gør.',
+        'btn-primary': 'Book en session',
+        'btn-ghost': 'Se hvad vi dækker →',
+        'stat1-num': '8 år',
+        'stat1-label': 'inde i rummet — som dyb bruger, investor og observatør på tværs af alle større cyklusser',
+        'stat2-label': '2017 · 2021 · 2024 — set hele buen',
+        'stat3-num': 'Alle lag',
+        'stat3-label': 'DeFi · NFTs · DAOs · L1s · L2s · Gaming — på tværs af hele stakken som bruger og investor',
+        'features-kicker': 'Hvad vi dækker',
+        'features-h2': 'Spørgsmålene enhver virksomhed<br />stille spørger om crypto',
+        'f01-h': 'Strategisessioner',
+        'f01-p': 'Er blockchain faktisk relevant for din virksomhed? Vi giver dig et ærligt svar — ikke et salgspitch. Vi kortlægger dit specifikke use case mod hvad on-chain teknologi reelt løser i dag.',
+        'f02-h': 'Lederworkshops',
+        'f02-p': 'Få dit team på linje med hvad crypto og Web3 faktisk er, hvad der er hype, og hvilke beslutninger din virksomhed kan stå over for de næste 2–5 år. Oversat til almindeligt sprog, ikke jargon.',
+        'f03-h': 'Hype vs. Virkelighed Audit',
+        'f03-p': 'Har du en blockchain-idé, et leverandørpitch eller et forslag fra din bestyrelse? Bring det til os. Vi fortæller dig hvad der er reelt, hvad der er teknisk gennemførligt, og hvad de faktiske risici er — inden du forpligter dig.',
+        'f04-h': 'Use Case Kortlægning',
+        'f04-p': 'Tokenisering. Loyalitetsprogrammer. Betalinger. Forsyningskæde. Digitalt ejerskab. Vi kortlægger hvor on-chain logik reelt tilføjer værdi i din branche — og hvad der endnu ikke er klar.',
+        'why-kicker': 'Derfor virker det',
+        'why-h2': 'Ingen produkt at sælge ændrer alt',
+        'why-p1': 'De fleste blockchain-konsulenter sælger dig et byggeprojekt, en platform eller et token. Deres råd peger mod et produkt de tjener på. Vores gør ikke.',
+        'why-p2': 'Den indsigt vi bringer kommer fra 8 år som <strong>dyb bruger og observatør</strong> — på tværs af DeFi-protokoller, NFT-økosystemer, DAO\'er, L1s og L2s, gaming-økonomier og alle større markedscyklusser. Vi har set hvad der virker, hvad der fejler, og hvad der overhypes hver eneste gang.',
+        'why-quote': '"De fleste virksomheder der spørger \'skal vi gøre blockchain?\' stiller det forkerte spørgsmål. Det rigtige spørgsmål er: <strong>Hvilket specifikt problem har du, og er on-chain den bedste måde at løse det på?</strong> Normalt er det ærlige svar \'ikke endnu\' — men at erkende øjeblikket når pasformen er genuint reel — dér er muligheden faktisk."',
+        'ac1-label': 'DeFi & Tokenisering',
+        'ac1-p': 'Nye finansielle primitiver, programmerbare penge og tokeniserede assets — hvad der er modent nok til at bygge på i dag.',
+        'ac2-label': 'NFTs & Digitalt Ejerskab',
+        'ac2-p': 'Ud over hypen — hvor digitale ejerskabsmodeller genuint ændrer forholdet mellem brands og kunder.',
+        'ac3-label': 'DAO\'er & Governance',
+        'ac3-p': 'Decentraliseret koordination, community-ejerskab og on-chain governance — og hvad de faktisk ser ud som i praksis.',
+        'ac4-label': 'Kæder & Infrastruktur',
+        'ac4-p': 'Hvilken blockchain at bygge på, hvilke wallets der betyder noget, hvilke protokoller er sikre valg vs. eksperimenter.',
+        'cta-h2': 'Klar til at skære igennem støjen?',
+        'cta-p': 'Fortæl os hvor blockchain er dukket op for din virksomhed — et pitch, en idé, et bestyrelsespørgsmål. Vi giver dig et direkte svar.',
+        'cta-btn': 'Kontakt os →',
+        'footer-tag': 'Fuldt spektrum. Fuldt digitalt.',
+      }
+    };
+
+    function applyLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang]?.[key] !== undefined) el.textContent = translations[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (translations[lang]?.[key] !== undefined) el.innerHTML = translations[lang][key];
+      });
+      document.documentElement.lang = lang;
+      const btn = document.getElementById('lang-toggle');
+      if (btn) btn.textContent = lang === 'en' ? 'DA' : 'EN';
+    }
+
+    function toggleLang() {
+      const current = localStorage.getItem('vr-lang') || 'en';
+      const next = current === 'en' ? 'da' : 'en';
+      localStorage.setItem('vr-lang', next);
+      applyLanguage(next);
+    }
+
     function toggleTheme() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       if (isDark) {
@@ -613,6 +727,7 @@
     }
 
     updateToggle();
+    applyLanguage(localStorage.getItem('vr-lang') || 'en');
   </script>
 
 </body>
