@@ -50,6 +50,15 @@
       --lane3-cta-hover-bg: #c97000;
       --lane3-cta-hover-text: #fff;
       --lane3-accent-bar: linear-gradient(90deg, #ff9f2f, #ff2fa0);
+      --lane4: #b8006a;
+      --lane4-text: #b8006a;
+      --lane4-tag-bg: rgba(184,0,106,0.1);
+      --lane4-shadow: rgba(255,47,160,0.1);
+      --lane4-shadow-hover: rgba(255,47,160,0.22);
+      --lane4-cta-bg: rgba(184,0,106,0.1);
+      --lane4-cta-hover-bg: #b8006a;
+      --lane4-cta-hover-text: #fff;
+      --lane4-accent-bar: linear-gradient(90deg, #ff2fa0, #6c22ff);
       --badge-color: #6c22ff;
       --badge-line: rgba(108,34,255,0.4);
       --nav-cta-bg: #6c22ff;
@@ -92,6 +101,15 @@
       --lane3-cta-hover-bg: #ff9f2f;
       --lane3-cta-hover-text: #080810;
       --lane3-accent-bar: linear-gradient(90deg, #ff9f2f, #ff2fa0);
+      --lane4: #ff2fa0;
+      --lane4-text: #ff2fa0;
+      --lane4-tag-bg: rgba(255,47,160,0.15);
+      --lane4-shadow: rgba(255,47,160,0.08);
+      --lane4-shadow-hover: rgba(255,47,160,0.22);
+      --lane4-cta-bg: rgba(255,47,160,0.15);
+      --lane4-cta-hover-bg: #ff2fa0;
+      --lane4-cta-hover-text: #080810;
+      --lane4-accent-bar: linear-gradient(90deg, #ff2fa0, #7b2fff);
       --badge-color: #a97dff;
       --badge-line: rgba(123,47,255,0.5);
       --nav-cta-bg: #ffffff;
@@ -140,7 +158,7 @@
     nav ul {
       list-style: none;
       display: flex;
-      gap: 32px;
+      gap: 28px;
       align-items: center;
     }
 
@@ -240,7 +258,7 @@
     .hero-sub {
       font-size: 1.1rem;
       color: var(--muted);
-      max-width: 520px;
+      max-width: 560px;
       margin: 0 auto 52px;
       line-height: 1.7;
     }
@@ -253,33 +271,22 @@
       margin-bottom: 52px;
     }
 
-    .divider-line {
-      width: 60px;
-      height: 2px;
-      background: var(--border);
-      border-radius: 2px;
-    }
+    .divider-line { width: 60px; height: 2px; background: var(--border); border-radius: 2px; }
+    .divider-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--vr-gradient); }
 
-    .divider-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--vr-gradient);
-    }
-
-    /* LANES */
+    /* LANES — 2x2 grid */
     .lanes {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 20px;
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 0 40px 100px;
     }
 
     .lane {
       position: relative;
-      padding: 44px 36px;
+      padding: 48px 42px;
       border-radius: 20px;
       cursor: pointer;
       transition: transform 0.25s, box-shadow 0.25s, background 0.3s;
@@ -293,11 +300,13 @@
     .lane-1 { background: var(--card-bg); box-shadow: 0 2px 24px var(--lane1-shadow); }
     .lane-2 { background: var(--card-bg); box-shadow: 0 2px 24px var(--lane2-shadow); }
     .lane-3 { background: var(--card-bg); box-shadow: 0 2px 24px var(--lane3-shadow); }
+    .lane-4 { background: var(--card-bg); box-shadow: 0 2px 24px var(--lane4-shadow); }
 
     .lane:hover { transform: translateY(-4px); }
     .lane-1:hover { box-shadow: 0 12px 48px var(--lane1-shadow-hover); }
     .lane-2:hover { box-shadow: 0 12px 48px var(--lane2-shadow-hover); }
     .lane-3:hover { box-shadow: 0 12px 48px var(--lane3-shadow-hover); }
+    .lane-4:hover { box-shadow: 0 12px 48px var(--lane4-shadow-hover); }
 
     .lane::before {
       content: '';
@@ -309,6 +318,7 @@
     .lane-1::before { background: var(--lane1-accent-bar); }
     .lane-2::before { background: var(--lane2-accent-bar); }
     .lane-3::before { background: var(--lane3-accent-bar); }
+    .lane-4::before { background: var(--lane4-accent-bar); }
 
     .lane-tag {
       display: inline-block;
@@ -324,9 +334,10 @@
     .lane-1 .lane-tag { background: var(--lane1-tag-bg); color: var(--lane1-text); border: 1px solid rgba(123,47,255,0.2); }
     .lane-2 .lane-tag { background: var(--lane2-tag-bg); color: var(--lane2-text); border: 1px solid rgba(47,255,176,0.2); }
     .lane-3 .lane-tag { background: var(--lane3-tag-bg); color: var(--lane3-text); border: 1px solid rgba(255,159,47,0.2); }
+    .lane-4 .lane-tag { background: var(--lane4-tag-bg); color: var(--lane4-text); border: 1px solid rgba(255,47,160,0.2); }
 
     .lane h2 {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       margin-bottom: 12px;
@@ -337,19 +348,20 @@
     .lane p {
       color: var(--muted);
       line-height: 1.7;
-      font-size: 0.9rem;
+      font-size: 0.925rem;
       margin-bottom: 24px;
     }
 
     .lane-features {
       list-style: none;
       margin-bottom: 32px;
+      flex: 1;
     }
 
     .lane-features li {
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       color: var(--muted);
-      padding: 8px 0;
+      padding: 9px 0;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
@@ -367,6 +379,7 @@
     .lane-1 .lane-features li::before { background: var(--lane1); }
     .lane-2 .lane-features li::before { background: var(--lane2); }
     .lane-3 .lane-features li::before { background: var(--lane3); }
+    .lane-4 .lane-features li::before { background: var(--lane4); }
 
     .lane-cta {
       display: inline-flex;
@@ -378,14 +391,17 @@
       padding: 10px 20px;
       border-radius: 8px;
       transition: background 0.2s, color 0.2s;
+      margin-top: auto;
     }
 
     .lane-1 .lane-cta { background: var(--lane1-cta-bg); color: var(--lane1-text); }
     .lane-2 .lane-cta { background: var(--lane2-cta-bg); color: var(--lane2-text); }
     .lane-3 .lane-cta { background: var(--lane3-cta-bg); color: var(--lane3-text); }
-    .lane-1 .lane-cta:hover { background: var(--lane1-cta-hover-bg); color: var(--lane1-cta-hover-text); }
-    .lane-2 .lane-cta:hover { background: var(--lane2-cta-hover-bg); color: var(--lane2-cta-hover-text); }
-    .lane-3 .lane-cta:hover { background: var(--lane3-cta-hover-bg); color: var(--lane3-cta-hover-text); }
+    .lane-4 .lane-cta { background: var(--lane4-cta-bg); color: var(--lane4-text); }
+    .lane-1:hover .lane-cta { background: var(--lane1-cta-hover-bg); color: var(--lane1-cta-hover-text); }
+    .lane-2:hover .lane-cta { background: var(--lane2-cta-hover-bg); color: var(--lane2-cta-hover-text); }
+    .lane-3:hover .lane-cta { background: var(--lane3-cta-hover-bg); color: var(--lane3-cta-hover-text); }
+    .lane-4:hover .lane-cta { background: var(--lane4-cta-hover-bg); color: var(--lane4-cta-hover-text); }
 
     .lane-icon { font-size: 1.9rem; margin-bottom: 16px; display: block; }
 
@@ -420,7 +436,7 @@
       <li><a href="streamline-ai.html">StreamlineAI</a></li>
       <li><a href="digital-worlds.html">Digital Worlds</a></li>
       <li><a href="web3-advisory.html">Web3 Advisory</a></li>
-      <li><a href="#">About</a></li>
+      <li><a href="vr-studios.html">VR Studios</a></li>
       <li><a href="#" class="nav-cta">Get in touch</a></li>
       <li><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button></li>
     </ul>
@@ -432,8 +448,8 @@
       Building across the<br /><span class="gradient">full digital spectrum</span>
     </h1>
     <p class="hero-sub">
-      We build AI-powered systems, immersive digital worlds, and blockchain strategies —
-      for businesses ready to operate, expand, and lead across every layer of the digital future.
+      AI automation, immersive digital worlds, blockchain strategy, and cinematic brand films —
+      built for businesses ready to lead across every layer of the digital future.
     </p>
     <div class="divider">
       <div class="divider-line"></div>
@@ -483,8 +499,8 @@
       <span class="lane-tag">Web3 Advisory</span>
       <h2>Navigate blockchain before you build on it</h2>
       <p>
-        8 years deep in crypto, DeFi, NFTs, and Web3 — no product to push,
-        no agenda. Just clarity on what's real, what's noise, and where your business actually fits.
+        8 years deep in crypto, DeFi, NFTs, and Web3 — no agenda.
+        Just clarity on what's real, what's noise, and where your business actually fits.
       </p>
       <ul class="lane-features">
         <li>Is blockchain relevant to your business — honest answer</li>
@@ -493,6 +509,23 @@
         <li>Vendor & partner selection guidance</li>
       </ul>
       <span class="lane-cta">Explore Web3 Advisory →</span>
+    </a>
+
+    <a href="vr-studios.html" class="lane lane-4">
+      <span class="lane-icon">🎬</span>
+      <span class="lane-tag">VR Studios</span>
+      <h2>Brand films and commercials, reimagined with AI</h2>
+      <p>
+        Cinematic storytelling powered by AI — combined with real-world filmmaking craft.
+        Brand videos, commercials, and campaign content that actually stops the scroll.
+      </p>
+      <ul class="lane-features">
+        <li>AI-generated cinematics & visual storytelling</li>
+        <li>Brand films and commercial production</li>
+        <li>Real + AI hybrid filmmaking</li>
+        <li>Social campaign content & reels</li>
+      </ul>
+      <span class="lane-cta">Explore VR Studios →</span>
     </a>
 
   </div>
