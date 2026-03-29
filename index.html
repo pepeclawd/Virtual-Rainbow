@@ -41,6 +41,15 @@
       --lane2-cta-hover-bg: #00c99b;
       --lane2-cta-hover-text: #fff;
       --lane2-accent-bar: linear-gradient(90deg, #2fffb0, #00c99b);
+      --lane3: #c97000;
+      --lane3-text: #c97000;
+      --lane3-tag-bg: rgba(201,112,0,0.1);
+      --lane3-shadow: rgba(255,159,47,0.1);
+      --lane3-shadow-hover: rgba(255,159,47,0.22);
+      --lane3-cta-bg: rgba(201,112,0,0.1);
+      --lane3-cta-hover-bg: #c97000;
+      --lane3-cta-hover-text: #fff;
+      --lane3-accent-bar: linear-gradient(90deg, #ff9f2f, #ff2fa0);
       --badge-color: #6c22ff;
       --badge-line: rgba(108,34,255,0.4);
       --nav-cta-bg: #6c22ff;
@@ -74,6 +83,15 @@
       --lane2-cta-hover-bg: #2fffb0;
       --lane2-cta-hover-text: #080810;
       --lane2-accent-bar: linear-gradient(90deg, #2fffb0, #ff9f2f);
+      --lane3: #ff9f2f;
+      --lane3-text: #ff9f2f;
+      --lane3-tag-bg: rgba(255,159,47,0.15);
+      --lane3-shadow: rgba(255,159,47,0.08);
+      --lane3-shadow-hover: rgba(255,159,47,0.2);
+      --lane3-cta-bg: rgba(255,159,47,0.15);
+      --lane3-cta-hover-bg: #ff9f2f;
+      --lane3-cta-hover-text: #080810;
+      --lane3-accent-bar: linear-gradient(90deg, #ff9f2f, #ff2fa0);
       --badge-color: #a97dff;
       --badge-line: rgba(123,47,255,0.5);
       --nav-cta-bg: #ffffff;
@@ -222,7 +240,7 @@
     .hero-sub {
       font-size: 1.1rem;
       color: var(--muted);
-      max-width: 480px;
+      max-width: 520px;
       margin: 0 auto 52px;
       line-height: 1.7;
     }
@@ -252,35 +270,30 @@
     /* LANES */
     .lanes {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      max-width: 1040px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 40px 100px;
     }
 
     .lane {
       position: relative;
-      padding: 48px 42px;
+      padding: 44px 36px;
       border-radius: 20px;
       cursor: pointer;
       transition: transform 0.25s, box-shadow 0.25s, background 0.3s;
       overflow: hidden;
     }
 
-    .lane-1 {
-      background: var(--card-bg);
-      box-shadow: 0 2px 24px var(--lane1-shadow);
-    }
-
-    .lane-2 {
-      background: var(--card-bg);
-      box-shadow: 0 2px 24px var(--lane2-shadow);
-    }
+    .lane-1 { background: var(--card-bg); box-shadow: 0 2px 24px var(--lane1-shadow); }
+    .lane-2 { background: var(--card-bg); box-shadow: 0 2px 24px var(--lane2-shadow); }
+    .lane-3 { background: var(--card-bg); box-shadow: 0 2px 24px var(--lane3-shadow); }
 
     .lane:hover { transform: translateY(-4px); }
     .lane-1:hover { box-shadow: 0 12px 48px var(--lane1-shadow-hover); }
     .lane-2:hover { box-shadow: 0 12px 48px var(--lane2-shadow-hover); }
+    .lane-3:hover { box-shadow: 0 12px 48px var(--lane3-shadow-hover); }
 
     .lane::before {
       content: '';
@@ -291,6 +304,7 @@
 
     .lane-1::before { background: var(--lane1-accent-bar); }
     .lane-2::before { background: var(--lane2-accent-bar); }
+    .lane-3::before { background: var(--lane3-accent-bar); }
 
     .lane-tag {
       display: inline-block;
@@ -299,27 +313,19 @@
       text-transform: uppercase;
       padding: 5px 12px;
       border-radius: 6px;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       font-weight: 700;
     }
 
-    .lane-1 .lane-tag {
-      background: var(--lane1-tag-bg);
-      color: var(--lane1-text);
-      border: 1px solid rgba(123,47,255,0.2);
-    }
-
-    .lane-2 .lane-tag {
-      background: var(--lane2-tag-bg);
-      color: var(--lane2-text);
-      border: 1px solid rgba(47,255,176,0.2);
-    }
+    .lane-1 .lane-tag { background: var(--lane1-tag-bg); color: var(--lane1-text); border: 1px solid rgba(123,47,255,0.2); }
+    .lane-2 .lane-tag { background: var(--lane2-tag-bg); color: var(--lane2-text); border: 1px solid rgba(47,255,176,0.2); }
+    .lane-3 .lane-tag { background: var(--lane3-tag-bg); color: var(--lane3-text); border: 1px solid rgba(255,159,47,0.2); }
 
     .lane h2 {
-      font-size: 1.7rem;
+      font-size: 1.5rem;
       font-weight: 700;
       letter-spacing: -0.02em;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       line-height: 1.2;
       color: var(--text);
     }
@@ -327,19 +333,19 @@
     .lane p {
       color: var(--muted);
       line-height: 1.7;
-      font-size: 0.925rem;
-      margin-bottom: 28px;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
     }
 
     .lane-features {
       list-style: none;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
 
     .lane-features li {
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       color: var(--muted);
-      padding: 9px 0;
+      padding: 8px 0;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
@@ -356,6 +362,7 @@
 
     .lane-1 .lane-features li::before { background: var(--lane1); }
     .lane-2 .lane-features li::before { background: var(--lane2); }
+    .lane-3 .lane-features li::before { background: var(--lane3); }
 
     .lane-cta {
       display: inline-flex;
@@ -364,17 +371,19 @@
       font-size: 0.875rem;
       font-weight: 700;
       text-decoration: none;
-      padding: 10px 22px;
+      padding: 10px 20px;
       border-radius: 8px;
       transition: background 0.2s, color 0.2s;
     }
 
     .lane-1 .lane-cta { background: var(--lane1-cta-bg); color: var(--lane1-text); }
     .lane-2 .lane-cta { background: var(--lane2-cta-bg); color: var(--lane2-text); }
+    .lane-3 .lane-cta { background: var(--lane3-cta-bg); color: var(--lane3-text); }
     .lane-1 .lane-cta:hover { background: var(--lane1-cta-hover-bg); color: var(--lane1-cta-hover-text); }
     .lane-2 .lane-cta:hover { background: var(--lane2-cta-hover-bg); color: var(--lane2-cta-hover-text); }
+    .lane-3 .lane-cta:hover { background: var(--lane3-cta-hover-bg); color: var(--lane3-cta-hover-text); }
 
-    .lane-icon { font-size: 2rem; margin-bottom: 18px; display: block; }
+    .lane-icon { font-size: 1.9rem; margin-bottom: 16px; display: block; }
 
     /* FOOTER */
     .footer-strip {
@@ -389,7 +398,7 @@
 
     .footer-strip span { font-size: 0.8rem; color: var(--muted); }
 
-    @media (max-width: 768px) {
+    @media (max-width: 960px) {
       nav { padding: 18px 24px; }
       nav ul { display: none; }
       .hero { padding: 72px 24px 52px; }
@@ -406,6 +415,7 @@
     <ul>
       <li><a href="streamline-ai.html">StreamlineAI</a></li>
       <li><a href="digital-worlds.html">Digital Worlds</a></li>
+      <li><a href="web3-advisory.html">Web3 Advisory</a></li>
       <li><a href="#">About</a></li>
       <li><a href="#" class="nav-cta">Get in touch</a></li>
       <li><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button></li>
@@ -418,8 +428,8 @@
       Building across the<br /><span class="gradient">full digital spectrum</span>
     </h1>
     <p class="hero-sub">
-      We build AI-powered systems and digital worlds —
-      for businesses ready to automate, and brands ready to expand their digital presence in immersive worlds.
+      We build AI-powered systems, immersive digital worlds, and blockchain strategies —
+      for businesses ready to operate, expand, and lead across every layer of the digital future.
     </p>
     <div class="divider">
       <div class="divider-line"></div>
@@ -462,6 +472,23 @@
         <li>Otherside & open metaverse integrations</li>
       </ul>
       <a href="digital-worlds.html" class="lane-cta">Explore Digital Worlds →</a>
+    </div>
+
+    <div class="lane lane-3">
+      <span class="lane-icon">🔷</span>
+      <span class="lane-tag">Web3 Advisory</span>
+      <h2>Navigate blockchain before you build on it</h2>
+      <p>
+        8 years deep in crypto, DeFi, NFTs, and Web3 — no product to push,
+        no agenda. Just clarity on what's real, what's noise, and where your business actually fits.
+      </p>
+      <ul class="lane-features">
+        <li>Is blockchain relevant to your business — honest answer</li>
+        <li>Leadership workshops: hype vs. reality, decoded</li>
+        <li>Use case mapping across your industry</li>
+        <li>Vendor & partner selection guidance</li>
+      </ul>
+      <a href="web3-advisory.html" class="lane-cta">Explore Web3 Advisory →</a>
     </div>
 
   </div>
