@@ -3,83 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Virtual Rainbow</title>
+  <title>Virtual Rainbow — V2 Electric</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script>
-    (function() {
-      if (localStorage.getItem('vr-theme') === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      }
-    })();
-  </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --bg: #f5f4ff;
-      --card-bg: #ffffff;
+      --surface: #eeedfb;
       --border: rgba(80,60,200,0.12);
       --text: #0d0c1d;
       --muted: rgba(13,12,29,0.5);
-      --nav-bg: rgba(245,244,255,0.92);
       --vr-gradient: linear-gradient(135deg, #7b2fff, #ff2fa0, #ff9f2f, #2fffb0);
+      --accent1: #6c22ff;
+      --accent2: #ff3fa5;
       --lane1: #6c22ff;
-      --lane1-text: #6c22ff;
-      --lane1-tag-bg: rgba(108,34,255,0.1);
-      --lane1-shadow: rgba(108,34,255,0.1);
-      --lane1-shadow-hover: rgba(108,34,255,0.2);
-      --lane1-cta-bg: rgba(108,34,255,0.1);
-      --lane1-cta-hover-bg: #6c22ff;
-      --lane1-cta-hover-text: #fff;
-      --lane1-accent-bar: linear-gradient(90deg, #6c22ff, #ff2fa0);
       --lane2: #00c99b;
-      --lane2-text: #009b74;
-      --lane2-tag-bg: rgba(0,201,155,0.1);
-      --lane2-shadow: rgba(0,201,155,0.08);
-      --lane2-shadow-hover: rgba(0,201,155,0.2);
-      --lane2-cta-bg: rgba(0,201,155,0.1);
-      --lane2-cta-hover-bg: #00c99b;
-      --lane2-cta-hover-text: #fff;
-      --lane2-accent-bar: linear-gradient(90deg, #2fffb0, #00c99b);
-      --badge-color: #6c22ff;
-      --badge-line: rgba(108,34,255,0.4);
-      --nav-cta-bg: #6c22ff;
-      --nav-cta-text: #fff;
-      --footer-bg: #fff;
-      --hero-glow-opacity: 0;
-    }
-
-    [data-theme="dark"] {
-      --bg: #080810;
-      --card-bg: #0f0f1a;
-      --border: rgba(255,255,255,0.07);
-      --text: #f0f0ff;
-      --muted: rgba(240,240,255,0.45);
-      --nav-bg: rgba(8,8,16,0.88);
-      --lane1: #7b2fff;
-      --lane1-text: #a97dff;
-      --lane1-tag-bg: rgba(123,47,255,0.18);
-      --lane1-shadow: rgba(123,47,255,0.12);
-      --lane1-shadow-hover: rgba(123,47,255,0.25);
-      --lane1-cta-bg: rgba(123,47,255,0.18);
-      --lane1-cta-hover-bg: #7b2fff;
-      --lane1-cta-hover-text: #fff;
-      --lane1-accent-bar: linear-gradient(90deg, #7b2fff, #ff2fa0);
-      --lane2: #2fffb0;
-      --lane2-text: #2fffb0;
-      --lane2-tag-bg: rgba(47,255,176,0.1);
-      --lane2-shadow: rgba(47,255,176,0.07);
-      --lane2-shadow-hover: rgba(47,255,176,0.18);
-      --lane2-cta-bg: rgba(47,255,176,0.1);
-      --lane2-cta-hover-bg: #2fffb0;
-      --lane2-cta-hover-text: #080810;
-      --lane2-accent-bar: linear-gradient(90deg, #2fffb0, #ff9f2f);
-      --badge-color: #a97dff;
-      --badge-line: rgba(123,47,255,0.5);
-      --nav-cta-bg: #ffffff;
-      --nav-cta-text: #080810;
-      --footer-bg: transparent;
-      --hero-glow-opacity: 1;
     }
 
     body {
@@ -88,10 +27,7 @@
       font-family: 'Space Grotesk', system-ui, sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
-      transition: background 0.3s, color 0.3s;
     }
-
-    .rainbow-bar { height: 4px; background: var(--vr-gradient); }
 
     /* NAV */
     nav {
@@ -101,11 +37,10 @@
       padding: 22px 56px;
       position: sticky;
       top: 0;
-      background: var(--nav-bg);
+      background: rgba(245,244,255,0.9);
       backdrop-filter: blur(16px);
       z-index: 100;
       border-bottom: 1px solid var(--border);
-      transition: background 0.3s, border-color 0.3s;
     }
 
     .logo {
@@ -123,7 +58,6 @@
       list-style: none;
       display: flex;
       gap: 32px;
-      align-items: center;
     }
 
     nav ul a {
@@ -137,50 +71,19 @@
     nav ul a:hover { color: var(--text); }
 
     .nav-cta {
-      background: var(--nav-cta-bg) !important;
-      color: var(--nav-cta-text) !important;
-      -webkit-text-fill-color: var(--nav-cta-text) !important;
+      background: var(--accent1);
+      color: #fff !important;
+      -webkit-text-fill-color: #fff !important;
       padding: 8px 20px;
       border-radius: 8px;
       font-weight: 600;
-      transition: background 0.3s, color 0.3s;
     }
-
-    .theme-toggle {
-      background: none;
-      border: 1.5px solid var(--border);
-      color: var(--muted);
-      cursor: pointer;
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.2s, color 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .theme-toggle:hover { border-color: var(--text); color: var(--text); }
 
     /* HERO */
     .hero {
       text-align: center;
       padding: 100px 40px 72px;
       position: relative;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 400px;
-      background: radial-gradient(ellipse at center, rgba(123,47,255,0.14) 0%, transparent 70%);
-      pointer-events: none;
-      opacity: var(--hero-glow-opacity);
-      transition: opacity 0.3s;
     }
 
     .hero-badge {
@@ -191,7 +94,7 @@
       letter-spacing: 0.18em;
       text-transform: uppercase;
       font-weight: 700;
-      color: var(--badge-color);
+      color: #6c22ff;
       margin-bottom: 28px;
     }
 
@@ -200,7 +103,8 @@
       display: block;
       width: 28px;
       height: 1.5px;
-      background: var(--badge-line);
+      background: #6c22ff;
+      opacity: 0.4;
     }
 
     h1 {
@@ -227,6 +131,7 @@
       line-height: 1.7;
     }
 
+    /* DECORATIVE DIVIDER */
     .divider {
       display: flex;
       align-items: center;
@@ -264,24 +169,28 @@
       padding: 48px 42px;
       border-radius: 20px;
       cursor: pointer;
-      transition: transform 0.25s, box-shadow 0.25s, background 0.3s;
+      transition: transform 0.25s, box-shadow 0.25s;
       overflow: hidden;
     }
 
     .lane-1 {
-      background: var(--card-bg);
-      box-shadow: 0 2px 24px var(--lane1-shadow);
+      background: #ffffff;
+      box-shadow: 0 2px 20px rgba(108,34,255,0.08);
     }
 
     .lane-2 {
-      background: var(--card-bg);
-      box-shadow: 0 2px 24px var(--lane2-shadow);
+      background: #ffffff;
+      box-shadow: 0 2px 20px rgba(0,201,155,0.08);
     }
 
-    .lane:hover { transform: translateY(-4px); }
-    .lane-1:hover { box-shadow: 0 12px 48px var(--lane1-shadow-hover); }
-    .lane-2:hover { box-shadow: 0 12px 48px var(--lane2-shadow-hover); }
+    .lane:hover {
+      transform: translateY(-4px);
+    }
 
+    .lane-1:hover { box-shadow: 0 12px 48px rgba(108,34,255,0.16); }
+    .lane-2:hover { box-shadow: 0 12px 48px rgba(0,201,155,0.16); }
+
+    /* Colored top accent */
     .lane::before {
       content: '';
       position: absolute;
@@ -289,8 +198,8 @@
       height: 3px;
     }
 
-    .lane-1::before { background: var(--lane1-accent-bar); }
-    .lane-2::before { background: var(--lane2-accent-bar); }
+    .lane-1::before { background: linear-gradient(90deg, #6c22ff, #ff2fa0); }
+    .lane-2::before { background: linear-gradient(90deg, #2fffb0, #00c99b); }
 
     .lane-tag {
       display: inline-block;
@@ -304,15 +213,13 @@
     }
 
     .lane-1 .lane-tag {
-      background: var(--lane1-tag-bg);
-      color: var(--lane1-text);
-      border: 1px solid rgba(123,47,255,0.2);
+      background: rgba(108,34,255,0.1);
+      color: #6c22ff;
     }
 
     .lane-2 .lane-tag {
-      background: var(--lane2-tag-bg);
-      color: var(--lane2-text);
-      border: 1px solid rgba(47,255,176,0.2);
+      background: rgba(0,201,155,0.1);
+      color: #009b74;
     }
 
     .lane h2 {
@@ -321,7 +228,6 @@
       letter-spacing: -0.02em;
       margin-bottom: 14px;
       line-height: 1.2;
-      color: var(--text);
     }
 
     .lane p {
@@ -340,7 +246,7 @@
       font-size: 0.875rem;
       color: var(--muted);
       padding: 9px 0;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -354,8 +260,8 @@
       flex-shrink: 0;
     }
 
-    .lane-1 .lane-features li::before { background: var(--lane1); }
-    .lane-2 .lane-features li::before { background: var(--lane2); }
+    .lane-1 .lane-features li::before { background: #6c22ff; }
+    .lane-2 .lane-features li::before { background: #00c99b; }
 
     .lane-cta {
       display: inline-flex;
@@ -366,15 +272,27 @@
       text-decoration: none;
       padding: 10px 22px;
       border-radius: 8px;
-      transition: background 0.2s, color 0.2s;
+      transition: all 0.2s;
     }
 
-    .lane-1 .lane-cta { background: var(--lane1-cta-bg); color: var(--lane1-text); }
-    .lane-2 .lane-cta { background: var(--lane2-cta-bg); color: var(--lane2-text); }
-    .lane-1 .lane-cta:hover { background: var(--lane1-cta-hover-bg); color: var(--lane1-cta-hover-text); }
-    .lane-2 .lane-cta:hover { background: var(--lane2-cta-hover-bg); color: var(--lane2-cta-hover-text); }
+    .lane-1 .lane-cta {
+      background: rgba(108,34,255,0.1);
+      color: #6c22ff;
+    }
 
-    .lane-icon { font-size: 2rem; margin-bottom: 18px; display: block; }
+    .lane-2 .lane-cta {
+      background: rgba(0,201,155,0.1);
+      color: #009b74;
+    }
+
+    .lane-1 .lane-cta:hover { background: #6c22ff; color: #fff; }
+    .lane-2 .lane-cta:hover { background: #00c99b; color: #fff; }
+
+    .lane-icon {
+      font-size: 2rem;
+      margin-bottom: 18px;
+      display: block;
+    }
 
     /* FOOTER */
     .footer-strip {
@@ -383,11 +301,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--footer-bg);
-      transition: background 0.3s, border-color 0.3s;
+      background: #fff;
     }
 
-    .footer-strip span { font-size: 0.8rem; color: var(--muted); }
+    .footer-strip span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .rainbow-bar {
+      height: 4px;
+      background: var(--vr-gradient);
+    }
 
     @media (max-width: 768px) {
       nav { padding: 18px 24px; }
@@ -404,11 +329,10 @@
   <nav>
     <div class="logo">Virtual Rainbow</div>
     <ul>
-      <li><a href="streamline-ai.html">StreamlineAI</a></li>
-      <li><a href="digital-worlds.html">Digital Worlds</a></li>
+      <li><a href="#">StreamlineAI</a></li>
+      <li><a href="#">Digital Worlds</a></li>
       <li><a href="#">About</a></li>
       <li><a href="#" class="nav-cta">Get in touch</a></li>
-      <li><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button></li>
     </ul>
   </nav>
 
@@ -444,7 +368,7 @@
         <li>Custom apps and tools built for your workflow</li>
         <li>Ongoing support and iteration</li>
       </ul>
-      <a href="streamline-ai.html" class="lane-cta">Explore StreamlineAI →</a>
+      <a href="#" class="lane-cta">Explore StreamlineAI →</a>
     </div>
 
     <div class="lane lane-2">
@@ -461,7 +385,7 @@
         <li>Digital collectibles and on-chain assets</li>
         <li>Otherside & open metaverse integrations</li>
       </ul>
-      <a href="digital-worlds.html" class="lane-cta">Explore Digital Worlds →</a>
+      <a href="#" class="lane-cta">Explore Digital Worlds →</a>
     </div>
 
   </div>
@@ -472,28 +396,6 @@
   </div>
 
   <div class="rainbow-bar"></div>
-
-  <script>
-    function toggleTheme() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('vr-theme', 'light');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('vr-theme', 'dark');
-      }
-      updateToggle();
-    }
-
-    function updateToggle() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const btn = document.getElementById('theme-toggle');
-      if (btn) btn.textContent = isDark ? '☀' : '☾';
-    }
-
-    updateToggle();
-  </script>
 
 </body>
 </html>
