@@ -272,17 +272,20 @@
       gap: 12px;
     }
 
-    .panel-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2s ease-in-out infinite;
+    .panel-footer {
+      padding: 14px 32px;
+      border-top: 1px solid var(--border);
     }
 
-    @keyframes pulse {
-      0%,100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-glow); }
-      50% { opacity: 0.8; box-shadow: 0 0 0 6px transparent; }
+    .panel-footer a {
+      font-size: 0.8rem;
+      color: var(--accent-text);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
     }
+
+    .panel-footer a:hover { opacity: 0.7; }
 
     .panel-top span {
       font-size: 0.8rem;
@@ -328,18 +331,6 @@
       font-size: 0.75rem;
       color: var(--muted);
       margin-top: 2px;
-    }
-
-    .panel-item-badge {
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: var(--badge-bg);
-      color: var(--badge-color);
-      border: 1px solid var(--badge-border);
-      font-weight: 600;
     }
 
     /* PIPELINE */
@@ -607,8 +598,7 @@
 
       <div class="hero-panel">
         <div class="panel-top">
-          <div class="panel-dot"></div>
-          <span data-i18n="panel-title">Live on The Otherside</span>
+          <span data-i18n="panel-title">What we build for you</span>
         </div>
         <div class="panel-items">
           <div class="panel-item">
@@ -619,7 +609,6 @@
                 <div class="panel-item-sub" data-i18n="pi1-sub">Custom branded environment</div>
               </div>
             </div>
-            <span class="panel-item-badge" data-i18n="badge-live">Live</span>
           </div>
           <div class="panel-item">
             <div class="panel-item-left">
@@ -629,7 +618,6 @@
                 <div class="panel-item-sub" data-i18n="pi2-sub">Brand character with personality</div>
               </div>
             </div>
-            <span class="panel-item-badge" data-i18n="badge-active">Active</span>
           </div>
           <div class="panel-item">
             <div class="panel-item-left">
@@ -639,7 +627,6 @@
                 <div class="panel-item-sub" data-i18n="pi3-sub">Interactive community experience</div>
               </div>
             </div>
-            <span class="panel-item-badge" data-i18n="badge-upcoming">Upcoming</span>
           </div>
           <div class="panel-item">
             <div class="panel-item-left">
@@ -649,8 +636,10 @@
                 <div class="panel-item-sub" data-i18n="pi4-sub">On-chain digital assets</div>
               </div>
             </div>
-            <span class="panel-item-badge" data-i18n="badge-minting">Minting</span>
           </div>
+        </div>
+        <div class="panel-footer">
+          <a href="#pipeline" data-i18n="panel-footer-link">See the full process →</a>
         </div>
       </div>
     </div>
@@ -753,18 +742,15 @@
         'hero-sub': 'We create immersive virtual worlds, AI-powered characters, and digital collectibles that grow your brand\'s presence where the next generation lives.',
         'btn-primary': 'Let\'s talk',
         'btn-ghost': 'See what we create →',
-        'panel-title': 'Live on The Otherside',
+        'panel-title': 'What we build for you',
+        'panel-footer-link': 'See the full process →',
         'pi1-name': 'Virtual World',
         'pi1-sub': 'Custom branded environment',
-        'badge-live': 'Live',
         'pi2-sub': 'Brand character with personality',
-        'badge-active': 'Active',
         'pi3-name': 'Drop Event',
         'pi3-sub': 'Interactive community experience',
-        'badge-upcoming': 'Upcoming',
         'pi4-name': 'Collectibles',
         'pi4-sub': 'On-chain digital assets',
-        'badge-minting': 'Minting',
         'pipeline-kicker': 'What we create',
         'pipeline-h2': 'Everything your brand needs<br />to exist in virtual spaces',
         's01-h': 'Virtual Worlds',
@@ -803,18 +789,15 @@
         'hero-sub': 'Vi skaber immersive virtuelle verdener, AI-drevne karakterer og digitale samlerobjekter der styrker dit brands tilstedeværelse dér hvor næste generation lever.',
         'btn-primary': 'Lad os tale',
         'btn-ghost': 'Se hvad vi skaber →',
-        'panel-title': 'Live på The Otherside',
+        'panel-title': 'Det vi bygger til dig',
+        'panel-footer-link': 'Se hele processen →',
         'pi1-name': 'Virtuel Verden',
         'pi1-sub': 'Skræddersyet branded miljø',
-        'badge-live': 'Live',
         'pi2-sub': 'Brandkarakter med personlighed',
-        'badge-active': 'Aktiv',
         'pi3-name': 'Drop Event',
         'pi3-sub': 'Interaktiv community-oplevelse',
-        'badge-upcoming': 'Kommende',
         'pi4-name': 'Samlerobjekter',
         'pi4-sub': 'On-chain digitale assets',
-        'badge-minting': 'Minting',
         'pipeline-kicker': 'Hvad vi skaber',
         'pipeline-h2': 'Alt dit brand behøver<br />for at eksistere i virtuelle rum',
         's01-h': 'Virtuelle Verdener',
