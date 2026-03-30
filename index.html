@@ -157,14 +157,14 @@
       background-clip: text;
     }
 
-    nav ul {
+    .nav-links {
       list-style: none;
       display: flex;
       gap: 28px;
       align-items: center;
     }
 
-    nav ul a {
+    .nav-links a {
       color: var(--muted);
       text-decoration: none;
       font-size: 0.875rem;
@@ -172,7 +172,7 @@
       transition: color 0.2s;
     }
 
-    nav ul a:hover { color: var(--text); }
+    .nav-links a:hover { color: var(--text); }
 
     .nav-cta {
       background: var(--nav-cta-bg) !important;
@@ -203,6 +203,43 @@
       letter-spacing: 0.02em;
     }
     .theme-toggle:hover { border-color: var(--text); color: var(--text); }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      padding: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: border-color 0.2s;
+    }
+    .hamburger:hover { border-color: var(--text); }
+
+    .hamburger span {
+      display: block;
+      width: 16px;
+      height: 2px;
+      background: var(--muted);
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s, background 0.2s;
+    }
+    .hamburger:hover span { background: var(--text); }
+
+    nav.nav-open .hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    nav.nav-open .hamburger span:nth-child(2) { opacity: 0; }
+    nav.nav-open .hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     /* HERO */
     .hero {
@@ -424,8 +461,29 @@
     .footer-strip span { font-size: 0.8rem; color: var(--muted); }
 
     @media (max-width: 960px) {
-      nav { padding: 18px 24px; }
-      nav ul { display: none; }
+      nav { padding: 18px 24px; flex-wrap: wrap; }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        order: 3;
+        padding: 12px 0 16px;
+        gap: 2px;
+        border-top: 1px solid var(--border);
+        margin-top: 12px;
+      }
+      nav.nav-open .nav-links { display: flex; }
+      .nav-links li { width: 100%; }
+      .nav-links a {
+        display: block;
+        padding: 10px 4px;
+        font-size: 0.95rem;
+        color: var(--text);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links li:last-child a { border-bottom: none; }
+      .nav-links li.nav-cta-item a { border-bottom: none; padding-top: 14px; }
+      .hamburger { display: flex; }
       .hero { padding: 72px 24px 52px; }
       .lanes { grid-template-columns: 1fr; padding: 0 24px 72px; }
     }
@@ -435,17 +493,22 @@
 
   <div class="rainbow-bar"></div>
 
-  <nav>
+  <nav id="nav">
     <div class="logo">Virtual Rainbow</div>
-    <ul>
+    <ul class="nav-links" id="nav-links">
       <li><a href="streamline-ai.html">StreamlineAI</a></li>
       <li><a href="digital-worlds.html" data-i18n="nav-digital-worlds">Digital Worlds</a></li>
       <li><a href="web3-advisory.html" data-i18n="nav-web3">Web3 Advisory</a></li>
       <li><a href="vr-studios.html">VR Studios</a></li>
-      <li><a href="#" class="nav-cta" data-i18n="nav-cta">Get in touch</a></li>
-      <li><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button></li>
-      <li><button class="theme-toggle" id="lang-toggle" onclick="toggleLang()" aria-label="Switch language">DA</button></li>
+      <li class="nav-cta-item"><a href="#" class="nav-cta" data-i18n="nav-cta">Get in touch</a></li>
     </ul>
+    <div class="nav-controls">
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">☾</button>
+      <button class="theme-toggle" id="lang-toggle" onclick="toggleLang()" aria-label="Switch language">DA</button>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
 
   <section class="hero">
@@ -644,6 +707,10 @@
       const next = current === 'en' ? 'da' : 'en';
       localStorage.setItem('vr-lang', next);
       applyLanguage(next);
+    }
+
+    function toggleMenu() {
+      document.getElementById('nav').classList.toggle('nav-open');
     }
 
     function toggleTheme() {
