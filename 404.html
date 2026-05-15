@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Virtual Rainbow</title>
+    <!-- GitHub Pages SPA fallback: rewrite the unknown path into a query
+         param the SPA reads on load, then redirect to "/" so React Router
+         can render the correct route on the client. -->
+    <script>
+      (function () {
+        var l = window.location;
+        var path = l.pathname.replace(/\/$/, '');
+        var rest = path + l.search + l.hash;
+        l.replace(l.protocol + '//' + l.host + '/?p=' + encodeURIComponent(rest));
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
