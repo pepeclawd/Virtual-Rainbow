@@ -1,0 +1,245 @@
+/* =========================================================
+   Connect to Tocantins — shared stylesheet
+   Editorial / institutional look for a high-value audience.
+   Palette: deep cerrado green, warm savannah gold, paper white.
+   ========================================================= */
+
+:root {
+  --green-900: #16301f;
+  --green-700: #1f4d30;
+  --green-500: #2f6b43;
+  --gold-600:  #b9852f;
+  --gold-500:  #cf9a3c;
+  --ink:       #1c2420;
+  --muted:     #5d6b62;
+  --line:      #e2e5df;
+  --paper:     #fbfaf6;
+  --paper-2:   #f3f1e9;
+  --white:     #ffffff;
+  --max:       1100px;
+  --radius:    10px;
+  --shadow:    0 8px 30px rgba(22, 48, 31, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.65;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  line-height: 1.2;
+  color: var(--green-900);
+  font-weight: 600;
+}
+
+h1 { font-size: clamp(2rem, 4.5vw, 3.1rem); margin: 0 0 0.5em; }
+h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); margin: 1.8em 0 0.6em; }
+h3 { font-size: 1.25rem; margin: 1.6em 0 0.4em; }
+
+p { margin: 0 0 1.1em; }
+
+a { color: var(--green-500); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+img { max-width: 100%; display: block; }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+.narrow { max-width: 760px; }
+
+/* ---------- Header ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(251, 250, 246, 0.92);
+  backdrop-filter: saturate(180%) blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner {
+  max-width: var(--max); margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-family: "Lora", Georgia, serif;
+  font-weight: 600; font-size: 1.15rem; color: var(--green-900); white-space: nowrap; }
+.brand:hover { text-decoration: none; }
+.brand .mark { width: 30px; height: 30px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--green-500), var(--green-900));
+  display: inline-block; flex: none;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25); }
+
+.nav { display: flex; align-items: center; gap: 22px; }
+.nav a { color: var(--ink); font-size: 0.93rem; font-weight: 500; }
+.nav a:hover, .nav a.active { color: var(--green-500); text-decoration: none; }
+.nav a.active { border-bottom: 2px solid var(--gold-500); padding-bottom: 2px; }
+
+.nav-cta {
+  background: var(--green-700); color: #fff !important; padding: 9px 16px;
+  border-radius: 999px; font-size: 0.9rem; font-weight: 600;
+}
+.nav-cta:hover { background: var(--green-900); text-decoration: none; }
+
+.nav-toggle { display: none; background: none; border: 0; cursor: pointer;
+  padding: 6px; color: var(--green-900); }
+.nav-toggle svg { width: 26px; height: 26px; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; color: #fff; text-align: center;
+  padding: clamp(70px, 12vw, 140px) 24px;
+  background:
+    linear-gradient(rgba(15, 33, 21, 0.55), rgba(15, 33, 21, 0.65)),
+    linear-gradient(135deg, #2f6b43, #16301f);
+  overflow: hidden;
+}
+.hero::after { /* placeholder texture note */
+  content: "Hero photo — landscape from Tocantins (coming from Brazil)";
+  position: absolute; bottom: 10px; right: 14px;
+  font-size: 0.7rem; color: rgba(255,255,255,0.45); font-style: italic;
+}
+.hero h1 { color: #fff; max-width: 900px; margin: 0 auto 0.4em; }
+.hero p.lead { font-size: clamp(1.05rem, 2vw, 1.35rem); max-width: 720px;
+  margin: 0 auto; color: rgba(255,255,255,0.92); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-block; padding: 13px 26px; border-radius: 999px;
+  font-weight: 600; font-size: 0.98rem; cursor: pointer; border: 2px solid transparent;
+  transition: transform .08s ease, background .15s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn-gold { background: var(--gold-600); color: #fff; }
+.btn-gold:hover { background: var(--gold-500); }
+.btn-green { background: var(--green-700); color: #fff; }
+.btn-green:hover { background: var(--green-900); }
+.btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,0.6); }
+.btn-ghost:hover { background: rgba(255,255,255,0.12); }
+.btn-outline { background: #fff; color: var(--green-700); border-color: var(--line); }
+.btn-outline:hover { border-color: var(--green-500); }
+
+/* ---------- Sections ---------- */
+section { padding: 18px 0; }
+.section-pad { padding: 56px 0; }
+.band { background: var(--paper-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.band-green { background: var(--green-900); color: #fff; }
+.band-green h2, .band-green h3 { color: #fff; }
+.band-green a { color: var(--gold-500); }
+
+.kicker { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.78rem;
+  font-weight: 700; color: var(--gold-600); margin-bottom: 8px; }
+
+/* ---------- Three CTA cards (home) ---------- */
+.cta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
+.cta-card {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 26px 24px; box-shadow: var(--shadow); display: flex; flex-direction: column;
+}
+.cta-card h3 { margin-top: 0; }
+.cta-card p { color: var(--muted); flex: 1; }
+.cta-card .btn { align-self: flex-start; margin-top: 8px; }
+
+/* ---------- Feature list (home selling points) ---------- */
+.features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 32px; margin: 24px 0; }
+.feature { display: flex; gap: 14px; }
+.feature .ico { flex: none; width: 38px; height: 38px; border-radius: 8px;
+  background: var(--paper-2); display: grid; place-items: center; font-size: 1.1rem; }
+.feature h4 { margin: 2px 0 4px; font-size: 1.05rem; }
+.feature p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+/* ---------- Image placeholder ---------- */
+.ph {
+  display: grid; place-items: center; text-align: center;
+  background: repeating-linear-gradient(45deg, var(--paper-2), var(--paper-2) 12px, #ece9df 12px, #ece9df 24px);
+  border: 1px dashed #c9cabf; border-radius: var(--radius);
+  color: var(--muted); font-size: 0.85rem; font-style: italic; padding: 28px; min-height: 220px;
+}
+.ph small { display: block; }
+
+/* ---------- Callout / note ---------- */
+.note {
+  background: #fff; border-left: 4px solid var(--gold-500); border-radius: 6px;
+  padding: 16px 20px; margin: 22px 0; color: var(--ink); box-shadow: var(--shadow);
+}
+.note.green { border-left-color: var(--green-500); }
+
+/* ---------- Stat row ---------- */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 28px 0; }
+.stat { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; text-align: center; }
+.stat .num { font-family: "Lora", serif; font-size: 1.9rem; color: var(--green-700); font-weight: 600; }
+.stat .lbl { color: var(--muted); font-size: 0.9rem; }
+
+/* ---------- Tables ---------- */
+.table-wrap { overflow-x: auto; margin: 24px 0; border: 1px solid var(--line); border-radius: var(--radius); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+th { background: var(--green-900); color: #fff; font-weight: 600; white-space: nowrap; }
+tr:nth-child(even) td { background: #fff; }
+tr:nth-child(odd) td { background: var(--paper); }
+
+/* ---------- Farm cards ---------- */
+.farm { display: grid; grid-template-columns: 260px 1fr; gap: 24px; align-items: stretch;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden; box-shadow: var(--shadow); margin: 22px 0; }
+.farm .ph { border: 0; border-radius: 0; min-height: 100%; }
+.farm-body { padding: 22px 24px; }
+.farm-body h3 { margin-top: 0; }
+.price { font-family: "Lora", serif; font-size: 1.25rem; color: var(--green-700); font-weight: 600; margin-top: 10px; }
+.price small { color: var(--muted); font-weight: 400; font-size: 0.85rem; font-family: "Inter", sans-serif; }
+
+/* ---------- Prose helpers ---------- */
+.prose ul { padding-left: 1.2em; }
+.prose li { margin-bottom: 0.4em; }
+.lead-in { font-size: 1.15rem; color: var(--muted); }
+.center { text-align: center; }
+.mt-0 { margin-top: 0; }
+.divider { height: 1px; background: var(--line); border: 0; margin: 40px 0; }
+
+/* ---------- Contact block ---------- */
+.contact-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 28px; box-shadow: var(--shadow); display: flex; gap: 26px; align-items: center; flex-wrap: wrap; }
+.contact-card .ph { width: 160px; height: 160px; min-height: 0; flex: none; border-radius: 50%; }
+.contact-lines { font-size: 1.05rem; }
+.contact-lines a { font-weight: 600; }
+
+/* ---------- Footer ---------- */
+.site-footer { background: var(--green-900); color: rgba(255,255,255,0.82); margin-top: 60px; }
+.footer-top { padding: 44px 0; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 36px; }
+.site-footer h4 { color: #fff; font-size: 1rem; margin: 0 0 14px; }
+.site-footer a { color: rgba(255,255,255,0.82); }
+.site-footer a:hover { color: #fff; }
+.footer-disclaimer { font-style: italic; color: rgba(255,255,255,0.7); max-width: 420px; }
+.footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-links li { margin-bottom: 9px; font-size: 0.95rem; }
+.lang-switch { display: flex; gap: 12px; font-size: 0.9rem; }
+.lang-switch span { color: rgba(255,255,255,0.4); }
+.lang-switch a.active { color: var(--gold-500); font-weight: 700; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.15); padding: 18px 0; font-size: 0.85rem;
+  color: rgba(255,255,255,0.6); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.pf-link { display: inline-block; margin-top: 10px; color: var(--gold-500) !important; font-weight: 600; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .nav { position: fixed; top: 60px; right: 0; left: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--paper); border-bottom: 1px solid var(--line);
+    padding: 8px 0; transform: translateY(-130%); transition: transform .25s ease;
+    box-shadow: var(--shadow); }
+  .nav.open { transform: translateY(0); }
+  .nav a { padding: 12px 24px; }
+  .nav a.active { border-bottom: 0; color: var(--green-500); }
+  .nav-cta { margin: 8px 24px; text-align: center; }
+  .nav-toggle { display: block; }
+  .cta-grid { grid-template-columns: 1fr; }
+  .features { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: 1fr; }
+  .farm { grid-template-columns: 1fr; }
+  .farm .ph { min-height: 200px; }
+  .footer-top { grid-template-columns: 1fr; gap: 28px; }
+}
