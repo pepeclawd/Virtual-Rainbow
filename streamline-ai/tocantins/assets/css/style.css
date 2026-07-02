@@ -210,7 +210,7 @@ figure.fig figcaption { font-size: 0.82rem; color: var(--muted); font-style: ita
   padding: 28px; box-shadow: var(--shadow); display: flex; gap: 26px; align-items: center; flex-wrap: wrap; }
 .contact-card .ph { width: 160px; height: 160px; min-height: 0; flex: none; border-radius: 50%; }
 .georg-photo { width: 160px; height: 160px; flex: none; border-radius: 50%; object-fit: cover;
-  object-position: center 30%; box-shadow: var(--shadow); }
+  object-position: center; box-shadow: var(--shadow); }
 .contact-lines { font-size: 1.05rem; }
 .contact-lines a { font-weight: 600; }
 
