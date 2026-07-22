@@ -197,6 +197,14 @@ figure.fig.portrait img { max-height: 520px; width: auto; margin: 0 auto; }
 figure.fig figcaption { font-size: 0.82rem; color: var(--muted); font-style: italic;
   margin-top: 8px; text-align: center; }
 
+/* ---------- Gallery ---------- */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px; margin: 28px 0; }
+.gallery-grid figure { margin: 0; }
+.gallery-grid img { width: 100%; height: 220px; object-fit: cover; border-radius: var(--radius);
+  box-shadow: var(--shadow); display: block; }
+.gallery-grid figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 7px; }
+
 /* ---------- Prose helpers ---------- */
 .prose ul { padding-left: 1.2em; }
 .prose li { margin-bottom: 0.4em; }
