@@ -96,7 +96,7 @@ img { max-width: 100%; display: block; }
   padding: clamp(90px, 14vw, 170px) 24px;
   background:
     linear-gradient(rgba(15, 33, 21, 0.48), rgba(15, 33, 21, 0.62)),
-    url("../img/hero-farmland.jpg") center/cover no-repeat,
+    url("../img/hero-farmland.jpg?v=1784750327") center/cover no-repeat,
     linear-gradient(135deg, #2f6b43, #16301f);
   overflow: hidden;
 }
