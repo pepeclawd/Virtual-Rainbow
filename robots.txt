@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /streamline-ai/
+
+Sitemap: https://virtualrainbow.xyz/sitemap.xml
