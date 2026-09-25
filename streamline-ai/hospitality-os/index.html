@@ -1,0 +1,1479 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Driftsoverblik · prototype</title>
+<!--
+  Hospitality OS: synthetic experience prototype.
+  Every number is generated deterministically inside this file. No network requests, no real
+  company, employee, wage, customer or transaction data. Not a POS, not a bookkeeping system,
+  not an authorization design. See prototype/README.md.
+-->
+<style>
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --surface-2:#f7f8f6; --ink:#16191c; --ink-2:#3f474e; --muted:#5d666e;
+  --line:#d9dde0; --line-2:#e9ecee; --focus:#1a5fd0;
+  --good:#17692f; --good-bg:#e3f3e7; --warn:#7a4f00; --warn-bg:#fff1cc; --warn-mark:#c98a00;
+  --bad:#a4231b; --bad-bg:#fde6e3; --info:#1f4f99; --info-bg:#e5eefb; --na:#5d666e; --na-bg:#eceeef;
+  --brand:#33414d; --brand-ink:#ffffff; --brand-soft:#e8ecef; --brand-mid:#8a97a3;
+  --ly:#9aa3ab; --radius:14px; --shadow:0 1px 2px rgba(20,25,30,.06),0 2px 8px rgba(20,25,30,.05);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+body[data-tenant="soehesten"]{--brand:#0a4f5c; --brand-soft:#e1eff1; --brand-mid:#2f8796;}
+body[data-tenant="rannor"]{--brand:#8e3514; --brand-soft:#f7e8e0; --brand-mid:#c0643c;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--font);min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--info)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:8px;top:-60px;background:#fff;color:var(--ink);padding:8px 12px;border-radius:8px;z-index:100}
+.skip:focus{top:8px}
+
+/* prototype strip */
+.proto{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;justify-content:space-between;background:#20262b;color:#f1f3f4;font-size:12.5px;padding:6px 16px}
+.proto strong{font-weight:600}
+.proto button{background:transparent;border:1px solid #6b757d;color:#f1f3f4;border-radius:999px;padding:3px 10px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.proto button:hover{background:#343c43}
+.proto .clock{opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* layout */
+.shell{display:block}
+.brandbar{background:var(--brand);color:var(--brand-ink);padding:14px 16px 16px;position:relative}
+.brandbar .row{display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap}
+.brandbar .id{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 220px}
+@media (max-width:639px){.who{width:100%;justify-content:space-between;border-top:1px solid rgba(255,255,255,.22);padding-top:10px}}
+@media (max-width:959px){nav.tabs a.opt{display:none}}
+.mono{flex:none;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;border:1px solid rgba(255,255,255,.35)}
+.mono svg{width:26px;height:26px}
+.brandbar h1{margin:0;font-size:20px;line-height:1.15;letter-spacing:.1px}
+.brandbar .legal{font-size:12.5px;opacity:.88;margin-top:2px}
+.brandbar .spacer{flex:1}
+.who{display:flex;align-items:center;gap:8px}
+.chipbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.45);color:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13.5px;white-space:nowrap}
+.chipbtn:hover{background:rgba(255,255,255,.24)}
+.brandbar .role{font-size:12.5px;opacity:.9}
+main{padding:16px 16px 96px;max-width:1180px;margin:0 auto}
+.page-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:4px 0 12px}
+.page-h h2{margin:0;font-size:20px}
+.page-h .sub{color:var(--muted);font-size:13.5px}
+h3{font-size:15.5px;margin:0 0 8px}
+.contextline{font-size:13.5px;color:var(--ink-2);margin:0 0 12px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;z-index:20;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 9px;color:var(--muted);text-decoration:none;font-size:11.5px;min-height:56px;justify-content:center}
+nav.tabs a svg{width:22px;height:22px}
+nav.tabs a[aria-current="page"]{color:var(--brand);font-weight:650}
+nav.tabs a[aria-current="page"] svg{stroke-width:2.3}
+nav.tabs .dot{background:var(--bad);color:#fff;border-radius:999px;font-size:10px;padding:0 5px;line-height:15px;margin-left:2px}
+
+@media (min-width:960px){
+  .shell{display:grid;grid-template-columns:232px 1fr;min-height:calc(100vh - 34px)}
+  .shell > .brandbar{grid-column:1 / -1}
+  nav.tabs{position:sticky;top:0;align-self:start;flex-direction:column;border-top:0;border-right:1px solid var(--line);height:auto;min-height:calc(100vh - 110px);padding:12px 10px;gap:2px;background:var(--surface)}
+  nav.tabs a{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;font-size:14.5px;padding:10px 12px;border-radius:10px;min-height:44px}
+  nav.tabs a[aria-current="page"]{background:var(--brand-soft)}
+  main{padding:22px 28px 48px;width:100%}
+  .brandbar{padding:16px 28px}
+  .brandbar h1{font-size:23px}
+}
+
+/* cards */
+.grid{display:grid;gap:12px}
+.card{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
+.card.tight{padding:12px}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.card-h h3{margin:0}
+.sec{margin-top:18px}
+.sec > h3{margin:0 0 8px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.home-grid{display:grid;gap:12px;grid-template-columns:1fr}
+.sales-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (min-width:640px){.sales-grid{grid-template-columns:repeat(4,1fr)}}
+@media (min-width:960px){
+  .home-grid{grid-template-columns:repeat(12,1fr)}
+  .span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-7{grid-column:span 7}.span-6{grid-column:span 6}.span-5{grid-column:span 5}.span-4{grid-column:span 4}
+}
+.tile{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0;position:relative}
+.tile.linky{cursor:pointer}
+.tile.linky:hover{border-color:var(--brand-mid)}
+.tile .lbl{font-size:12.5px;font-weight:650;color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em}
+.tile .per{font-size:12px;color:var(--muted);min-height:1.2em}
+.big{font-size:24px;font-weight:720;letter-spacing:-.2px;line-height:1.15;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.big.xl{font-size:34px}
+.inc{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cmp{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
+.delta{display:inline-block;font-weight:650;font-size:13px;border-radius:8px;padding:2px 7px;margin-top:6px;align-self:flex-start;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.delta.good{background:var(--good-bg);color:var(--good)}
+.delta.warn{background:var(--warn-bg);color:var(--warn)}
+.delta.bad{background:var(--bad-bg);color:var(--bad)}
+.delta.na{background:var(--na-bg);color:var(--na)}
+.flag{display:inline-flex;gap:5px;align-items:center;font-size:12px;font-weight:600;color:var(--info);background:var(--info-bg);border-radius:8px;padding:2px 7px;margin-top:6px;align-self:flex-start}
+.flag.warn{color:var(--warn);background:var(--warn-bg)}
+.flag.bad{color:var(--bad);background:var(--bad-bg)}
+.tile .srcbtn,.srcbtn{margin-top:auto;padding-top:8px;display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);background:none;border:0;cursor:pointer;text-align:left;padding-left:0;padding-right:0;padding-bottom:0;min-height:28px}
+.srcbtn:hover{color:var(--ink)}
+.sdot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--good);box-shadow:0 0 0 2px var(--surface)}
+.sdot.stale,.sdot.partial,.sdot.mapping{background:var(--warn-mark)}
+.sdot.unavailable{background:var(--bad)}
+.sdot.loading{background:var(--info)}
+.lowerb{font-size:.6em;vertical-align:.18em;margin-right:2px;color:var(--warn)}
+
+/* urgent card */
+.urgent{border-radius:var(--radius);padding:14px;display:flex;gap:12px;align-items:flex-start;border:1px solid}
+.urgent.sev-bad{background:var(--bad-bg);border-color:#f2b8b1}
+.urgent.sev-warn{background:var(--warn-bg);border-color:#ecd28a}
+.urgent.sev-good{background:var(--good-bg);border-color:#b9dfc3}
+.urgent .ic{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800}
+.urgent.sev-bad .ic{background:var(--bad)}.urgent.sev-warn .ic{background:#9a6400}.urgent.sev-good .ic{background:var(--good)}
+.urgent .k{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.urgent.sev-bad .k{color:var(--bad)}.urgent.sev-warn .k{color:var(--warn)}.urgent.sev-good .k{color:var(--good)}
+.urgent .t{font-size:17px;font-weight:700;margin:2px 0}
+.urgent .d{font-size:13.5px;color:var(--ink-2)}
+.urgent .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* labour gauge */
+.gauge{position:relative;height:12px;border-radius:6px;background:var(--line-2);margin:10px 0 4px}
+.gauge .band{position:absolute;top:0;bottom:0;background:#cfe8d6;border-left:2px solid var(--good);border-right:2px solid var(--good)}
+.gauge .mark{position:absolute;top:-5px;width:4px;height:22px;border-radius:2px;background:var(--ink);transform:translateX(-2px)}
+.gauge-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.hours{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;font-size:13.5px;margin-top:8px;align-items:center;font-variant-numeric:tabular-nums}
+.hbar{height:8px;border-radius:4px;background:var(--brand-mid);min-width:2px}
+.hbar.plan{background:var(--ly)}
+.kv{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:13.5px;font-variant-numeric:tabular-nums}
+.kv dt{color:var(--ink-2)}.kv dd{margin:0;text-align:right;font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.badge.measured{background:var(--good-bg);color:var(--good)}
+.badge.indicative{background:var(--warn-bg);color:var(--warn)}
+.badge.urgent{background:var(--bad);color:#fff}
+.badge.neutral{background:var(--na-bg);color:var(--ink-2)}
+.badge.brand{background:var(--brand-soft);color:var(--brand)}
+
+/* sources strip */
+.sources{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.srcchip{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:9px 10px;cursor:pointer;text-align:left;min-width:0;box-shadow:var(--shadow)}
+.srcchip .n{font-weight:650;font-size:13px;display:flex;gap:6px;align-items:center;max-width:100%}
+.srcchip .s{font-size:11.5px;color:var(--muted);overflow-wrap:anywhere}
+.srcchip.state-stale,.srcchip.state-partial,.srcchip.state-mapping{border-color:#e6c572;background:#fffaeb}
+.srcchip.state-unavailable{border-color:#f0aaa2;background:#fff5f4}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:9px 14px;min-height:42px;cursor:pointer;font-weight:600;font-size:14px;text-decoration:none;color:var(--ink)}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn.small{min-height:34px;padding:5px 10px;font-size:13px}
+.btn.link{border:0;background:none;padding:4px 0;min-height:32px;color:var(--info);font-weight:600}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);flex-wrap:wrap}
+.seg button{border:0;background:none;padding:7px 12px;cursor:pointer;font-size:13.5px;min-height:38px;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#fff;font-weight:650}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.addnote{display:inline-flex;align-items:center;gap:6px;border:1px dashed var(--brand-mid);color:var(--brand);background:transparent;border-radius:10px;padding:7px 12px;cursor:pointer;font-weight:600;font-size:13.5px;min-height:38px}
+.note{background:#fffbea;border:1px solid #efdf9f;border-radius:10px;padding:8px 10px;font-size:13.5px;display:flex;gap:8px;align-items:flex-start}
+.note .meta{font-size:12px;color:var(--muted)}
+
+/* charts (HTML bars, readable at any width) */
+.chart{display:flex;align-items:flex-end;gap:3px;height:150px;padding:18px 0 0;border-bottom:1px solid var(--line);position:relative}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative;min-width:0;background:none;border:0;padding:0;cursor:default}
+button.col{cursor:pointer}
+button.col:hover .bar{filter:brightness(1.12)}
+.bar{width:100%;max-width:34px;background:var(--brand-mid);border-radius:4px 4px 0 0;min-height:0}
+.bar.missing{background:repeating-linear-gradient(135deg,#f0c35c 0 4px,#fff7df 4px 8px);border:1px dashed #b27a00;border-bottom:0}
+.bar.future{background:transparent}
+.bar.focus{background:var(--brand)}
+.lytick{position:absolute;left:12%;right:12%;height:0;border-top:2.5px solid #4b5560}
+.col .nm{position:absolute;top:-17px;font-size:12px}
+.xlabels{display:flex;gap:3px;margin-top:4px}
+.xlabels span{flex:1;text-align:center;font-size:10.5px;color:var(--muted);min-width:0;overflow:hidden;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--ink-2);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.legend i.cur{background:var(--brand-mid)}
+.legend i.ly{height:0;border-top:2.5px solid #4b5560;border-radius:0;vertical-align:3px}
+.legend i.miss{background:repeating-linear-gradient(135deg,#f0c35c 0 3px,#fff7df 3px 6px);border:1px dashed #b27a00}
+details.tbl{margin-top:8px;font-size:13px}
+details.tbl summary{cursor:pointer;color:var(--info);font-weight:600;min-height:32px;display:flex;align-items:center}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-weight:650;color:var(--ink-2);font-size:12.5px}
+td.num,th.num{text-align:right;white-space:nowrap}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.catrow{display:grid;grid-template-columns:minmax(92px,1.1fr) 2fr auto;gap:8px;align-items:center;font-size:13.5px;padding:4px 0}
+.catbar{height:10px;border-radius:5px;background:var(--brand-mid)}
+.catbar.err{background:repeating-linear-gradient(135deg,#d0473d 0 4px,#fde6e3 4px 8px)}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.err-text{color:var(--bad)}
+.good-text{color:var(--good)}
+.warn-text{color:var(--warn)}
+.list{list-style:none;margin:0;padding:0}
+.list > li{border-top:1px solid var(--line-2);padding:10px 0}
+.list > li:first-child{border-top:0}
+
+/* employees */
+.emp summary{display:grid;grid-template-columns:1fr auto;gap:2px 10px;cursor:pointer;padding:10px 0;list-style:none;align-items:center}
+.emp summary::-webkit-details-marker{display:none}
+.emp summary .nm{font-weight:650}
+.emp summary .hrs{font-variant-numeric:tabular-nums;text-align:right;font-size:13.5px}
+.emp summary .sub{font-size:12.5px;color:var(--muted);grid-column:1 / -1}
+.emp{border-top:1px solid var(--line-2)}
+.emp[open] summary .nm::after{content:" ▴";color:var(--muted)}
+.emp summary .nm::after{content:" ▾";color:var(--muted)}
+.evt{font-size:13px;padding:6px 0 6px 10px;border-left:3px solid var(--line);margin:4px 0}
+.evt.corr{border-left-color:var(--info)}
+.evt.miss{border-left-color:var(--bad)}
+
+/* tasks */
+.task{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:12px 0;border-top:1px solid var(--line-2)}
+.task:first-child{border-top:0}
+.task .pri{width:6px;border-radius:3px;background:var(--line)}
+.task.is-urgent .pri{background:var(--bad)}
+.task .tt{margin:0;font-size:15px}
+.task .meta{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:3px}
+.task .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.photo{width:120px;height:80px;border-radius:8px;background:linear-gradient(135deg,#d7dde2,#eef1f3);display:grid;place-items:center;color:var(--muted);font-size:11px;margin-top:6px;border:1px solid var(--line)}
+.status{font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 8px}
+.status.open{background:var(--info-bg);color:var(--info)}
+.status.progress{background:var(--warn-bg);color:var(--warn)}
+.status.resolved{background:var(--good-bg);color:var(--good)}
+.empty{padding:22px 10px;text-align:center;color:var(--muted);font-size:14px}
+
+/* forms */
+label.f{display:block;font-weight:600;font-size:13.5px;margin:12px 0 4px}
+.hint{font-size:12.5px;color:var(--muted);font-weight:400}
+input[type=text],input[type=email],input[type=date],input[type=time],input[type=number],select,textarea{width:100%;border:1px solid #aab2b9;border-radius:10px;padding:9px 11px;background:#fff;min-height:42px}
+textarea{min-height:84px;resize:vertical}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 11px;cursor:pointer;font-size:13.5px;min-height:38px}
+.checks input{width:18px;height:18px;margin:0}
+.checkline{display:flex;gap:10px;align-items:center;margin-top:12px;font-weight:600}
+.checkline input{width:20px;height:20px}
+.formerr{color:var(--bad);font-size:13px;margin-top:6px;min-height:1em}
+
+/* dialogs */
+dialog{border:0;border-radius:18px;padding:0;max-width:560px;width:calc(100% - 24px);box-shadow:0 20px 60px rgba(0,0,0,.3);color:var(--ink)}
+dialog::backdrop{background:rgba(15,20,25,.5)}
+@media (max-width:639px){
+  dialog{margin:auto 0 0;max-width:none;width:100%;border-radius:18px 18px 0 0;max-height:88vh}
+}
+.dlg-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:16px 16px 10px;border-bottom:1px solid var(--line-2);position:sticky;top:0;background:#fff;z-index:1}
+.dlg-h h2{margin:0;font-size:18px}
+.dlg-h .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.dlg-b{padding:12px 16px 18px}
+.dlg-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px 16px;border-top:1px solid var(--line-2);flex-wrap:wrap}
+.xbtn{border:0;background:var(--surface-2);border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:20px;line-height:1;flex:none}
+.state-box{border-radius:10px;padding:10px 12px;font-size:13.5px;margin:8px 0}
+.state-box.ok{background:var(--good-bg);color:var(--good)}
+.state-box.warn{background:var(--warn-bg);color:var(--warn)}
+.state-box.bad{background:var(--bad-bg);color:var(--bad)}
+.state-box.info{background:var(--info-bg);color:var(--info)}
+.state-box strong{display:block}
+.formula{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere}
+
+/* skeleton */
+.skel{display:inline-block;height:1em;width:7em;border-radius:6px;background:linear-gradient(90deg,#e7eaec 25%,#f4f6f7 50%,#e7eaec 75%);background-size:200% 100%;animation:sh 1.2s linear infinite;vertical-align:middle}
+.skel.w4{width:4em}.skel.w10{width:10em}
+@keyframes sh{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.skel{animation:none}}
+
+/* login and chooser */
+.gate{max-width:560px;margin:0 auto;padding:28px 16px 60px}
+.gate h1{font-size:24px;margin:8px 0 6px}
+.acct{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;margin-top:8px;min-height:60px}
+.acct:hover{border-color:#8b959e}
+.avatar{flex:none;width:38px;height:38px;border-radius:50%;background:#dfe4e8;display:grid;place-items:center;font-weight:700;color:#33414d}
+.acct .n{font-weight:650}.acct .r{font-size:12.5px;color:var(--muted)}
+.universe{display:flex;align-items:center;gap:14px;width:100%;border:0;border-radius:16px;padding:18px;color:#fff;cursor:pointer;margin-top:12px;text-align:left;min-height:88px}
+.universe .mono{width:52px;height:52px}
+.universe .nm{font-size:20px;font-weight:720}
+.universe .lg{font-size:13px;opacity:.9}
+.universe.soehesten{background:#0a4f5c}.universe.rannor{background:#8e3514}
+.universe:hover{filter:brightness(1.1)}
+.divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12.5px;margin:22px 0 8px}
+.divider::before,.divider::after{content:"";flex:1;border-top:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:#20262b;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:200;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+@media (min-width:960px){.toast{bottom:24px}}
+.clockbtn{width:100%;min-height:64px;font-size:18px;border-radius:14px}
+.pill{display:inline-block;font-size:12px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:999px;padding:1px 8px;color:var(--ink-2)}
+.two{display:grid;gap:12px}
+@media (min-width:960px){.two{grid-template-columns:1fr 1fr}}
+.nowrap{white-space:nowrap}
+.two > *,.grid > *,.home-grid > *,.sales-grid > *{min-width:0}
+@media (max-width:479px){.catrow{grid-template-columns:1fr auto}.catrow .catbar{grid-column:1 / -1;grid-row:2}.catrow .nowrap{white-space:normal;text-align:right}}
+.tile a.stretch{color:inherit;text-decoration:none}
+.tile a.stretch::after{content:"";position:absolute;inset:0;border-radius:var(--radius)}
+.tile a.stretch:focus-visible{outline:none}
+.tile:has(a.stretch:focus-visible){outline:3px solid var(--focus);outline-offset:2px}
+.tile:has(a.stretch){cursor:pointer}
+.tile:has(a.stretch):hover{border-color:var(--brand-mid)}
+.tile .srcbtn,.tile .flag,.tile .delta{position:relative;z-index:1}
+.card-h h3 a{color:inherit}
+@media (forced-colors:active){.bar,.catbar,.hbar{forced-color-adjust:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Spring til indhold</a>
+<div id="app"></div>
+<div id="live" class="sr-only" aria-live="polite"></div>
+<div id="toasts" role="region" aria-label="Beskeder"></div>
+<dialog id="dlg" aria-labelledby="dlg-title"></dialog>
+<script>
+'use strict';
+/* =====================================================================================
+   1. DETERMINISTIC UTILITIES
+   No Math.random and no device clock. Every value derives from a string key, so the same
+   scenario always renders the same numbers on every machine.
+   ===================================================================================== */
+function hashStr(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}h^=h>>>16;h=Math.imul(h,0x85ebca6b)>>>0;h^=h>>>13;h=Math.imul(h,0xc2b2ae35)>>>0;h^=h>>>16;return h>>>0}
+function rnd(key){let t=(hashStr(key)+0x6D2B79F5)>>>0;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}
+
+/* Dates are 'YYYY-MM-DD' strings. Times are naive Europe/Copenhagen wall-clock milliseconds
+   (UTC arithmetic used only as a calendar, never converted to a device time zone). */
+const DAY=864e5, HOUR=36e5, MIN=6e4;
+const Dt={
+  p(s){const[y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)},
+  s(t){return new Date(Math.floor(t/DAY)*DAY).toISOString().slice(0,10)},
+  add(s,n){return Dt.s(Dt.p(s)+n*DAY)},
+  wd(s){return (new Date(Dt.p(s)).getUTCDay()+6)%7},          // 0 = Monday
+  diff(a,b){return Math.round((Dt.p(a)-Dt.p(b))/DAY)},
+  y(s){return +s.slice(0,4)}, m(s){return +s.slice(5,7)}, d(s){return +s.slice(8,10)},
+  ymd(y,m,d){return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`},
+  dim(y,m){return new Date(Date.UTC(y,m,0)).getUTCDate()},
+};
+const T=(date,h)=>Dt.p(date)+h*HOUR;
+const hm=t=>{const d=new Date(t);return `${String(d.getUTCHours()).padStart(2,'0')}:${String(d.getUTCMinutes()).padStart(2,'0')}`};
+const WD=['mandag','tirsdag','onsdag','torsdag','fredag','lørdag','søndag'];
+const WDS=['man.','tirs.','ons.','tors.','fre.','lør.','søn.'];
+const MON=['januar','februar','marts','april','maj','juni','juli','august','september','oktober','november','december'];
+const MONS=['jan.','feb.','mar.','apr.','maj','jun.','jul.','aug.','sep.','okt.','nov.','dec.'];
+const fDate=(s,o={})=>`${o.noWd?'':WDS[Dt.wd(s)]+' '}${Dt.d(s)}. ${MONS[Dt.m(s)-1]}${o.year?' '+Dt.y(s):''}`;
+const fDateLong=s=>`${WD[Dt.wd(s)]} ${Dt.d(s)}. ${MON[Dt.m(s)-1]} ${Dt.y(s)}`;
+const fShort=s=>`${Dt.d(s)}/${Dt.m(s)}${''}`;
+const fStamp=t=>`${fDate(Dt.s(t))} kl. ${hm(t)}`;
+
+/* ISO 8601 weeks */
+function isoWeek(s){const th=Dt.add(s,3-Dt.wd(s));const y=Dt.y(th);return{year:y,week:1+Math.floor(Dt.diff(th,`${y}-01-01`)/7)}}
+function isoDate(year,week,wd){const j4=`${year}-01-04`;const mon=Dt.add(j4,-Dt.wd(j4));return Dt.add(mon,(week-1)*7+wd)}
+function isoWeeks(y){return isoWeek(`${y}-12-28`).week}
+
+/* Danish public holidays and trading-relevant days. Movable ones follow Easter
+   (anonymous Gregorian computus). Store bededag is not a holiday from 2024. */
+function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return Dt.ymd(y,mo,da)}
+const MOVABLE=[[-3,'Skærtorsdag'],[-2,'Langfredag'],[0,'Påskedag'],[1,'2. påskedag'],[39,'Kristi himmelfartsdag'],[49,'Pinsedag'],[50,'2. pinsedag']];
+const FIXED=[['01-01','Nytårsdag'],['06-05','Grundlovsdag'],['12-24','Juleaften'],['12-25','Juledag'],['12-26','2. juledag'],['12-31','Nytårsaften']];
+const _hol={};
+function holidays(y){if(_hol[y])return _hol[y];const e=easter(y),h={};for(const[o,n]of MOVABLE)h[Dt.add(e,o)]={name:n,movable:true};for(const[md,n]of FIXED)h[`${y}-${md}`]={name:n,movable:false};return _hol[y]=h}
+function holiday(s){return holidays(Dt.y(s))[s]||null}
+function holidayDate(y,name){const h=holidays(y);return Object.keys(h).find(k=>h[k].name===name)||null}
+
+/* =====================================================================================
+   2. TRADING CALENDAR AND COMPARABLE-PERIOD MAPPING
+   A trading day D runs from D at the cutoff hour until D+1 at the cutoff hour.
+   "Same weekday last year" is an explicit ISO-week mapping, never date minus 365 days.
+   ===================================================================================== */
+function tradingDate(t,cutoff){return Dt.s(t-cutoff*HOUR)}
+function dayStart(date,cutoff){return T(date,cutoff)}
+const CMP={
+  weekday(s){const{year,week}=isoWeek(s),wd=Dt.wd(s),ly=year-1;
+    if(week<=isoWeeks(ly))return{date:isoDate(ly,week,wd),rule:'weekday',why:`Samme ISO-uge (uge ${week}) og ugedag i ${ly}`};
+    return{date:Dt.add(s,-364),rule:'w53',why:`Uge 53 findes ikke i ${ly}. Bruger samme ugedag 52 uger før`}},
+  calendar(s){let y=Dt.y(s)-1,m=Dt.m(s),d=Dt.d(s);let why=`Samme kalenderdato i ${y}`;if(m===2&&d===29){d=28;why+=' (29. feb. findes ikke; bruger 28. feb.)'}return{date:Dt.ymd(y,m,d),rule:'calendar',why}},
+  holiday(s){const h=holiday(s),hn=holiday(Dt.add(s,1));
+    if(h&&h.movable){const d=holidayDate(Dt.y(s)-1,h.name);return{date:d,rule:'holiday',why:`Samme helligdag sidste år (${h.name})`}}
+    if(hn&&hn.movable){const d=holidayDate(Dt.y(s)-1,hn.name);return{date:Dt.add(d,-1),rule:'holiday',why:`Aftenen før samme helligdag sidste år (${hn.name})`}}
+    return null},
+};
+function holidayAligned(s){return CMP.holiday(s)}
+function holidaysIn(from,to){const out=[];for(let d=from;d<=to;d=Dt.add(d,1)){const h=holiday(d);if(h)out.push({date:d,...h})}return out}
+function holidayMismatch(curFrom,curTo,lyFrom,lyTo){
+  const a=holidaysIn(curFrom,curTo),b=holidaysIn(lyFrom,lyTo);const an=new Set(a.map(x=>x.name)),bn=new Set(b.map(x=>x.name));
+  const onlyCur=a.filter(x=>!bn.has(x.name)),onlyLy=b.filter(x=>!an.has(x.name));
+  return (onlyCur.length||onlyLy.length)?{onlyCur,onlyLy}:null;
+}
+
+/* =====================================================================================
+   3. TENANTS: two legally separate companies. Nothing in the engine joins them.
+   All names, CVR numbers, e-mail domains and wages below are synthetic.
+   ===================================================================================== */
+const GROUPS=[['fadol','Fadøl'],['flaske','Flaskeøl'],['vin','Vin'],['spirit','Spiritus/cocktails'],['kaffe','Kaffe'],['alkfri','Alkoholfri'],['mad','Mad']];
+const GNAME=Object.fromEntries(GROUPS);
+/* VAT is read per product line from the POS product mapping, not assumed in the metric code. */
+const POS_PRODUCT_MAP_VAT={fadol:.25,flaske:.25,vin:.25,spirit:.25,kaffe:.25,alkfri:.25,mad:.25,unmapped:.25};
+
+const TENANTS={
+  soehesten:{
+    id:'soehesten',name:'Søhesten Bar',legal:'Søhesten Bar ApS (syntetisk)',cvr:'Syntetisk CVR 90 00 00 01',domain:'soehesten.example',
+    colorName:'havblå',defaults:{cutoff:5,target:[25,30],loading:18},
+    base:[11500,12500,16500,25000,50500,58500,13500],
+    hours:[[16,25],[16,25],[16,25],[16,26],[15,27],[14,27],[15,24]],
+    shape(wd,h){const pk=wd>=4&&wd<=5?23.3:wd===6?19.5:21.5,sg=wd>=4&&wd<=5?2.8:2.6;return Math.exp(-((h-pk)**2)/(2*sg*sg))+0.08},
+    season:[.78,.8,.88,.95,1.06,1.14,1.22,1.2,1.02,.96,.94,1.1],growth:{2024:.93,2025:1,2026:1.045},
+    holidayFx:1.35,eveFx:1.3,
+    mix(h){if(h<19)return{fadol:.40,flaske:.12,vin:.16,spirit:.12,kaffe:.06,alkfri:.07,mad:.07};if(h<24)return{fadol:.33,flaske:.12,vin:.11,spirit:.31,kaffe:.02,alkfri:.07,mad:.04};return{fadol:.28,flaske:.10,vin:.06,spirit:.45,kaffe:0,alkfri:.09,mad:.02}},
+    ticket(h){return h<24?172:140},
+    cm:{fadol:.74,flaske:.66,vin:.64,spirit:.78,kaffe:.82,alkfri:.70,mad:.55},
+    stockBase:{fadol:14000,flaske:9000,vin:16000,spirit:26000,kaffe:1500,alkfri:4000,mad:2500},
+    missingCounts:['2026-01'],
+    roster:[
+      [{r:'Bar',a:15.5,b:25.5},{r:'Bar',a:18.5,b:25.5}],
+      [{r:'Bar',a:15.5,b:25.5},{r:'Bar',a:18.5,b:25.5,pin:'freja'}],
+      [{r:'Bar',a:15.5,b:25.5},{r:'Bar',a:18.5,b:25.5}],
+      [{r:'Bar',a:15.5,b:26.5},{r:'Bar',a:18,b:26.5},{r:'Runner',a:20,b:24}],
+      [{r:'Bestyrer',a:14.5,b:27.5},{r:'Bar',a:14.5,b:27.5},{r:'Bar',a:18,b:27.5,pin:'freja'},{r:'Bar',a:20,b:27.5},{r:'Bar',a:21,b:27.5},{r:'Dør',a:22,b:27.25},{r:'Runner',a:19,b:25}],
+      [{r:'Bestyrer',a:13.5,b:27.5},{r:'Bar',a:13.5,b:27.5},{r:'Bar',a:18,b:27.5,pin:'freja'},{r:'Bar',a:20,b:27.5},{r:'Bar',a:21,b:27.5},{r:'Dør',a:22,b:27.25},{r:'Runner',a:19,b:25}],
+      [{r:'Bar',a:14.5,b:24.5},{r:'Bar',a:17,b:24.5}],
+    ],
+    pools:{Bestyrer:['luca'],Bar:['jonas','emil','sofie','ida'],Runner:['noah','oscar'],'Dør':['oscar','noah']},
+    demoEmployee:'freja',forgotEmp:'jonas',missingWage:['noah','ida'],
+    equipment:{title:'Fadølskøler defekt — fadøl skummer',desc:'Køleren til fadølsanlægget holder ikke temperaturen (viser 9 °C). Hane 1–4 skummer. Serviceaftale: ring til køleservice før kl. 12, så anlægget kan være klar til åbning kl. 15.',assign:['luca','mathias'],due:[0,12]},
+  },
+  rannor:{
+    id:'rannor',name:'Rannør Bar & Coffee',legal:'Rannør Bar & Coffee ApS (syntetisk)',cvr:'Syntetisk CVR 90 00 00 02',domain:'rannor.example',
+    colorName:'terrakotta',defaults:{cutoff:4,target:[24,29],loading:18},
+    base:[23000,23500,25000,30000,43000,47000,24000],
+    hours:[[8,24],[8,24],[8,24],[8,25],[8,26],[9,26],[9,18]],
+    shape(wd,h){const ev=wd===6?0:(wd>=4?1.6:.8);return .9*Math.exp(-((h-10)**2)/(2*1.3*1.3))+.7*Math.exp(-((h-12.5)**2)/(2*1.2*1.2))+(wd===6?.5*Math.exp(-((h-15)**2)/8):0)+ev*Math.exp(-((h-21)**2)/(2*2.2*2.2))+.06},
+    season:[.9,.9,.95,.98,1.04,1.08,1.1,1.08,1.02,1,.98,1.06],growth:{2024:.9,2025:1,2026:1.07},
+    holidayFx:1.2,eveFx:1.18,
+    mix(h){if(h<15)return{kaffe:.50,mad:.30,alkfri:.13,fadol:.03,flaske:.01,vin:.02,spirit:.01};if(h<18)return{kaffe:.22,mad:.12,alkfri:.10,fadol:.22,flaske:.08,vin:.18,spirit:.08};return{kaffe:.05,mad:.06,alkfri:.06,fadol:.28,flaske:.09,vin:.24,spirit:.22}},
+    ticket(h){return h<15?68:148},
+    cm:{fadol:.73,flaske:.65,vin:.66,spirit:.77,kaffe:.80,alkfri:.68,mad:.58},
+    stockBase:{fadol:9000,flaske:6000,vin:18000,spirit:14000,kaffe:7000,alkfri:4000,mad:6000},
+    missingCounts:['2026-08','2026-02'],
+    roster:[
+      [{r:'Barista',a:7.5,b:15.5,pin:'clara'},{r:'Barista',a:10,b:16},{r:'Bar',a:15,b:24.5},{r:'Bar',a:18,b:24.5}],
+      [{r:'Barista',a:7.5,b:15.5},{r:'Barista',a:10,b:16},{r:'Bar',a:15,b:24.5},{r:'Bar',a:18,b:24.5}],
+      [{r:'Barista',a:7.5,b:15.5},{r:'Barista',a:10,b:16},{r:'Bar',a:15,b:24.5},{r:'Bar',a:18,b:24.5}],
+      [{r:'Barista',a:7.5,b:15.5,pin:'clara'},{r:'Barista',a:10,b:16},{r:'Bar',a:15,b:25.5},{r:'Bar',a:18,b:25.5}],
+      [{r:'Bestyrer',a:9,b:18},{r:'Barista',a:7.5,b:15.5,pin:'clara'},{r:'Barista',a:10,b:16},{r:'Bar',a:15,b:26.5},{r:'Bar',a:17,b:26.5},{r:'Bar',a:20,b:26.5}],
+      [{r:'Barista',a:8.5,b:16.5},{r:'Barista',a:10,b:17},{r:'Bar',a:15,b:26.5},{r:'Bar',a:17,b:26.5},{r:'Bar',a:20,b:26.5}],
+      [{r:'Barista',a:8.5,b:18.5},{r:'Barista',a:10.5,b:18.5}],
+    ],
+    pools:{Bestyrer:['maja'],Barista:['karl','nora'],Bar:['asta','william','viktor']},
+    demoEmployee:'clara',forgotEmp:'asta',missingWage:['william','nora'],
+    equipment:{title:'Espressomaskine lækker under gruppe 2',desc:'Vand under maskinen og trykket falder. Gruppe 2 er lukket, køen bliver lang i morgenrushet. Tilkald servicetekniker og brug gruppe 1 og 3 indtil da.',assign:['maja'],due:[0,11]},
+  },
+};
+const TENANT_IDS=Object.keys(TENANTS);
+
+/* Named people. A person exists once; access comes only from explicit memberships. */
+const PEOPLE={
+  mathias:{name:'Mathias Kaisner',short:'Mathias K.',email:'mathias@kaisner.example'},
+  peter:{name:'Peter Storm',short:'Peter S.',email:'peter@soehesten.example'},
+  henrik:{name:'Henrik Dahl',short:'Henrik D.',email:'henrik@rannor.example'},
+  luca:{name:'Luca Berg',short:'Luca B.',email:'luca@soehesten.example'},
+  maja:{name:'Maja Holm',short:'Maja H.',email:'maja@rannor.example'},
+  freja:{name:'Freja Lund',short:'Freja L.',email:'freja@soehesten.example'},
+  jonas:{name:'Jonas Friis',short:'Jonas F.',email:'jonas@soehesten.example'},
+  emil:{name:'Emil Vang',short:'Emil V.',email:'emil@soehesten.example'},
+  sofie:{name:'Sofie Krog',short:'Sofie K.',email:'sofie@soehesten.example'},
+  ida:{name:'Ida Brandt',short:'Ida B.',email:'ida@soehesten.example'},
+  noah:{name:'Noah Winther',short:'Noah W.',email:'noah@soehesten.example'},
+  oscar:{name:'Oscar Riis',short:'Oscar R.',email:'oscar@soehesten.example'},
+  clara:{name:'Clara Møller',short:'Clara M.',email:'clara@rannor.example'},
+  karl:{name:'Karl Juul',short:'Karl J.',email:'karl@rannor.example'},
+  nora:{name:'Nora Skov',short:'Nora S.',email:'nora@rannor.example'},
+  asta:{name:'Asta Bach',short:'Asta B.',email:'asta@rannor.example'},
+  william:{name:'William Holt',short:'William H.',email:'william@rannor.example'},
+  viktor:{name:'Viktor Lind',short:'Viktor L.',email:'viktor@rannor.example'},
+};
+const ROLE_NAME={owner:'Ejer',manager:'Bestyrer',employee:'Medarbejder'};
+/* memberships[tenant][person] = {role, wage (kr./time, synthetic), status} */
+const MEMBERSHIP_SEED={
+  soehesten:{mathias:{role:'owner'},peter:{role:'owner'},luca:{role:'manager',wage:245},freja:{role:'employee',wage:158},jonas:{role:'employee',wage:152},emil:{role:'employee',wage:150},sofie:{role:'employee',wage:155},ida:{role:'employee',wage:150},noah:{role:'employee',wage:138},oscar:{role:'employee',wage:140}},
+  rannor:{mathias:{role:'owner'},henrik:{role:'owner'},maja:{role:'manager',wage:240},clara:{role:'employee',wage:145},karl:{role:'employee',wage:152},nora:{role:'employee',wage:150},asta:{role:'employee',wage:155},william:{role:'employee',wage:150},viktor:{role:'employee',wage:160}},
+};
+const DEMO_LOGINS=['mathias','luca','maja','henrik','freja'];
+
+/* =====================================================================================
+   4. SCENARIOS (prototype test harness only)
+   ===================================================================================== */
+const SCENARIOS=[
+  {id:'normal',name:'Normal morgen',desc:'Sund handelsdag i går. Alle kilder er friske, og intet akut venter.',now:['2026-09-26',8.5],src:{}},
+  {id:'labour',name:'Lønprocent over mål',desc:'Aflyst firmafest og en ekstra indkaldt medarbejder. Lønprocenten i går lå langt over målet, og en udstempling mangler.',now:['2026-09-26',8.5],src:{},salesFactor:.8,extraShift:true,overrun:50,forgot:0,labourNote:true},
+  {id:'stale',name:'Forældede vagtdata',desc:'Vagtplan-integrationen har ikke leveret data siden i går kl. 18:28, og der mangler en udstempling fra i forgårs.',now:['2026-09-26',8.5],src:{wf:'stale'},forgot:-1},
+  {id:'cancel',name:'Mange annulleringer',desc:'Usædvanligt mange annulleringer på Kasse 2 sent i går aftes.',now:['2026-09-26',8.5],src:{},cancel:5},
+  {id:'equipment',name:'Akut udstyrsfejl',desc:'Bestyreren har oprettet en akut opgave om defekt udstyr her til morgen.',now:['2026-09-26',8.5],src:{},equipment:true},
+  {id:'holiday',name:'Helligdag i sammenligning',desc:'Morgenen efter Kristi himmelfartsdag 2026. Sidste år lå helligdagen to uger senere, så samme ugedag sidste år var en almindelig torsdag.',now:['2026-05-15',7.75],src:{}},
+  {id:'live',name:'Aften, dagen er i gang',desc:'Fredag aften kl. 22:40. Dagens tal er foreløbige og sammenlignes med sidste år til samme tidspunkt.',now:['2026-09-25',22+40/60],src:{}},
+];
+const SRC_STATES=[['normal','Normal'],['loading','Indlæser'],['stale','Forældet'],['partial','Delvist manglende'],['mapping','Mapping-fejl'],['unavailable','Utilgængelig']];
+const SOURCES={
+  pos:{name:'OnlinePOS',kind:'Kassesystem (fiskal kilde)',every:5,staleAfter:30,feeds:'Salg, bon-tidsstempler, varelinjer, moms, rabatter, personalesalg, nulboner og annulleringer'},
+  wf:{name:'Vagtplan',kind:'Planday/Smartplan (ikke valgt endnu)',every:15,staleAfter:60,feeds:'Planlagte vagter, stemplinger, lønsatser'},
+  acc:{name:'e-conomic',kind:'Bogføring (autoritativ, kun læsning)',every:1440,staleAfter:1560,feeds:'Varekøb pr. konto; lageroptælling tastes i appen'},
+};
+
+/* =====================================================================================
+   5. SESSION STATE
+   ===================================================================================== */
+const S={user:null,tenant:null,route:'login',param:null,scenario:'normal',srcOverride:{},cfg:{},cmpMode:'weekday',salesPeriod:'day',labourPeriod:'day',taskFilter:'open',store:{},memberships:null,lastFocus:null};
+function scen(){return SCENARIOS.find(x=>x.id===S.scenario)}
+function NOW(){const n=scen().now;return T(n[0],n[1])}
+function cfg(tid){return S.cfg[tid]||(S.cfg[tid]=JSON.parse(JSON.stringify(TENANTS[tid].defaults)))}
+function srcState(k){return S.srcOverride[k]||scen().src[k]||'normal'}
+function memberships(){return S.memberships}
+function myTenants(){return TENANT_IDS.filter(t=>S.memberships[t][S.user]&&S.memberships[t][S.user].status!=='removed')}
+function myRole(tid){const m=S.memberships[tid]?.[S.user];return m&&m.status!=='removed'?m.role:null}
+const can={
+  seeMargin:r=>r==='owner',seePay:r=>r==='owner',manageMembers:r=>r==='owner',settings:r=>r==='owner',
+  seeSales:r=>r==='owner'||r==='manager',seeLabour:r=>r==='owner'||r==='manager',correctClock:r=>r==='owner'||r==='manager',
+};
+/* Scoped accessor: the only way views reach tenant data. It refuses anyone without a membership
+   in that tenant. In the product this check belongs on the server for every query. */
+function scope(tid){
+  if(!TENANTS[tid])throw new Error('Ukendt virksomhed');
+  const role=myRole(tid);
+  if(!role){auditDenied(tid);const e=new Error('Ingen adgang');e.denied=true;throw e}
+  return{tid,t:TENANTS[tid],role,cfg:cfg(tid),store:storeOf(tid),members:S.memberships[tid]};
+}
+
+/* Clear memo caches whenever inputs change */
+let MEMO=new Map();
+function memo(key,fn){if(MEMO.has(key))return MEMO.get(key);const v=fn();MEMO.set(key,v);return v}
+function resetMemo(){MEMO=new Map()}
+
+/* =====================================================================================
+   6. SYNTHETIC SOURCE GENERATOR
+   OnlinePOS is simulated per calendar hour. Sales after midnight belong to the "night"
+   that started the evening before. The configurable cutoff only decides which trading day
+   those hours are reported on; it never changes the underlying events.
+   ===================================================================================== */
+function focusNight(tid=S.tenant||'soehesten'){return memo('focus|'+tid,()=>dayContext(tid).date)}
+function scenarioSalesFactor(tid,night){const sc=scen();return sc.salesFactor&&night===focusNight(tid)?sc.salesFactor:1}
+function nightGross(tid,night){return memo(`ng|${tid}|${night}`,()=>{
+  const t=TENANTS[tid],wd=Dt.wd(night),y=Dt.y(night);
+  const h=holiday(night),hn=holiday(Dt.add(night,1));
+  if(h&&h.name==='Juleaften')return 0;
+  let g=t.base[wd]*t.season[Dt.m(night)-1]*(t.growth[y]||1);
+  if(h&&h.name==='Nytårsaften')g*=2;else if(h)g*=t.holidayFx;else if(hn&&hn.name!=='Juleaften')g*=t.eveFx;
+  g*=0.92+0.16*rnd(`${tid}|night|${night}`);
+  return g*scenarioSalesFactor(tid,night);
+})}
+function openHours(tid,night){const t=TENANTS[tid];if(nightGross(tid,night)===0)return null;return t.hours[Dt.wd(night)]}
+function hourWeights(tid,night){return memo(`hw|${tid}|${night}`,()=>{
+  const t=TENANTS[tid],oh=openHours(tid,night);if(!oh)return null;const[o,c]=oh,w={};let sum=0;
+  for(let h=o;h<c;h++){const v=t.shape(Dt.wd(night),h+.5)*(0.85+0.3*rnd(`${tid}|hw|${night}|${h}`));w[h]=v;sum+=v}
+  for(const h in w)w[h]/=sum;return w;
+})}
+/* One simulated OnlinePOS hour, as the connector would deliver it (line totals, not a model). */
+function posHour(tid,date,h){return memo(`ph|${tid}|${date}|${h}`,()=>{
+  const night=h<6?Dt.add(date,-1):date,hh=h<6?h+24:h;
+  const w=hourWeights(tid,night);if(!w||!w[hh])return null;
+  const t=TENANTS[tid],gross=nightGross(tid,night)*w[hh],mix=t.mix(hh),byCat={};
+  for(const[g]of GROUPS)byCat[g]=gross*(mix[g]||0);
+  const k=`${tid}|${date}|${h}`;
+  const tx=Math.max(1,Math.round(gross/t.ticket(hh)*(0.94+0.12*rnd(k+'tx'))));
+  const late=hh>=TENANTS[tid].hours[Dt.wd(night)][1]-1;
+  let cxN=Math.floor(tx*0.006+rnd(k+'cx')),cxAmt=cxN*(90+80*rnd(k+'cxa'));
+  const sc=scen();
+  if(sc.cancel&&night===focusNight(tid)&&hh>=22&&hh<=25){cxN=Math.round(cxN*sc.cancel+2);cxAmt=cxN*(150+60*rnd(k+'cxb'))}
+  return{night,hh,gross,byCat,tx,disc:gross*(0.011+0.012*rnd(k+'d')),staff:gross*(late?0.05:0.004)*(0.6+0.8*rnd(k+'s')),
+    voids:Math.floor(tx*0.008+rnd(k+'v')),cxN,cxAmt,cxReg2:sc.cancel&&night===focusNight(tid)&&hh>=22&&hh<=25};
+})}
+
+/* Source-state effects on what the connector has delivered */
+function posDataUntil(){const st=srcState('pos'),n=NOW(),ctx=dayContext(S.tenant);
+  if(st==='stale')return ctx.complete?T(ctx.date,23+52/60):n-47*MIN;
+  if(st==='unavailable')return ctx.complete?T(ctx.date,21+52/60):n-48*MIN;
+  return n}
+function posGap(tid,date,h){return srcState('pos')==='partial'&&date===focusNight(tid)&&(h===19||h===20)}
+function posUnmapped(tid,date){const d=Dt.diff(focusNight(tid),date);return srcState('pos')==='mapping'&&d>=0&&d<=12}
+
+/* Aggregate OnlinePOS lines over [t0,t1). Clamped to what the source has delivered.
+   Returns totals plus quality facts; missing data is never replaced with zero or estimates. */
+function sales(tid,t0,t1,opt={}){
+  const clamp=opt.noClamp?t1:Math.min(t1,posDataUntil(),NOW());
+  return memo(`sales|${tid}|${t0}|${t1}|${clamp}|${cfg(tid).cutoff}|${srcState('pos')}`,()=>{
+    const a={gross:0,vat:0,ex:0,byCat:{},byCatEx:{},tx:0,disc:0,staff:0,voids:0,cxN:0,cxAmt:0,cxReg2N:0,missingHours:[],unmappedEx:0,until:clamp};
+    for(const[g]of GROUPS){a.byCat[g]=0;a.byCatEx[g]=0}
+    for(let t=Math.floor(t0/HOUR)*HOUR;t<clamp;t+=HOUR){
+      const f=(Math.min(t+HOUR,clamp)-Math.max(t,t0))/HOUR;if(f<=0)continue;
+      const date=Dt.s(t),h=new Date(t).getUTCHours(),r=posHour(tid,date,h);if(!r)continue;
+      let k=f;if(posGap(tid,date,h)){k*=0.6;a.missingHours.push({date,h})}
+      for(const[g]of GROUPS){
+        let gv=r.byCat[g]*k;
+        if(g==='spirit'&&posUnmapped(tid,date)){const u=gv*0.22;gv-=u;a.unmappedEx+=u/(1+POS_PRODUCT_MAP_VAT.unmapped)}
+        const vat=gv*POS_PRODUCT_MAP_VAT[g]/(1+POS_PRODUCT_MAP_VAT[g]);
+        a.byCat[g]+=gv;a.byCatEx[g]+=gv-vat;a.gross+=gv;a.vat+=vat;
+      }
+      if(a.unmappedEx){/* unmapped lines still count in totals */}
+      a.tx+=r.tx*k;a.disc+=r.disc*k;a.staff+=r.staff*k;a.voids+=r.voids*k;a.cxN+=r.cxN*k;a.cxAmt+=r.cxAmt*k;if(r.cxReg2)a.cxReg2N+=r.cxN*k;
+    }
+    a.gross+=a.unmappedEx*(1+POS_PRODUCT_MAP_VAT.unmapped);a.vat+=a.unmappedEx*POS_PRODUCT_MAP_VAT.unmapped;
+    a.ex=a.gross-a.vat;a.tx=Math.round(a.tx);a.voids=Math.round(a.voids);a.cxN=Math.round(a.cxN);a.cxReg2N=Math.round(a.cxReg2N);
+    a.incomplete=clamp<t1;a.lowerBound=a.missingHours.length>0;
+    return a;
+  })}
+
+/* ---------- Workforce: roster, clock events, corrections ---------- */
+function dayIdx(s){return Dt.diff(s,'2024-01-01')}
+function roster(tid,night){return memo(`ro|${tid}|${night}`,()=>{
+  const t=TENANTS[tid];if(!openHours(tid,night))return[];
+  const slots=t.roster[Dt.wd(night)],used=new Set(),out=[],di=dayIdx(night),future=night>dayContext(tid).date;
+  slots.forEach((s,i)=>{let emp=null;
+    if(s.pin)emp=s.pin;else{const pool=t.pools[s.r];for(let j=0;j<pool.length;j++){const c=pool[(di*2+i*3+j)%pool.length];if(!used.has(c)){emp=c;break}}}
+    if(future&&slots.length>3&&i===slots.length-1&&di%3===1)emp=null; /* open shift */
+    if(emp)used.add(emp);
+    const k=`${tid}|${night}|${i}`,pS=T(night,s.a),pE=T(night,s.b);
+    const aIn=pS+Math.round((rnd(k+'in')-0.65)*14)*MIN,aOut=pE+Math.round((rnd(k+'out')-0.3)*30)*MIN;
+    out.push({id:`${tid}-${night}-${i}`,night,idx:i,emp,role:s.r,pS,pE,aIn,aOut,planned:true});
+  });
+  const sc=scen(),fn=focusNight(tid);
+  if(night===fn&&sc.extraShift){const extra=Object.keys(MEMBERSHIP_SEED[tid]).find(p=>MEMBERSHIP_SEED[tid][p].role==='employee'&&p!==t.demoEmployee&&!used.has(p));out.push({id:`${tid}-${night}-x`,night,idx:99,emp:extra,role:'Ekstra (ikke planlagt)',pS:null,pE:null,aIn:T(night,19+4/60),aOut:T(night,27.6),planned:false,note:'Indkaldt af bestyrer kl. 18:40'});
+    out.forEach(s=>{if(s.planned&&(s.role==='Bar'||s.role==='Bestyrer'))s.aOut+=sc.overrun*MIN})}
+  if(sc.forgot!=null&&night===Dt.add(fn,sc.forgot)){const s=out.find(x=>x.emp===t.forgotEmp)||out.find(x=>x.emp&&x.emp!==t.demoEmployee&&x.role!=='Bestyrer');if(s){s.aOut=null;s.forgot=true}}
+  /* Historic corrected clock-out for the demo employee: most recent shift before the focus night */
+  const cn=correctedNight(tid);
+  if(night===cn){const s=out.find(x=>x.emp===t.demoEmployee);if(s){const orig=s.pE+(7*60+12)*MIN;s.aOut=s.pE+4*MIN;s.correction={orig,corrected:s.aOut,actor:tid==='soehesten'?'luca':'maja',at:T(Dt.add(night,1),11+12/60),reason:'Glemte at stemple ud ved lukning og stemplede ud hjemmefra næste morgen. Lukketid bekræftet af bestyrer og kasseafslutningen.',approvedBy:'mathias',approvedAt:T(Dt.add(night,1),11+40/60)}}}
+  return out;
+})}
+function correctedNight(tid){return memo(`cn|${tid}`,()=>{const t=TENANTS[tid];let d=Dt.add(focusNight(tid),-1);for(let i=0;i<14;i++,d=Dt.add(d,-1)){const slots=t.roster[Dt.wd(d)];if(slots.some(s=>s.pin===t.demoEmployee))return d}return null})}
+function wfDataUntil(){const st=srcState('wf'),n=NOW(),ctx=dayContext(S.tenant);
+  if(st==='stale')return ctx.complete?T(ctx.date,18+28/60):n-132*MIN;
+  if(st==='unavailable')return ctx.complete?T(ctx.date,16):n-150*MIN;
+  return n}
+function manualFix(tid,shiftId){return storeOf(tid).clockFixes.find(f=>f.shiftId===shiftId)||null}
+/* Resolve one shift against the workforce feed and in-app corrections */
+function shiftView(tid,s){
+  const until=Math.min(wfDataUntil(),NOW());
+  const fix=manualFix(tid,s.id);
+  let aOut=s.aOut,forgot=!!s.forgot,known=true,pending=false;
+  if(fix){aOut=fix.corrected;forgot=false;pending=fix.status==='pending'}
+  const inKnown=s.aIn<=until;
+  let outKnown=aOut!=null&&aOut<=until;
+  const onNow=inKnown&&!forgot&&(aOut==null||aOut>until)&&until>=NOW()-10*MIN&&s.aIn<=NOW();
+  if(!inKnown)known=false;
+  return{...s,aOut,forgot,fix,pending,inKnown,outKnown,onNow,until};
+}
+/* Labour over [t0,t1): planned vs actual hours, loaded cost. Unknowns are reported, not zero-filled. */
+function labour(tid,t0,t1){
+  const until=Math.min(wfDataUntil(),NOW());
+  return memo(`lab|${tid}|${t0}|${t1}|${until}|${JSON.stringify(cfg(tid))}|${storeOf(tid).clockFixes.length}|${storeOf(tid).clockFixes.map(f=>f.status).join()}|${srcState('wf')}`,()=>{
+    const m=S.memberships[tid],c=cfg(tid),load=1+c.loading/100,st=srcState('wf');
+    const r={plan:0,planToNow:0,act:0,cost:0,costUnknownHours:0,unknownWage:[],forgot:[],corrections:[],open:[],byEmp:{},unmapped:0,incomplete:until<Math.min(t1,NOW()),until,extra:[]};
+    const endPlan=Math.min(t1,NOW());
+    for(let d=Dt.add(Dt.s(t0),-1);d<=Dt.s(t1);d=Dt.add(d,1)){
+      for(const raw of roster(tid,d)){const s=shiftView(tid,raw);
+        const ov=(a,b,x,y)=>Math.max(0,Math.min(b,y)-Math.max(a,x))/HOUR;
+        const ph=s.planned?ov(s.pS,s.pE,t0,t1):0,ptn=s.planned?ov(s.pS,s.pE,t0,endPlan):0;
+        if(!s.emp&&s.planned){r.open.push(s);continue}
+        let ah=0;
+        if(s.inKnown&&!s.forgot){const end=s.aOut!=null?Math.min(s.aOut,until):until;ah=ov(s.aIn,end,t0,t1)}
+        if(!ph&&!ah&&!(s.forgot&&ov(s.aIn,s.aIn+1,t0,t1)))continue;
+        r.plan+=ph;r.planToNow+=ptn;r.act+=ah;
+        const e=r.byEmp[s.emp]||(r.byEmp[s.emp]={emp:s.emp,plan:0,act:0,cost:0,shifts:[],wageKnown:true});
+        e.plan+=ph;e.act+=ah;e.shifts.push(s);
+        const wage=m[s.emp]?.wage,wageMissing=st==='partial'&&TENANTS[tid].missingWage.includes(s.emp);
+        if(wage&&!wageMissing){const cst=ah*wage*load;e.cost+=cst;r.cost+=cst}else{e.wageKnown=false;r.costUnknownHours+=ah;if(!r.unknownWage.includes(s.emp))r.unknownWage.push(s.emp)}
+        if(s.forgot)r.forgot.push(s);
+        if(s.correction||s.fix)r.corrections.push(s);
+        if(!s.planned)r.extra.push(s);
+      }
+    }
+    if(st==='mapping'){const fn=focusNight(tid);const a=Math.max(0,Math.min(T(fn,23),until,t1)-Math.max(T(fn,18.5),t0))/HOUR;if(a>0){r.unmapped=a;r.act+=a;r.costUnknownHours+=a}}
+    return r;
+  })}
+
+/* ---------- Accounting: purchases (e-conomic) and stock counts (entered in app) ---------- */
+function monthKey(y,m){return `${y}-${String(m).padStart(2,'0')}`}
+function prevMonth(y,m){return m===1?[y-1,12]:[y,m-1]}
+function stockCount(tid,y,m){const t=TENANTS[tid];if(t.missingCounts.includes(monthKey(y,m)))return null;const o={};for(const[g]of GROUPS)o[g]=t.stockBase[g]*(0.85+0.3*rnd(`${tid}|stock|${y}|${m}|${g}`));return o}
+function monthSales(tid,y,m){const c=cfg(tid).cutoff,first=Dt.ymd(y,m,1),next=m===12?Dt.ymd(y+1,1,1):Dt.ymd(y,m+1,1);return sales(tid,T(first,c),T(next,c),{noClamp:true})}
+function accState(){return srcState('acc')}
+function monthCM(tid,y,m){return memo(`cm|${tid}|${y}|${m}|${cfg(tid).cutoff}|${accState()}|${srcState('pos')}`,()=>{
+  const t=TENANTS[tid],s=monthSales(tid,y,m),[py,pm]=prevMonth(y,m),open=stockCount(tid,py,pm),close=stockCount(tid,y,m);
+  const measured=!!(open&&close);const g={};let ex=0,cogs=0,purchT=0;const st=accState();
+  for(const[k]of GROUPS){
+    const trueCogs=s.byCatEx[k]*(1-t.cm[k])*(0.96+0.08*rnd(`${tid}|cogs|${y}|${m}|${k}`));
+    const o=open?open[k]:t.stockBase[k],c=close?close[k]:t.stockBase[k]*(0.85+0.3*rnd(`${tid}|stock|${y}|${m}|${k}`));
+    let purch=trueCogs+c-o;
+    const cg=measured?(o+purch-c):purch;
+    g[k]={ex:s.byCatEx[k],purch,cogs:cg,cm:s.byCatEx[k]?(s.byCatEx[k]-cg)/s.byCatEx[k]:null};
+    ex+=s.byCatEx[k];cogs+=cg;purchT+=purch;
+  }
+  ex+=s.unmappedEx;
+  const r={y,m,ex,cogs,purch:purchT,groups:g,measured,openCounted:!!open,closeCounted:!!close,missingInvoices:0,unmappedAcct:0,unmappedPosEx:s.unmappedEx};
+  const isLast=(()=>{const[ly,lm]=lastClosedMonth(tid);return ly===y&&lm===m})();
+  if(isLast&&st==='partial'){r.missingInvoices=9840;r.cogs-=9840;r.purch-=9840;r.measured=false;r.partialNote='2 leverandørfakturaer for måneden er ikke bogført endnu (ca. 9.840 kr.)'}
+  if(isLast&&st==='mapping'){r.unmappedAcct=8420;g.spirit.cogs-=8420;g.spirit.cm=(g.spirit.ex-g.spirit.cogs)/g.spirit.ex;}
+  r.cm=r.ex?(r.ex-r.cogs)/r.ex:null;
+  return r;
+})}
+function lastClosedMonth(tid){const d=Dt.s(NOW());let y=Dt.y(d),m=Dt.m(d);return prevMonth(y,m)}
+function rolling12(tid,y,m){let ex=0,cogs=0,measured=0,months=[];let yy=y,mm=m;for(let i=0;i<12;i++){const r=monthCM(tid,yy,mm);ex+=r.ex;cogs+=r.cogs;if(r.measured)measured++;months.push(r);[yy,mm]=prevMonth(yy,mm)}return{ex,cogs,cm:(ex-cogs)/ex,measured,months}}
+
+/* =====================================================================================
+   7. METRICS (deterministic, documented; the Beregninger page renders this registry)
+   ===================================================================================== */
+const METRICS={
+  salesEx:{name:'Omsætning ex. moms',src:['pos'],formula:'Σ (linjebeløb inkl. moms − linjens moms) for alle bonlinjer med bon-tidsstempel i perioden',notes:'Momsen læses pr. varelinje fra kassens produktopsætning. Appen antager ikke en fast sats.'},
+  salesInc:{name:'Omsætning inkl. moms',src:['pos'],formula:'Σ linjebeløb inkl. moms i perioden',notes:'Vises som sekundært tal.'},
+  diff:{name:'Forskel mod sammenligning',src:['pos'],formula:'kr. = nu − sammenligning;  % = (nu − sammenligning) ÷ sammenligning × 100',notes:'Farve: grøn over +3 %, gul fra −3 % til +3 %, rød under −3 %. Ufuldstændige tal farves ikke.'},
+  labourPct:{name:'Lønprocent',src:['wf','pos'],formula:'belastet lønomkostning ÷ omsætning ex. moms × 100',notes:'Kan kun beregnes, når både vagtdata og kassedata dækker hele perioden.'},
+  loaded:{name:'Belastet lønomkostning',src:['wf'],formula:'Σ stemplede timer × timeløn × (1 + tillægsfaktor)',notes:'Tillægsfaktoren dækker feriepenge, pension, ATP m.m. som én fast procent (indstilling). Tillæg fra overenskomster er ikke modelleret.'},
+  hours:{name:'Planlagte og stemplede timer',src:['wf'],formula:'Planlagt = Σ vagtlængde i perioden;  Stemplet = Σ (ud − ind) for afsluttede og igangværende stemplinger',notes:'Åbne stemplinger uden udstempling tælles ikke med, før de er rettet. Vagter over midnat tælles på handelsdagen.'},
+  rph:{name:'Omsætning pr. bemandet time',src:['pos','wf'],formula:'omsætning ex. moms ÷ stemplede timer',notes:'Viser om bemandingen passer til trafikken.'},
+  avgTicket:{name:'Gennemsnitsbon',src:['pos'],formula:'omsætning inkl. moms ÷ antal boner',notes:'Nulboner indgår ikke i antal boner.'},
+  cm:{name:'Dækningsgrad',src:['acc','pos'],formula:'(omsætning ex. moms − vareforbrug ex. moms) ÷ omsætning ex. moms × 100;  vareforbrug = primolager + varekøb − ultimolager',notes:'Målt kræver lageroptælling ved både månedens start og slut. Uden optælling bruges varekøb som vareforbrug, og tallet markeres som indikativt.'},
+  controls:{name:'Rabatter, personalesalg, nulboner og annulleringer',src:['pos'],formula:'Σ pr. type i perioden; "normalt" = gennemsnit af samme ugedag de 8 foregående uger',notes:'Kontrol- og fejlindikator. Et højt tal er ikke i sig selv bevis på fejl eller snyd.'},
+  rolling:{name:'Rullende 7 og 28 dage',src:['pos'],formula:'Σ de seneste 7 (28) afsluttede handelsdage mod de samme 7 (28) handelsdage 52 uger før',notes:'Fjerner ugedags- og vejrstøj.'},
+};
+
+/* =====================================================================================
+   8. PERIODS AND COMPARISONS
+   ===================================================================================== */
+/* Which day the "day" card shows: today's trading day once the venue has opened, otherwise
+   the last completed trading day. Deterministic rule, shown in the UI. */
+function dayContext(tid){const n=NOW(),c=cfg(tid).cutoff,td=tradingDate(n,c);
+  const oh=TENANTS[tid].hours[Dt.wd(td)];const opened=oh&&n>=T(td,oh[0]);
+  if(opened)return{date:td,complete:false,start:T(td,c),end:n,label:'I dag'};
+  const d=Dt.add(td,-1);return{date:d,complete:true,start:T(d,c),end:T(td,c),label:'I går'};
+}
+function periodDefs(tid){const c=cfg(tid).cutoff,ctx=dayContext(tid),d=ctx.date,end=ctx.end,mode=S.cmpMode;
+  const dayMap=mode==='calendar'?CMP.calendar(d):mode==='holiday'?(CMP.holiday(d)||CMP.weekday(d)):CMP.weekday(d);
+  const ofs=end-T(d,c);
+  const iw=isoWeek(d),mon=Dt.add(d,-Dt.wd(d)),lyMon=iw.week<=isoWeeks(iw.year-1)?isoDate(iw.year-1,iw.week,0):Dt.add(mon,-364);
+  const first=Dt.ymd(Dt.y(d),Dt.m(d),1),lyFirst=Dt.ymd(Dt.y(d)-1,Dt.m(d),1),jan=`${Dt.y(d)}-01-01`,lyJan=`${Dt.y(d)-1}-01-01`;
+  const mk=(id,label,sub,from,lyFrom,cmpText,rule)=>{const t0=T(from,c),dur=end-t0,l0=T(lyFrom,c);const lyTo=Dt.s(l0+dur-1-c*HOUR);
+    return{id,label,sub,from,to:d,t0,t1:end,lyFrom,lyTo,l0,l1:l0+dur,cmpText,rule,hol:holidayMismatch(from,d,lyFrom,lyTo)}};
+  const until=ctx.complete?'':` til kl. ${hm(end)}`;
+  return{
+    day:mk('day',ctx.label,fDate(d),d,dayMap.date,`${fDate(dayMap.date,{year:true})}${until}`,dayMap),
+    week:mk('week',`Uge ${iw.week}`,`${fDate(mon,{noWd:true})}–${fDate(d,{noWd:true})}`,mon,lyMon,`uge ${iw.week} ${iw.year-1}, man.–${WDS[Dt.wd(d)]}${until}`,{rule:'isoweek',why:`Samme ISO-uge sidste år, mandag til samme ugedag${until}`}),
+    month:mk('month',MON[Dt.m(d)-1][0].toUpperCase()+MON[Dt.m(d)-1].slice(1),`1.–${Dt.d(d)}. ${MONS[Dt.m(d)-1]}`,first,lyFirst,`1.–${Dt.d(d)}. ${MONS[Dt.m(d)-1]} ${Dt.y(d)-1}${until}`,{rule:'calmonth',why:'Samme kalenderdatoer sidste år'}),
+    ytd:mk('ytd','År til dato',`1/1–${fShort(d)}`,jan,lyJan,`1/1–${fShort(d)} ${Dt.y(d)-1}${until}`,{rule:'ytd',why:'Samme kalenderdatoer sidste år'}),
+    ctx};
+}
+function weekdayMix(from,to){const c=[0,0,0,0,0,0,0];for(let d=from;d<=to;d=Dt.add(d,1))c[Dt.wd(d)]++;return c}
+function periodSales(tid,p){
+  const cur=sales(tid,p.t0,p.t1);
+  const cut=cur.until;const lyEnd=p.l0+(cut-p.t0);
+  const ly=sales(tid,p.l0,Math.min(p.l1,lyEnd),{noClamp:true});
+  return{cur,ly,comparable:!cur.lowerBound,cutAt:cur.incomplete?cut:null};
+}
+function tone(pct){if(pct==null)return'na';if(pct>3)return'good';if(pct>=-3)return'warn';return'bad'}
+function labourTone(p,c){if(p==null)return'na';if(p>c.target[1])return'bad';if(p<c.target[0])return'warn';return'good'}
+/* "Normal" controls: same weekday, previous 8 weeks, same trading-day window */
+function normalControls(tid,date){return memo(`nc|${tid}|${date}|${cfg(tid).cutoff}`,()=>{const c=cfg(tid).cutoff;let n={cxN:0,cxAmt:0,voids:0,disc:0,staff:0};
+  for(let i=1;i<=8;i++){const d=Dt.add(date,-7*i),s=sales(tid,T(d,c),T(Dt.add(d,1),c),{noClamp:true});n.cxN+=s.cxN;n.cxAmt+=s.cxAmt;n.voids+=s.voids;n.disc+=s.disc;n.staff+=s.staff}
+  for(const k in n)n[k]/=8;return n})}
+</script>
+<script>
+'use strict';
+/* =====================================================================================
+   9. TENANT-SCOPED MUTABLE STORE (tasks, notes, clock fixes, swaps, access log)
+   Each tenant has its own store object. No function takes two tenants.
+   ===================================================================================== */
+function mgrOf(tid){return tid==='soehesten'?'luca':'maja'}
+function seedStore(tid){
+  const t=TENANTS[tid],n=NOW(),fn=focusNight(tid),today=Dt.s(n),sc=scen(),mgr=mgrOf(tid),demo=t.demoEmployee;
+  let seq=0;const id=p=>`${tid}-${p}-${++seq}`;
+  const tasks=tid==='soehesten'?[
+    {id:id('task'),title:'Bestil ekstra CO₂ til fadølsanlægget',desc:'Kun én fuld flaske tilbage på lageret.',assignees:['luca'],urgent:false,due:T(Dt.add(today,2),12),status:'open',createdBy:'mathias',createdAt:n-20*HOUR,photo:false},
+    {id:id('task'),title:'Knyt ny efterårscocktailmenu til varegruppe i kassen',desc:'9 nye cocktails skal kobles til "Spiritus/cocktails" i OnlinePOS, ellers bliver varegruppetal og dækningsgrad forkerte.',assignees:['luca','mathias'],urgent:false,due:T(Dt.add(today,4),16),status:'progress',createdBy:'mathias',createdAt:n-3*DAY,photo:false},
+    {id:id('task'),title:'Skift pære over baggårdsdøren',desc:'',assignees:['noah'],urgent:false,due:null,status:'open',createdBy:'luca',createdAt:n-2*DAY,photo:true},
+    {id:id('task'),title:'Tjek pantlager før lørdag',desc:'Tæl tomme fustager og kasser, så afhentning kan bestilles.',assignees:['freja'],urgent:false,due:T(Dt.add(today,1),15),status:'open',createdBy:'luca',createdAt:n-26*HOUR,photo:false},
+    {id:id('task'),title:'Rens isterningmaskine',desc:'',assignees:['oscar'],urgent:false,due:null,status:'resolved',createdBy:'luca',createdAt:n-6*DAY,resolvedBy:'oscar',resolvedAt:n-2*DAY-5*HOUR,photo:false},
+    {id:id('task'),title:'Nyt vinkort til tryk',desc:'',assignees:['luca'],urgent:false,due:null,status:'resolved',createdBy:'mathias',createdAt:n-10*DAY,resolvedBy:'luca',resolvedAt:n-7*DAY,photo:false},
+  ]:[
+    {id:id('task'),title:'Bestil havremælk (4 kasser)',desc:'Leverandøren har lang leveringstid i denne uge.',assignees:['maja'],urgent:false,due:T(Dt.add(today,1),10),status:'open',createdBy:'maja',createdAt:n-18*HOUR,photo:false},
+    {id:id('task'),title:'Kalkafrens af opvaskemaskine',desc:'',assignees:['karl'],urgent:false,due:T(Dt.add(today,3),12),status:'progress',createdBy:'maja',createdAt:n-2*DAY,photo:false},
+    {id:id('task'),title:'Fyld op med to-go-kopper',desc:'Både 8 oz og 12 oz.',assignees:['clara'],urgent:false,due:null,status:'open',createdBy:'maja',createdAt:n-30*HOUR,photo:false},
+    {id:id('task'),title:'Nyt skilt til terrassen',desc:'',assignees:['maja','henrik'],urgent:false,due:null,status:'open',createdBy:'henrik',createdAt:n-5*DAY,photo:true},
+    {id:id('task'),title:'Udskift knive i kaffekværn',desc:'',assignees:['viktor'],urgent:false,due:null,status:'resolved',createdBy:'maja',createdAt:n-9*DAY,resolvedBy:'viktor',resolvedAt:n-4*DAY,photo:false},
+  ];
+  if(sc.equipment){const e=t.equipment;tasks.unshift({id:id('task'),title:e.title,desc:e.desc,assignees:e.assign,urgent:true,due:T(Dt.add(today,e.due[0]),e.due[1]),status:'open',createdBy:mgr,createdAt:T(today,7+52/60),photo:true})}
+  const notes=tid==='soehesten'?[
+    {id:id('note'),date:Dt.add(fn,-6),text:'Privat fest i baglokalet (40 personer).',by:'luca',at:T(Dt.add(fn,-5),10),metric:'sales'},
+    {id:id('note'),date:Dt.add(fn,-3),text:'Regn hele aftenen.',by:'luca',at:T(Dt.add(fn,-2),9.5),metric:null},
+  ]:[
+    {id:id('note'),date:Dt.add(fn,-5),text:'Ølhane 3 i stykker hele aftenen.',by:'maja',at:T(Dt.add(fn,-4),9),metric:'sales'},
+    {id:id('note'),date:Dt.add(fn,-2),text:'Loppemarked på pladsen. Travl formiddag.',by:'maja',at:T(Dt.add(fn,-1),8.2),metric:null},
+  ];
+  if(sc.labourNote){const ex=roster(tid,fn).find(x=>!x.planned),who=ex?PEOPLE[ex.emp].name.split(' ')[0]:'En ekstra medarbejder';notes.push({id:id('note'),date:fn,text:tid==='soehesten'?`Firmafest (60 pers.) aflyst kl. 17, for sent til at skære vagter. ${who} var allerede kaldt ind.`:`Firmaarrangement aflyst kl. 16. ${who} var allerede kaldt ind.`,by:mgr,at:T(fn,23.2),metric:'labour'})}
+  if(sc.id==='holiday')notes.push({id:id('note'),date:fn,text:'Kristi himmelfartsdag: fuldt hus fra kl. 20.',by:mgr,at:T(Dt.add(fn,1),2),metric:'sales'});
+  const up=upcomingShifts(tid,demo,21);
+  const swaps=up.length>1?[{id:id('swap'),shiftId:up[1].id,from:demo,to:tid==='soehesten'?'sofie':'nora',status:'manager',createdAt:n-5*HOUR}]:[];
+  const log=[
+    {at:n-3*HOUR-10*MIN,who:'system',what:'OnlinePOS: natlig synkronisering afsluttet'},
+    {at:n-20*HOUR,who:tid==='soehesten'?'mathias':'henrik',what:'Så løndetaljer pr. medarbejder'},
+    {at:n-26*HOUR,who:mgr,what:'Oprettede opgave'},
+    {at:n-2*DAY,who:'mathias',what:`Inviterede ${tid==='soehesten'?'Oscar R.':'Viktor L.'} som medarbejder`},
+  ];
+  return{tasks,notes,clockFixes:[],clockEvents:[],swaps,claims:[],log,seq:100};
+}
+function storeOf(tid){return S.store[tid]||(S.store[tid]=seedStore(tid))}
+function nid(tid,p){const s=storeOf(tid);return `${tid}-${p}-${++s.seq}`}
+function audit(tid,what){if(!S.user)return;storeOf(tid).log.unshift({at:NOW(),who:S.user,what})}
+function auditDenied(tid){storeOf(tid).log.unshift({at:NOW(),who:S.user||'ukendt',what:'Afvist: forsøgte at åbne virksomheden uden medlemskab'})}
+function upcomingShifts(tid,emp,days){const out=[],start=dayContext(tid).date;for(let i=0;i<days;i++){const d=Dt.add(start,i);for(const s of roster(tid,d))if(s.emp===emp&&s.pE>NOW())out.push(s)}return out}
+function openShifts(tid,days){const out=[],start=dayContext(tid).date;for(let i=1;i<days;i++){const d=Dt.add(start,i);for(const s of roster(tid,d))if(!s.emp&&s.planned)out.push(s)}return out}
+function shiftById(tid,id){const night=id.split('-').slice(1,4).join('-');return roster(tid,night).find(s=>s.id===id)}
+
+/* =====================================================================================
+   10. FORMATTING AND SMALL COMPONENTS
+   ===================================================================================== */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf0=new Intl.NumberFormat('da-DK',{maximumFractionDigits:0}),nf1=new Intl.NumberFormat('da-DK',{minimumFractionDigits:1,maximumFractionDigits:1});
+const kr=v=>v==null||!isFinite(v)?'—':`${nf0.format(Math.round(v))} kr.`;
+const krS=v=>(Math.round(v)>0?'+':Math.round(v)<0?'−':'±')+nf0.format(Math.abs(Math.round(v)))+' kr.';
+const pc=v=>v==null||!isFinite(v)?'—':`${nf1.format(v)} %`;
+const pcS=v=>v==null||!isFinite(v)?'—':(v>=0.05?'+':v<=-0.05?'−':'±')+nf1.format(Math.abs(v))+' %';
+const hrs=v=>v==null?'—':`${nf1.format(v)} t`;
+const hrsS=v=>(v>=0.05?'+':v<=-0.05?'−':'±')+nf1.format(Math.abs(v))+' t';
+const pn=id=>id==='system'?'System':(PEOPLE[id]?.short||id);
+const initials=id=>(PEOPLE[id]?.name||'?').split(' ').map(x=>x[0]).join('').slice(0,2);
+const TONE_WORD={good:'over sidste år',warn:'på niveau med sidste år (±3 %)',bad:'under sidste år',na:''};
+function deltaChip(cur,ly,{comparable=true,reason=''}={}){
+  if(cur==null||ly==null)return`<span class="delta na">Ingen sammenligning</span>`;
+  if(!ly)return`<span class="delta na">Sidste år: 0 kr. Ingen procent.</span>`;
+  const d=cur-ly,p=d/ly*100,tn=comparable?tone(p):'na',sym={good:'▲',bad:'▼',warn:'≈',na:'·'}[tn];
+  return`<span class="delta ${tn}"><span aria-hidden="true">${sym}</span> ${krS(d)} · ${pcS(p)}${comparable?`<span class="sr-only">, ${TONE_WORD[tn]}</span>`:` <span class="small">(${esc(reason||'ikke sammenlignelig')})</span>`}</span>`;
+}
+function srcInfo(k,tid=S.tenant){const st=srcState(k),n=NOW(),today=Dt.s(n);let last,until;
+  if(k==='pos'){until=st==='normal'||st==='loading'||st==='mapping'||st==='partial'?n:posDataUntil();last=st==='stale'||st==='unavailable'?until:n-2*MIN}
+  else if(k==='wf'){until=st==='stale'||st==='unavailable'?wfDataUntil():n;last=st==='stale'||st==='unavailable'?until:n-5*MIN}
+  else{last=st==='stale'?T(Dt.add(today,-3),3):st==='unavailable'?T(Dt.add(today,-2),3):T(today,3);until=last}
+  const when=Dt.s(last)===today?`kl. ${hm(last)}`:fStamp(last);
+  const label={normal:`Opdateret ${when}`,loading:'Henter data …',stale:`Forældet · sidst ${when}`,partial:'Delvist manglende data',mapping:'Mapping-fejl',unavailable:`Svarer ikke · sidst ${when}`}[st];
+  return{k,name:SOURCES[k].name,state:st,last,until,label,when};
+}
+const RANK={normal:0,loading:1,partial:2,mapping:2,stale:3,unavailable:4};
+function srcBtn(keys,metric,pid){const infos=keys.map(k=>srcInfo(k));const worst=infos.reduce((a,b)=>RANK[b.state]>RANK[a.state]?b:a);
+  const txt=infos.length===1?`${worst.name} · ${worst.label}`:(worst.state==='normal'?`${infos.map(i=>i.name).join(' + ')} · opdateret`:`${worst.name} · ${worst.label}`);
+  return`<button class="srcbtn" type="button" data-act="metric" data-id="${metric}" data-p="${pid||''}" aria-label="Kilde og friskhed for ${esc(METRICS[metric]?.name||metric)}: ${esc(txt)}"><span class="sdot ${worst.state}" aria-hidden="true"></span><span>${esc(txt)}</span></button>`}
+const ICON={
+  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  sales:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  labour:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.5" cy="9" r="2.5"/><path d="M16 14.2c2.9.1 5 2.6 5 5.8"/>',
+  tasks:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/>',
+  more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  me:'<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.8 3.8-6 7.5-6s6.7 2.2 7.5 6"/>',
+  history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
+  margin:'<path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/>',
+};
+const icon=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
+const MONO={
+  soehesten:'<svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4 12c3-3 5-3 8 0s5 3 8 0 5-3 8 0"/><path d="M4 19c3-3 5-3 8 0s5 3 8 0 5-3 8 0"/><path d="M4 26c3-3 5-3 8 0s5 3 8 0 5-3 8 0" opacity=".55"/></svg>',
+  rannor:'<svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h16v7a7 7 0 0 1-7 7h-2a7 7 0 0 1-7-7z"/><path d="M22 14h2.5a3 3 0 0 1 0 6H22"/><path d="M11 4c-1 1.5 1 2.5 0 4M16 4c-1 1.5 1 2.5 0 4"/></svg>',
+};
+
+/* =====================================================================================
+   11. DERIVED FACTS SHARED BY SCREENS
+   ===================================================================================== */
+function labourSummary(tid,p){
+  const wf=srcState('wf'),pos=srcState('pos'),c=cfg(tid);
+  const L=labour(tid,p.t0,p.t1),Sx=sales(tid,p.t0,p.t1),LL=labour(tid,p.l0,p.l1),SL=sales(tid,p.l0,p.l1,{noClamp:true});
+  let pct=null,bound=null,blocked=null,partial=null;const qual=[];
+  if(wf==='loading'||pos==='loading')blocked='loading';
+  else if(wf==='unavailable')blocked=`Vagtplan svarer ikke. Sidste data ${fStamp(L.until)}.`;
+  else if(pos==='unavailable')blocked='OnlinePOS svarer ikke, så omsætningen er ukendt.';
+  else if(L.incomplete){blocked=`Vagtdata findes kun til ${fStamp(L.until)}.`;const Lp=labour(tid,p.t0,Math.min(p.t1,L.until)),Sp=sales(tid,p.t0,Math.min(p.t1,L.until));if(Sp.ex)partial={pct:Lp.cost/Sp.ex*100,until:L.until}}
+  else if(Sx.incomplete)blocked=`Kassedata findes kun til ${fStamp(Sx.until)}.`;
+  else{
+    pct=Sx.ex?L.cost/Sx.ex*100:null;
+    if(L.costUnknownHours>0){bound='min';qual.push(`${hrs(L.costUnknownHours)} uden kendt lønsats`)}
+    if(L.forgot.length){bound='min';qual.push(`${L.forgot.length} åben stempling ikke medregnet`)}
+    if(Sx.lowerBound){bound=bound==='min'?'unknown':'max';qual.push('omsætning ufuldstændig')}
+  }
+  const lyPct=SL.ex?LL.cost/SL.ex*100:null;
+  let tn='na';if(pct!=null){if(!bound)tn=labourTone(pct,c);else if(bound==='min'&&pct>c.target[1])tn='bad';else if(bound==='max'&&pct<c.target[0])tn='warn'}
+  return{L,Sx,LL,SL,pct,lyPct,bound,blocked,partial,qual,tn,c};
+}
+function computeIssues(sc,P){
+  const{tid}=sc,out=[],st=sc.store,c=cfg(tid);
+  st.tasks.filter(t=>t.urgent&&t.status!=='resolved').forEach(t=>out.push({score:t.due&&t.due<NOW()?100:95,sev:'bad',kicker:'Akut opgave',title:t.title,detail:`Ansvarlig: ${t.assignees.map(pn).join(', ')}${t.due?` · frist ${fStamp(t.due)}`:''} · ${STATUS_NAME[t.status]}`,href:`#/${tid}/tasks/${t.id}`,act:'Åbn opgaven'}));
+  for(const k of['pos','wf','acc']){const i=srcInfo(k);
+    if(i.state==='unavailable')out.push({score:92,sev:'bad',kicker:'Datakilde svarer ikke',title:`${i.name} svarer ikke`,detail:`Ingen nye data siden ${fStamp(i.last)}. Tal fra ${i.name} vises som ukendte, ikke som 0.`,href:`#/${tid}/sources`,act:'Se datakilder'});
+    if(i.state==='stale')out.push({score:76,sev:'warn',kicker:'Forældede data',title:`${i.name}: ingen nye data siden ${fStamp(i.last)}`,detail:k==='wf'?'Timer og lønprocent for i går kan ikke gøres færdige, før integrationen leverer igen.':'Berørte tal er markeret som ufuldstændige.',href:`#/${tid}/sources`,act:'Se datakilder'});
+    if(i.state==='partial'||i.state==='mapping')out.push({score:60,sev:'warn',kicker:i.state==='partial'?'Delvist manglende data':'Mapping-fejl',title:`${i.name}: ${SRC_PROBLEM[k][i.state].short}`,detail:SRC_PROBLEM[k][i.state].long,href:`#/${tid}/sources`,act:'Se datakilder'});
+  }
+  if(can.seeLabour(sc.role)){
+    const ls=labourSummary(tid,P.day);
+    if(ls.pct!=null&&ls.tn==='bad')out.push({score:ls.pct>c.target[1]+3?88:80,sev:'bad',kicker:'Lønprocent over mål',title:`Lønprocent ${ls.bound==='min'?'mindst ':''}${pc(ls.pct)} ${P.ctx.label.toLowerCase()}. Målet er ${c.target[0]}–${c.target[1]} %.`,detail:`Stemplet ${hrs(ls.L.act)} mod planlagt ${hrs(P.ctx.complete?ls.L.plan:ls.L.planToNow)} (${hrsS(ls.L.act-(P.ctx.complete?ls.L.plan:ls.L.planToNow))}). Omsætning ${deltaWord(ls.Sx.ex,sales(tid,P.day.l0,P.day.l1,{noClamp:true}).ex)}.${ls.L.extra.length?` Ikke-planlagt vagt: ${ls.L.extra.map(s=>pn(s.emp)).join(', ')}.`:''}`,href:`#/${tid}/labour`,act:'Se personale'});
+    const wk=labour(tid,P.week.t0,P.week.t1);
+    wk.forgot.forEach(s=>out.push({score:72,sev:'warn',kicker:'Manglende udstempling',title:`${pn(s.emp)} mangler udstempling fra ${fDate(s.night)}`,detail:`Stemplede ind kl. ${hm(s.aIn)}. Timerne tælles ikke med, før en bestyrer har rettet stemplingen.`,href:`#/${tid}/labour`,act:'Ret stempling'}));
+  }
+  if(can.seeSales(sc.role)&&srcState('pos')!=='unavailable'&&srcState('pos')!=='loading'){
+    const s=sales(tid,P.day.t0,P.day.t1),nc=normalControls(tid,P.day.from);
+    if(s.cxN>=Math.max(8,3*nc.cxN))out.push({score:84,sev:'bad',kicker:'Kontrol: annulleringer',title:`${s.cxN} annulleringer ${P.ctx.label.toLowerCase()}. Normalt ca. ${Math.round(nc.cxN)}.`,detail:`${kr(s.cxAmt)} i alt${s.cxReg2N?`, heraf ${s.cxReg2N} på Kasse 2 mellem kl. 22 og 02`:''}. Kan være fejl eller træning. Et højt tal er ikke bevis for snyd.`,href:`#/${tid}/sales/controls`,act:'Se kontroltal'});
+  }
+  return out.sort((a,b)=>b.score-a.score);
+}
+function deltaWord(cur,ly){if(!ly)return'uden sammenligning';const p=(cur-ly)/ly*100;return`${pcS(p)} mod sidste år`}
+const STATUS_NAME={open:'Åben',progress:'I gang',resolved:'Løst'};
+const SRC_PROBLEM={
+  pos:{partial:{short:'Kasse 2 mangler data kl. 19–21',long:'Salg fra Kasse 2 mellem kl. 19 og 21 er ikke leveret. Berørte tal vises som minimumsværdier og farves ikke.'},mapping:{short:'9 nye varer uden varegruppe',long:'Den nye efterårscocktailmenu er ikke knyttet til en varegruppe i kassen. Totalen er rigtig, men varegruppefordelingen og dækningsgrad pr. gruppe er ufuldstændige.'}},
+  wf:{partial:{short:'2 medarbejdere uden lønsats',long:'Timerne er kendt, men lønsatsen mangler for 2 medarbejdere. Lønomkostning og lønprocent vises som minimumsværdier.'},mapping:{short:'1 stempling uden kendt medarbejder',long:'En stempling med vagtplan-ID PD-4471 kan ikke kobles til en medarbejder. Timerne tæller med, men lønomkostningen for dem er ukendt.'}},
+  acc:{partial:{short:'Varekøb ikke fuldt bogført',long:'2 leverandørfakturaer for sidste måned er ikke bogført. Dækningsgraden vises som indikativ og er sandsynligvis for høj.'},mapping:{short:'1 konto uden varegruppe',long:'Konto 1330 "Varekøb øvrigt" (8.420 kr.) er ikke knyttet til en varegruppe. Totalen er med, men dækningsgrad pr. gruppe er ufuldstændig.'}},
+};
+
+/* =====================================================================================
+   12. SCREEN FRAME
+   ===================================================================================== */
+function protoStrip(){const sc=scen();return`<div class="proto" role="region" aria-label="Prototype"><span class="clock"><strong>PROTOTYPE</strong> · syntetiske data · ${esc(fDate(Dt.s(NOW()),{year:true}))} ${hm(NOW())}</span><button type="button" data-act="scenario" aria-haspopup="dialog">Testscenarie: ${esc(sc.name)} ▾</button></div>`}
+function tabsFor(sc,active){
+  const tid=sc.tid,items=sc.role==='employee'?[['me','Min side','me'],['history','Historik','history'],['tasks','Opgaver','tasks'],['more','Mere','more']]:[['home','Overblik','home'],['sales','Salg','sales'],['labour','Personale','labour'],['tasks','Opgaver','tasks'],['more','Mere','more']];
+  if(sc.role==='owner')items.splice(3,0,['margin','Dækningsgrad','margin']);
+  const urgent=sc.store.tasks.filter(t=>t.urgent&&t.status!=='resolved').length;
+  return`<nav class="tabs" aria-label="Hovedmenu">${items.map(([r,l,i])=>`<a href="#/${tid}/${r}" ${active===r?'aria-current="page"':''} class="${r==='margin'?'opt':''}">${icon(i)}<span>${l}${r==='tasks'&&urgent?` <span class="dot" aria-label="${urgent} akutte">${urgent}</span>`:''}</span></a>`).join('')}</nav>`;
+}
+function frame(sc,active,body){
+  const t=sc.t,multi=myTenants().length>1;
+  document.body.dataset.tenant=sc.tid;
+  document.title=`${t.name} · ${PAGE_TITLE[active]||''} · prototype`;
+  return`${protoStrip()}<div class="shell"><header class="brandbar"><div class="row"><div class="id"><div class="mono">${MONO[sc.tid]}</div><div><h1>${esc(t.name)}</h1><div class="legal">${esc(t.legal)}</div></div></div>
+  <div class="who">${multi?`<button class="chipbtn" type="button" data-act="switch">Skift virksomhed</button>`:''}<span class="role"><span class="sr-only">Logget ind som </span>${esc(pn(S.user))} · ${ROLE_NAME[sc.role]}</span></div></div></header>
+  ${tabsFor(sc,active)}<main id="main" tabindex="-1">${body}</main></div>`;
+}
+const PAGE_TITLE={home:'Overblik',sales:'Salg',labour:'Personale',margin:'Dækningsgrad',tasks:'Opgaver',more:'Mere',sources:'Datakilder',rules:'Beregninger og kalender',members:'Medlemmer',log:'Adgangslog',settings:'Indstillinger',me:'Min side',history:'Min historik'};
+function pageHead(title,sub){return`<div class="page-h"><h2 tabindex="-1" data-pagefocus>${esc(title)}</h2>${sub?`<span class="sub">${sub}</span>`:''}</div>`}
+function skelTile(label){return`<div class="tile" aria-busy="true"><span class="lbl">${esc(label)}</span><span class="big"><span class="skel"></span></span><span class="inc"><span class="skel w10"></span></span><span class="cmp">Henter fra kilden …</span></div>`}
+
+/* =====================================================================================
+   13. OWNER / MANAGER HOME
+   ===================================================================================== */
+function vHome(sc){
+  const{tid,role}=sc,P=periodDefs(tid),ctx=P.ctx,issues=computeIssues(sc,P),c=cfg(tid);
+  const top=issues[0];
+  const topHtml=top?`<section class="urgent sev-${top.sev}" aria-labelledby="top-issue"><div class="ic" aria-hidden="true">!</div><div><div class="k">Vigtigst nu · ${esc(top.kicker)}</div><div class="t" id="top-issue">${esc(top.title)}</div><div class="d">${esc(top.detail)}</div><div class="acts"><a class="btn small primary" href="${top.href}">${esc(top.act)}</a>${issues.length>1?`<button class="btn small" type="button" data-act="issues">Se alle ${issues.length} forhold</button>`:''}</div></div></section>`
+    :`<section class="urgent sev-good" aria-labelledby="top-issue"><div class="ic" aria-hidden="true">✓</div><div><div class="k">Vigtigst nu</div><div class="t" id="top-issue">Intet kræver handling</div><div class="d">Alle datakilder er opdaterede, og der er ingen akutte opgaver.${can.seeLabour(role)?(()=>{const ls=labourSummary(tid,P.day);return ls.tn==='good'?' Lønprocenten er inden for målet.':ls.tn==='warn'?` Lønprocenten (${pc(ls.pct)}) er under målet. Det kræver ikke handling, men tjek service.`:''})():''}</div></div></section>`;
+  const cmpName={weekday:'samme ugedag sidste år',calendar:'samme dato sidste år',holiday:'samme helligdag sidste år'}[S.cmpMode];
+  const ctxLine=`<p class="contextline"><span><strong>${ctx.complete?'Morgenkontrol':'Handelsdag i gang'}</strong> · ${ctx.complete?'viser gårsdagens afsluttede handelsdag':'foreløbige tal til nu'}: ${esc(fDateLong(ctx.date))}, kl. ${String(c.cutoff).padStart(2,'0')}:00–${String(c.cutoff).padStart(2,'0')}:00</span><span class="muted">Sammenligning: ${cmpName} · beløb ex. moms</span></p>`;
+  const salesHtml=can.seeSales(role)?`<section class="span-12" aria-labelledby="h-sales"><h3 id="h-sales" class="sr-only">Omsætning</h3><div class="sales-grid">${['day','week','month','ytd'].map(k=>salesTile(tid,P[k])).join('')}</div></section>`:'';
+  const labHtml=can.seeLabour(role)?labourTile(tid,P):'';
+  const cmHtml=can.seeMargin(role)?cmTile(tid):'';
+  const srcHtml=`<section class="span-12" aria-labelledby="h-src"><div class="sec"><h3 id="h-src">Datakilder</h3></div><div class="sources">${['pos','wf','acc'].map(k=>{const i=srcInfo(k);return`<button type="button" class="srcchip state-${i.state}" data-act="source" data-id="${k}"><span class="n"><span class="sdot ${i.state}" aria-hidden="true"></span>${esc(i.name)}</span><span class="s">${esc(i.label)}</span></button>`}).join('')}</div></section>`;
+  const urgentTasks=sc.store.tasks.filter(t=>t.urgent&&t.status!=='resolved');
+  const utHtml=urgentTasks.length?`<section class="span-12 card" aria-labelledby="h-ut"><div class="card-h"><h3 id="h-ut">Akutte opgaver</h3><a class="btn small" href="#/${tid}/tasks">Alle opgaver</a></div>${urgentTasks.map(t=>taskItem(sc,t,true)).join('')}</section>`:'';
+  const dayNotes=sc.store.notes.filter(n=>n.date===ctx.date);
+  const noteHtml=`<section class="span-12" aria-label="Note til dagen"><div class="toolbar">${dayNotes.map(n=>noteView(n)).join('')}<button type="button" class="addnote" data-act="note-add" data-date="${ctx.date}">+ Tilføj note til ${esc(fDate(ctx.date))}</button></div></section>`;
+  return pageHead('Overblik',`${esc(fDate(ctx.date))}`)+ctxLine+`<div class="home-grid"><div class="span-12">${topHtml}</div>${salesHtml}${labHtml?`<div class="${cmHtml?'span-7':'span-12'}">${labHtml}</div>`:''}${cmHtml?`<div class="${labHtml?'span-5':'span-12'}">${cmHtml}</div>`:''}${srcHtml}${utHtml}${noteHtml}</div>`;
+}
+function salesTile(tid,p){
+  const pos=srcState('pos');if(pos==='loading')return skelTile(p.label);
+  const href=`#/${tid}/sales/${p.id}`;
+  const name=`${p.label}, ${p.sub}`;
+  if(pos==='unavailable'){const r=sales(tid,p.t0,p.t1);
+    return`<div class="tile"><a class="lbl stretch" href="${href}">${esc(p.label)}</a><span class="per">${esc(p.sub)}</span><span class="big" aria-label="Ukendt">—</span><span class="inc">Ukendt: OnlinePOS svarer ikke</span><span class="flag bad">Sidst modtaget ${esc(fStamp(r.until))}: ${kr(r.ex)}${r.until<p.t1?' (ufuldstændigt)':''}</span>${srcBtn(['pos'],'salesEx',p.id)}</div>`}
+  const r=periodSales(tid,p);
+  const hol=p.hol?`<span class="flag warn" title="Helligdag forskudt"><span aria-hidden="true">⚑</span> ${esc(holText(p.hol))}</span>`:'';
+  const stale=r.cutAt?`<span class="flag warn">Data kun til ${esc(fStamp(r.cutAt))}. Begge år sammenlignes til samme tidspunkt.</span>`:'';
+  return`<div class="tile"><a class="lbl stretch" href="${href}" aria-label="${esc(name)}: se salgsdetaljer">${esc(p.label)}</a><span class="per">${esc(p.sub)}</span>
+  <span class="big">${r.cur.lowerBound?'<span class="lowerb">mindst</span>':''}${kr(r.cur.ex)}</span><span class="inc">${kr(r.cur.gross)} inkl. moms</span>
+  ${deltaChip(r.cur.ex,r.ly.ex,{comparable:r.comparable,reason:'data mangler'})}
+  <span class="cmp">vs. ${esc(p.cmpText)}: ${kr(r.ly.ex)}</span>${hol}${stale}${srcBtn(['pos'],'salesEx',p.id)}</div>`;
+}
+function holText(h){const a=h.onlyCur.map(x=>x.name),b=h.onlyLy.map(x=>x.name);
+  if(a.length&&!b.length)return`${a.join(', ')} kun i år`;if(b.length&&!a.length)return`${b.join(', ')} kun sidste år`;return`Helligdage forskudt: ${[...new Set([...a,...b])].join(', ')}`}
+function gauge(pct,c,max=50){const x=v=>Math.max(0,Math.min(100,v/max*100));
+  return`<div class="gauge" aria-hidden="true"><div class="band" style="left:${x(c.target[0])}%;width:${x(c.target[1])-x(c.target[0])}%"></div>${pct!=null?`<div class="mark" style="left:${x(pct)}%"></div>`:''}</div><div class="gauge-scale" aria-hidden="true"><span>0 %</span><span>Mål ${c.target[0]}–${c.target[1]} %</span><span>${max} %</span></div>`}
+function labourTile(tid,P){
+  const p=P.day,ls=labourSummary(tid,p),c=ls.c;
+  if(ls.blocked==='loading')return`<section class="card" aria-busy="true"><h3>Lønprocent</h3><p><span class="skel"></span></p><p class="muted small">Henter fra vagtplan og kasse …</p></section>`;
+  const planRef=P.ctx.complete?ls.L.plan:ls.L.planToNow,act=ls.L.act,maxH=Math.max(planRef,act,1);
+  const valTxt=ls.pct!=null?`${ls.bound==='min'?'<span class="lowerb">mindst</span>':ls.bound==='max'?'<span class="lowerb">højst</span>':''}${pc(ls.pct)}`:'—';
+  const toneTxt={good:'Inden for målet',bad:'Over målet',warn:'Under målet',na:''}[ls.tn];
+  const hoursKnown=srcState('wf')!=='unavailable';
+  return`<section class="card" aria-labelledby="h-lab"><div class="card-h"><h3 id="h-lab"><a class="stretch-inline" href="#/${tid}/labour">Lønprocent ${esc(P.ctx.label.toLowerCase())}</a></h3>${ls.pct!=null?`<span class="delta ${ls.tn}" style="margin:0"><span aria-hidden="true">${{good:'✓',bad:'▲',warn:'▼',na:'·'}[ls.tn]}</span> ${toneTxt||'Usikkert tal'}</span>`:''}</div>
+  <div class="big xl">${valTxt}</div>
+  ${ls.blocked?`<p class="flag ${srcState('wf')==='unavailable'||srcState('pos')==='unavailable'?'bad':'warn'}" style="display:flex">Kan ikke beregnes endnu. ${esc(ls.blocked)}</p>`:''}
+  ${ls.qual.length?`<p class="small warn-text" style="margin:6px 0 0">${esc(ls.qual.join(' · '))}</p>`:''}
+  ${gauge(ls.pct,c)}
+  <p class="small muted" style="margin:4px 0 0">Sidste år samme ${P.ctx.complete?'dag':'tidspunkt'}: ${pc(ls.lyPct)}${P.ctx.complete?'':' · Dagen er i gang. Lønprocenten falder typisk sidst på aftenen.'}</p>
+  <div class="hours" role="group" aria-label="Timer">
+    <span>Planlagt${P.ctx.complete?'':' til nu'}</span><span class="hbar plan" style="width:${planRef/maxH*100}%"></span><span>${hoursKnown?hrs(planRef):'—'}</span>
+    <span>Stemplet</span><span class="hbar" style="width:${hoursKnown?act/maxH*100:0}%"></span><span>${hoursKnown&&!ls.L.incomplete?hrs(act):hoursKnown?`${hrs(act)}*`:'—'}</span>
+  </div>
+  <p class="small" style="margin:6px 0 0">${hoursKnown&&!ls.L.incomplete?`<strong>${hrsS(act-planRef)}</strong> mod plan${ls.L.forgot.length?` · ${ls.L.forgot.length} åben stempling ikke medregnet`:''}${ls.L.extra.length?` · ${ls.L.extra.length} ikke-planlagt vagt`:''}`:ls.L.incomplete&&hoursKnown?`* kun stemplinger til ${esc(fStamp(ls.L.until))}`:'Timer ukendte: Vagtplan svarer ikke.'}</p>
+  <p class="small" style="margin:4px 0 0">Belastet løn: <strong>${ls.L.incomplete||!hoursKnown?'—':(ls.L.costUnknownHours?'mindst ':'')+kr(ls.L.cost)}</strong> · pr. bemandet time: <strong>${ls.L.act&&!ls.Sx.lowerBound&&srcState('pos')!=='unavailable'&&!ls.L.incomplete?kr(ls.Sx.ex/ls.L.act):'—'}</strong></p>
+  ${srcBtn(['wf','pos'],'labourPct','day')}</section>`;
+}
+function cmTile(tid){
+  const acc=srcState('acc'),[y,m]=lastClosedMonth(tid);
+  if(acc==='loading')return`<section class="card" aria-busy="true"><h3>Dækningsgrad ${MON[m-1]}</h3><p><span class="skel"></span></p><p class="muted small">Henter varekøb fra e-conomic …</p></section>`;
+  const head=`<div class="card-h"><h3 id="h-cm"><a href="#/${tid}/margin">Dækningsgrad ${esc(MON[m-1])} ${y}</a></h3></div>`;
+  if(acc==='unavailable')return`<section class="card" aria-labelledby="h-cm">${head}<div class="big xl">—</div><p class="flag bad" style="display:flex">e-conomic svarer ikke. Varekøb er ukendt, så dækningsgraden vises ikke.</p>${srcBtn(['acc','pos'],'cm','')}</section>`;
+  const r=monthCM(tid,y,m),ly=monthCM(tid,y-1,m),r12=rolling12(tid,y,m);
+  const badge=x=>x.measured?'<span class="badge measured">Målt</span>':'<span class="badge indicative">Indikativ</span>';
+  const why=!r.measured?(r.partialNote||(!r.closeCounted?`Mangler lageroptælling ${Dt.dim(y,m)}/${m}. Varekøb bruges som vareforbrug.`:'Mangler lageroptælling ved månedens start. Varekøb bruges som vareforbrug.')):'';
+  return`<section class="card" aria-labelledby="h-cm">${head}<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span class="big xl">${pc(r.cm*100)}</span>${badge(r)}</div>
+  ${why?`<p class="small warn-text" style="margin:4px 0 0">${esc(why)}</p>`:''}${acc==='stale'?`<p class="small warn-text" style="margin:4px 0 0">e-conomic ikke synkroniseret siden ${esc(srcInfo('acc').when)}. Nye bilag kan mangle.</p>`:''}${acc==='mapping'?`<p class="small warn-text" style="margin:4px 0 0">${esc(SRC_PROBLEM.acc.mapping.short)}. Totalen er med.</p>`:''}
+  <dl class="kv" style="margin-top:10px"><dt>${esc(MON[m-1])} ${y-1}</dt><dd>${pc(ly.cm*100)} ${badge(ly)}</dd><dt>Rullende 12 mdr.</dt><dd>${pc(r12.cm*100)} ${r12.measured===12?'<span class="badge measured">Målt</span>':`<span class="badge indicative">${r12.measured} af 12 målt</span>`}</dd><dt>Omsætning ex. moms</dt><dd>${kr(r.ex)}</dd></dl>
+  ${srcBtn(['acc','pos'],'cm','')}</section>`;
+}
+function noteView(n){return`<div class="note"><span aria-hidden="true">✎</span><div><div>${esc(n.text)}</div><div class="meta">${esc(pn(n.by))} · ${esc(fStamp(n.at))}${n.metric?` · knyttet til ${n.metric==='sales'?'salg':'løn'}`:''}</div></div></div>`}
+
+/* =====================================================================================
+   14. SALES DRILL-DOWN
+   ===================================================================================== */
+function vSales(sc,param){
+  const{tid}=sc,pos=srcState('pos');
+  if(param==='controls'){S.salesPeriod='day'}else if(['day','week','month','ytd'].includes(param))S.salesPeriod=param;
+  const P=periodDefs(tid),p=P[S.salesPeriod],ctx=P.ctx;
+  const holAvail=!!CMP.holiday(ctx.date);
+  const tb=`<div class="toolbar"><div class="seg" role="group" aria-label="Periode">${['day','week','month','ytd'].map(k=>`<button type="button" data-act="period" data-id="${k}" aria-pressed="${S.salesPeriod===k}">${esc(P[k].label)}</button>`).join('')}</div>
+   <div class="seg" role="group" aria-label="Sammenligning for dagen"><button type="button" data-act="cmp" data-id="weekday" aria-pressed="${S.cmpMode==='weekday'}">Samme ugedag</button><button type="button" data-act="cmp" data-id="calendar" aria-pressed="${S.cmpMode==='calendar'}">Samme dato</button><button type="button" data-act="cmp" data-id="holiday" aria-pressed="${S.cmpMode==='holiday'}" ${holAvail?'':'disabled aria-describedby="holhint"'}>Samme helligdag</button></div></div>
+   ${holAvail?'':'<p id="holhint" class="small muted" style="margin:-6px 0 10px">"Samme helligdag" kan kun vælges, når dagen er en bevægelig helligdag eller aftenen før.</p>'}`;
+  const banner=posBanner();
+  if(pos==='loading')return pageHead('Salg',esc(p.sub))+tb+banner+`<div class="sales-grid">${skelTile(p.label)}${skelTile('Antal boner')}${skelTile('Gennemsnitsbon')}${skelTile('Pr. bemandet time')}</div>`;
+  if(pos==='unavailable')return pageHead('Salg',esc(p.sub))+tb+banner+`<div class="card empty">Ingen salgstal kan vises, før OnlinePOS svarer igen. Tallene er ikke sat til 0.</div>`;
+  const r=periodSales(tid,p),cur=r.cur,ly=r.ly;
+  const dm=p.rule;
+  const d365=Dt.add(ctx.date,-365);
+  const ruleTxt=S.salesPeriod==='day'?`${esc(dm.why)}. ${dm.rule!=='calendar'?`Kalenderdatoen ${esc(fDate(CMP.calendar(ctx.date).date,{year:true}))} var en ${WD[Dt.wd(CMP.calendar(ctx.date).date)]}.`:''} Dato − 365 dage (${esc(fDate(d365,{year:true}))}) bruges ikke.`:esc(dm.why);
+  const lab=labour(tid,p.t0,p.t1);
+  const wfOk=srcState('wf')!=='unavailable'&&srcState('wf')!=='loading'&&!lab.incomplete;
+  const lyLab=labour(tid,p.l0,p.l1);
+  const kpis=`<div class="sales-grid" style="margin-top:12px">
+    <div class="tile"><span class="lbl">Antal boner</span><span class="big">${cur.lowerBound?'<span class="lowerb">mindst</span>':''}${nf0.format(cur.tx)}</span>${deltaNum(cur.tx,ly.tx,r.comparable)}<span class="cmp">Sidste år: ${nf0.format(ly.tx)}</span>${srcBtn(['pos'],'avgTicket',p.id)}</div>
+    <div class="tile"><span class="lbl">Gennemsnitsbon</span><span class="big">${r.comparable?kr(cur.gross/cur.tx):'—'}</span><span class="inc">inkl. moms</span>${r.comparable?deltaChip(cur.gross/cur.tx,ly.gross/ly.tx):''}<span class="cmp">Sidste år: ${kr(ly.gross/ly.tx)}</span>${srcBtn(['pos'],'avgTicket',p.id)}</div>
+    <div class="tile"><span class="lbl">Pr. bemandet time</span><span class="big">${wfOk&&lab.act&&r.comparable?kr(cur.ex/lab.act):'—'}</span><span class="inc">${wfOk?`${hrs(lab.act)} stemplet`:'Vagtdata mangler'}</span>${wfOk&&lab.act&&r.comparable&&lyLab.act?deltaChip(cur.ex/lab.act,ly.ex/lyLab.act):''}<span class="cmp">Sidste år: ${lyLab.act?kr(ly.ex/lyLab.act):'—'}</span>${srcBtn(['pos','wf'],'rph',p.id)}</div>
+    ${rollingTile(tid,ctx)}</div>`;
+  const head=`<section class="card" aria-labelledby="h-shead"><div class="card-h"><h3 id="h-shead">${esc(p.label)} · ${esc(p.sub)}</h3>${p.hol?`<span class="flag warn" style="margin:0"><span aria-hidden="true">⚑</span> ${esc(holText(p.hol))}</span>`:''}</div>
+   <div class="big xl">${cur.lowerBound?'<span class="lowerb">mindst</span>':''}${kr(cur.ex)}</div><div class="inc">${kr(cur.gross)} inkl. moms · moms ${kr(cur.vat)} (fra kassens varelinjer)</div>
+   ${deltaChip(cur.ex,ly.ex,{comparable:r.comparable,reason:'data mangler'})}
+   <p class="cmp" style="font-size:13px">Sammenlignet med ${esc(p.cmpText)}: <strong>${kr(ly.ex)}</strong> ex. moms. ${ruleTxt}</p>
+   ${p.hol?`<p class="small" style="margin:6px 0 0"><strong>Helligdage i perioden.</strong> I år: ${esc(holidaysIn(p.from,p.to).map(h=>`${h.name} (${fDate(h.date)})`).join(', ')||'ingen')}. Sammenligning: ${esc(holidaysIn(p.lyFrom,p.lyTo).map(h=>`${h.name} (${fDate(h.date)})`).join(', ')||'ingen')}.${S.salesPeriod==='day'&&CMP.holiday(ctx.date)&&S.cmpMode!=='holiday'?' Vælg "Samme helligdag" for at sammenligne med helligdagen sidste år.':''}</p>`:''}
+   ${r.cutAt?`<p class="flag warn" style="display:flex">Data kun til ${esc(fStamp(r.cutAt))}. Sidste år er skåret til samme tidspunkt.</p>`:''}
+   ${srcBtn(['pos'],'salesEx',p.id)}</section>`;
+  const chart=S.salesPeriod==='day'?hourChart(tid,p):S.salesPeriod==='ytd'?monthChart(tid,p):dailyChart(tid,p.from,p.to,`Dag for dag · ${p.label}`);
+  const recent=S.salesPeriod==='day'?dailyChart(tid,Dt.add(ctx.date,-13),ctx.date,'Seneste 14 handelsdage'):'';
+  return pageHead('Salg',esc(p.sub))+tb+banner+head+kpis+`<div class="two" style="margin-top:12px">${chart}${recent||categoryCard(tid,p,r)}</div>`+`<div class="two" style="margin-top:12px">${recent?categoryCard(tid,p,r):''}${controlsCard(tid,p,r)}</div>`;
+}
+function deltaNum(cur,ly,comparable){if(!ly)return'';const d=cur-ly,p=d/ly*100,tn=comparable?tone(p):'na';return`<span class="delta ${tn}"><span aria-hidden="true">${{good:'▲',bad:'▼',warn:'≈',na:'·'}[tn]}</span> ${d>0?'+':d<0?'−':'±'}${nf0.format(Math.abs(Math.round(d)))} · ${pcS(p)}${tn==='na'?' <span class="small">(ikke sammenlignelig)</span>':''}</span>`}
+function posBanner(){const st=srcState('pos'),i=srcInfo('pos');
+  const m={stale:['warn',`OnlinePOS har ikke leveret data siden ${fStamp(i.last)}.`,'Tallene er ufuldstændige og sammenlignes med sidste år til samme tidspunkt.'],partial:['warn','Kasse 2 mangler data mellem kl. 19 og 21.','Berørte tal er minimumsværdier og farves ikke. Timerne er skraveret i grafen.'],mapping:['warn','9 nye varer er ikke knyttet til en varegruppe.','Totalen er korrekt. Varegruppefordelingen viser dem som "Ikke tilknyttet".'],unavailable:['bad',`OnlinePOS svarer ikke siden ${fStamp(i.last)}.`,'Salgstal vises ikke, før forbindelsen er tilbage.'],loading:['info','Henter data fra OnlinePOS …','']}[st];
+  return m?`<div class="state-box ${m[0]}" role="status"><strong>${esc(m[1])}</strong>${esc(m[2])}</div>`:''}
+function rollingTile(tid,ctx){const c=cfg(tid).cutoff;const end=ctx.complete?ctx.date:Dt.add(ctx.date,-1);
+  const f=n=>{const a=sales(tid,T(Dt.add(end,-(n-1)),c),T(Dt.add(end,1),c)),b=sales(tid,T(Dt.add(end,-(n-1)-364),c),T(Dt.add(end,1-364),c),{noClamp:true});return{a,b}};
+  const r7=f(7),r28=f(28),comp=!r7.a.lowerBound&&!r7.a.incomplete;
+  const line=(l,x)=>`<div style="display:flex;justify-content:space-between;gap:6px;align-items:baseline;flex-wrap:wrap"><span class="small"><strong>${l}</strong> ${kr(x.a.ex)}</span>${deltaChip(x.a.ex,x.b.ex,{comparable:!x.a.lowerBound&&!x.a.incomplete,reason:'data mangler'}).replace('class="delta','style="margin-top:2px" class="delta')}</div>`;
+  return`<div class="tile"><span class="lbl">Rullende</span><span class="per">afsluttede dage til ${esc(fDate(end))}</span>${line('7 dage',r7)}${line('28 dage',r28)}<span class="cmp">vs. samme dage 52 uger før</span>${srcBtn(['pos'],'rolling','')}</div>`}
+function hourChart(tid,p){
+  const c=cfg(tid),rows=[];let max=1;
+  for(let h=c.cutoff;h<c.cutoff+24;h++){const t0=T(p.from,h),l0=T(p.lyFrom,h);const cur=t0<p.t1?sales(tid,t0,Math.min(t0+HOUR,p.t1)):null;const ly=sales(tid,l0,l0+HOUR,{noClamp:true});
+    const fut=t0>=Math.min(p.t1,cur?cur.until:p.t1);const miss=cur&&cur.missingHours.length>0;
+    if(!(cur&&cur.ex)&&!ly.ex)continue;rows.push({h:h%24,next:h>=24,cur:fut?null:cur,ly,miss,fut});max=Math.max(max,cur?.ex||0,ly.ex)}
+  if(!rows.length)return`<section class="card"><h3>Omsætning pr. time</h3><p class="empty">Ingen salg i perioden endnu.</p></section>`;
+  const notesOn=storeOf(tid).notes.filter(n=>n.date===p.from);
+  const cols=rows.map(r=>`<div class="col" title="kl. ${String(r.h).padStart(2,'0')}: ${r.fut?'ikke nået endnu':kr(r.cur?.ex)} · sidste år ${kr(r.ly.ex)}">${r.miss?'<span class="nm" aria-hidden="true">!</span>':''}<div class="bar ${r.miss?'missing':''} ${r.fut?'future':''}" style="height:${r.cur?r.cur.ex/max*100:0}%"></div><div class="lytick" style="bottom:${r.ly.ex/max*100}%"></div></div>`).join('');
+  const labels=rows.map((r,i)=>`<span>${i%2===0||rows.length<12?String(r.h).padStart(2,'0'):''}</span>`).join('');
+  const firstNext=rows.find(r=>r.next);
+  return`<section class="card" aria-labelledby="h-hour"><div class="card-h"><h3 id="h-hour">Omsætning pr. time</h3>${notesOn.length?'<span class="badge brand">✎ note på dagen</span>':''}</div>
+  <div class="chart" role="img" aria-label="Søjlediagram over omsætning ex. moms pr. time. Tabel med tallene følger under diagrammet.">${cols}</div><div class="xlabels" aria-hidden="true">${labels}</div>
+  <div class="legend"><span><i class="cur"></i>${esc(fDate(p.from))} ex. moms</span><span><i class="ly"></i>${esc(fDate(p.lyFrom,{year:true}))}</span>${rows.some(r=>r.miss)?'<span><i class="miss"></i>Mangler data (Kasse 2)</span>':''}</div>
+  ${firstNext?`<p class="small muted" style="margin:6px 0 0">Timerne efter midnat hører til handelsdagen, fordi skæringstiden er kl. ${String(c.cutoff).padStart(2,'0')}:00.</p>`:''}
+  <details class="tbl"><summary>Vis som tabel</summary><div class="tablewrap" tabindex="0" role="region"><table><thead><tr><th>Time</th><th class="num">I år</th><th class="num">Sidste år</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${String(r.h).padStart(2,'0')}:00${r.next?' (+1)':''}</td><td class="num">${r.fut?'ikke nået':r.miss?`mindst ${kr(r.cur?.ex)}`:kr(r.cur?.ex)}</td><td class="num">${kr(r.ly.ex)}</td></tr>`).join('')}</tbody></table></div></details></section>`;
+}
+function dailyChart(tid,from,to,title){
+  const c=cfg(tid).cutoff,rows=[];let max=1;const notes=storeOf(tid).notes;
+  for(let d=from;d<=to;d=Dt.add(d,1)){const ly=CMP.weekday(d).date;const cur=sales(tid,T(d,c),T(Dt.add(d,1),c)),lys=sales(tid,T(ly,c),T(Dt.add(ly,1),c),{noClamp:true});const nts=notes.filter(n=>n.date===d);rows.push({d,cur,ly:lys,nts});max=Math.max(max,cur.ex,lys.ex)}
+  const cols=rows.map(r=>`<button type="button" class="col" data-act="day" data-date="${r.d}" aria-label="${esc(fDate(r.d))}: ${kr(r.cur.ex)}${r.cur.incomplete?' foreløbigt':''}, sidste år ${kr(r.ly.ex)}${r.nts.length?`, ${r.nts.length} note`:''}. Åbn dag og noter.">${r.nts.length?'<span class="nm" aria-hidden="true">✎</span>':''}<div class="bar ${r.cur.lowerBound?'missing':''}" style="height:${r.cur.ex/max*100}%"></div><div class="lytick" style="bottom:${r.ly.ex/max*100}%"></div></button>`).join('');
+  const labels=rows.map((r,i)=>`<span>${rows.length<=14||i%3===0?`${WDS[Dt.wd(r.d)][0].toUpperCase()}${Dt.d(r.d)}`:''}</span>`).join('');
+  return`<section class="card" aria-labelledby="h-daily-${from}"><div class="card-h"><h3 id="h-daily-${from}">${esc(title)}</h3></div>
+  <div class="chart">${cols}</div><div class="xlabels" aria-hidden="true">${labels}</div>
+  <div class="legend"><span><i class="cur"></i>Handelsdag ex. moms</span><span><i class="ly"></i>Samme ugedag sidste år</span><span>✎ = note</span></div>
+  <p class="small muted" style="margin:6px 0 0">Tryk på en dag for at se eller tilføje en note.</p>
+  <details class="tbl"><summary>Vis som tabel</summary><div class="tablewrap" tabindex="0" role="region"><table><thead><tr><th>Dag</th><th class="num">I år</th><th class="num">Sidste år</th><th>Note</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(fDate(r.d))}</td><td class="num">${kr(r.cur.ex)}</td><td class="num">${kr(r.ly.ex)}</td><td>${esc(r.nts.map(n=>n.text).join(' / '))}</td></tr>`).join('')}</tbody></table></div></details></section>`;
+}
+function monthChart(tid,p){const rows=[];let max=1;const y=Dt.y(p.to),lastM=Dt.m(p.to);
+  for(let m=1;m<=lastM;m++){const c=cfg(tid).cutoff;const a=m<lastM?monthSales(tid,y,m):sales(tid,T(Dt.ymd(y,m,1),c),p.t1),b=m<lastM?monthSales(tid,y-1,m):sales(tid,T(Dt.ymd(y-1,m,1),c),T(Dt.ymd(y-1,m,1),c)+(p.t1-T(Dt.ymd(y,m,1),c)),{noClamp:true});rows.push({m,a,b});max=Math.max(max,a.ex,b.ex)}
+  return`<section class="card" aria-labelledby="h-month"><h3 id="h-month">Måned for måned</h3><div class="chart">${rows.map(r=>`<div class="col" title="${MON[r.m-1]}: ${kr(r.a.ex)} · sidste år ${kr(r.b.ex)}"><div class="bar" style="height:${r.a.ex/max*100}%"></div><div class="lytick" style="bottom:${r.b.ex/max*100}%"></div></div>`).join('')}</div><div class="xlabels" aria-hidden="true">${rows.map(r=>`<span>${MONS[r.m-1].slice(0,3)}</span>`).join('')}</div>
+  <div class="legend"><span><i class="cur"></i>${y}</span><span><i class="ly"></i>${y-1}</span></div>
+  <details class="tbl"><summary>Vis som tabel</summary><div class="tablewrap" tabindex="0" role="region"><table><thead><tr><th>Måned</th><th class="num">${y}</th><th class="num">${y-1}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${MON[r.m-1]}${r.m===lastM?' (til dato)':''}</td><td class="num">${kr(r.a.ex)}</td><td class="num">${kr(r.b.ex)}</td></tr>`).join('')}</tbody></table></div></details></section>`}
+function categoryCard(tid,p,r){const cur=r.cur,ly=r.ly,tot=cur.ex||1,max=Math.max(...GROUPS.map(([g])=>cur.byCatEx[g]),cur.unmappedEx,1);
+  const rows=GROUPS.map(([g,n])=>{const s=cur.byCatEx[g]/tot*100,ls=ly.ex?ly.byCatEx[g]/ly.ex*100:null;return`<div class="catrow"><span>${esc(n)}</span><span class="catbar" style="width:${cur.byCatEx[g]/max*100}%"></span><span class="small nowrap">${kr(cur.byCatEx[g])} · ${nf1.format(s)} %<span class="muted"> (sidste år ${ls==null?'—':nf1.format(ls)+' %'})</span></span></div>`}).join('');
+  const un=cur.unmappedEx>0?`<div class="catrow"><span class="err-text"><strong>Ikke tilknyttet</strong></span><span class="catbar err" style="width:${cur.unmappedEx/max*100}%"></span><span class="small nowrap err-text">${kr(cur.unmappedEx)} · ${nf1.format(cur.unmappedEx/tot*100)} %</span></div>`:'';
+  return`<section class="card" aria-labelledby="h-cat"><div class="card-h"><h3 id="h-cat">Varegrupper (ex. moms)</h3></div>${rows}${un}${un?`<p class="small err-text" style="margin:6px 0 0">${esc(SRC_PROBLEM.pos.mapping.long)}</p>`:''}${srcBtn(['pos'],'salesEx',p.id)}</section>`}
+function controlsCard(tid,p,r){const cur=r.cur,isDay=p.id==='day';const nc=isDay?normalControls(tid,p.from):null;const ref=isDay?nc:r.ly;const refName=isDay?'Normalt*':'Sidste år';
+  const row=(n,a,b,fmt,flag)=>`<tr><td>${n}</td><td class="num">${fmt(a)}</td><td class="num">${fmt(b)}</td><td>${flag?'<span class="badge urgent">Usædvanligt</span>':''}</td></tr>`;
+  const hiCx=cur.cxN>=Math.max(8,3*ref.cxN);
+  return`<section class="card" id="controls" aria-labelledby="h-ctl"><div class="card-h"><h3 id="h-ctl">Kontroltal</h3></div><div class="tablewrap" tabindex="0" role="region"><table><thead><tr><th>Type</th><th class="num">${esc(p.label)}</th><th class="num">${refName}</th><th><span class="sr-only">Markering</span></th></tr></thead><tbody>
+  ${row('Rabatter',cur.disc,ref.disc,kr,cur.disc>2*ref.disc)}${row('Personalesalg',cur.staff,ref.staff,kr,cur.staff>2.5*ref.staff)}${row('Nulboner (antal)',cur.voids,ref.voids,v=>nf0.format(Math.round(v)),cur.voids>=Math.max(6,3*ref.voids))}${row('Annulleringer (antal)',cur.cxN,ref.cxN,v=>nf0.format(Math.round(v)),hiCx)}${row('Annulleringer (beløb)',cur.cxAmt,ref.cxAmt,kr,hiCx)}</tbody></table></div>
+  ${hiCx&&cur.cxReg2N?`<p class="state-box warn"><strong>${cur.cxReg2N} af ${cur.cxN} annulleringer skete på Kasse 2 mellem kl. 22 og 02.</strong>Se kassens elektroniske journal for detaljer. Et højt tal kan skyldes fejl, en ny medarbejder eller træning og er ikke i sig selv bevis for snyd.</p>`:''}
+  <p class="small muted" style="margin:6px 0 0">${isDay?'*Normalt = gennemsnit for samme ugedag de 8 foregående uger.':'Sammenlignet med samme periode sidste år.'} Tallene kræver, at kassen registrerer rabatter og annulleringer konsekvent.</p>${srcBtn(['pos'],'controls',p.id)}</section>`}
+
+/* =====================================================================================
+   15. LABOUR DRILL-DOWN
+   ===================================================================================== */
+function vLabour(sc){
+  const{tid,role}=sc,P=periodDefs(tid),p=S.labourPeriod==='week'?P.week:P.day,ls=labourSummary(tid,p),c=ls.c,L=ls.L,wf=srcState('wf');
+  const tb=`<div class="toolbar"><div class="seg" role="group" aria-label="Periode"><button type="button" data-act="lperiod" data-id="day" aria-pressed="${S.labourPeriod==='day'}">${esc(P.day.label)}</button><button type="button" data-act="lperiod" data-id="week" aria-pressed="${S.labourPeriod==='week'}">${esc(P.week.label)}</button></div><span class="small muted">${esc(p.sub)} · vs. ${esc(p.cmpText)}</span></div>`;
+  const wfBanner={stale:['warn',`Vagtplan har ikke leveret data siden ${fStamp(srcInfo('wf').last)}.`,'Stemplinger efter dette tidspunkt er ukendte. Timer og lønprocent kan ikke gøres færdige.'],unavailable:['bad',`Vagtplan svarer ikke siden ${fStamp(srcInfo('wf').last)}.`,'Timer og løn vises ikke som 0; de er ukendte.'],partial:['warn',SRC_PROBLEM.wf.partial.short+'.',SRC_PROBLEM.wf.partial.long],mapping:['warn',SRC_PROBLEM.wf.mapping.short+'.',SRC_PROBLEM.wf.mapping.long],loading:['info','Henter vagtdata …','']}[wf];
+  const banner=wfBanner?`<div class="state-box ${wfBanner[0]}" role="status"><strong>${esc(wfBanner[1])}</strong>${esc(wfBanner[2])}</div>`:'';
+  if(wf==='loading')return pageHead('Personale')+tb+banner+`<div class="sales-grid">${skelTile('Lønprocent')}${skelTile('Timer')}${skelTile('Lønomkostning')}${skelTile('Pr. bemandet time')}</div>`;
+  const planRef=P.ctx.complete||S.labourPeriod==='week'?L.plan:L.planToNow;const known=wf!=='unavailable';
+  const lyL=ls.LL;
+  const kpi=`<div class="sales-grid">
+   <div class="tile"><span class="lbl">Lønprocent</span><span class="big">${ls.pct!=null?(ls.bound==='min'?'<span class="lowerb">mindst</span>':'')+pc(ls.pct):'—'}</span>${ls.pct!=null?`<span class="delta ${ls.tn}">${{good:'Inden for mål',bad:'Over mål',warn:'Under mål',na:'Usikkert tal'}[ls.tn]}</span>`:`<span class="flag warn">${esc(ls.blocked||'')}</span>`}${gauge(ls.pct,c)}<span class="cmp">Sidste år: ${pc(ls.lyPct)}</span>${srcBtn(['wf','pos'],'labourPct',p.id)}</div>
+   <div class="tile"><span class="lbl">Timer</span><span class="big">${known?hrs(L.act):'—'}${L.incomplete&&known?'*':''}</span><span class="inc">stemplet · planlagt ${known?hrs(planRef):'—'}${P.ctx.complete||S.labourPeriod==='week'?'':' til nu'}</span>${known&&!L.incomplete?`<span class="delta ${Math.abs(L.act-planRef)<=planRef*0.03?'good':L.act>planRef?'bad':'warn'}">${hrsS(L.act-planRef)} mod plan</span>`:''}<span class="cmp">Sidste år: ${hrs(lyL.act)} stemplet</span>${srcBtn(['wf'],'hours',p.id)}</div>
+   <div class="tile"><span class="lbl">Belastet løn</span><span class="big">${known&&!L.incomplete?(L.costUnknownHours?'<span class="lowerb">mindst</span>':'')+kr(L.cost):'—'}</span><span class="inc">inkl. ${c.loading} % tillæg</span>${known&&!L.incomplete&&!L.costUnknownHours?deltaChip(L.cost,lyL.cost).replace(/delta (good|bad)/,m=>m.includes('good')?'delta bad':'delta good'):''}<span class="cmp">Sidste år: ${kr(lyL.cost)}</span>${srcBtn(['wf'],'loaded',p.id)}</div>
+   <div class="tile"><span class="lbl">Pr. bemandet time</span><span class="big">${known&&!L.incomplete&&L.act&&!ls.Sx.lowerBound&&srcState('pos')!=='unavailable'?kr(ls.Sx.ex/L.act):'—'}</span><span class="inc">omsætning ex. moms ÷ timer</span><span class="cmp">Sidste år: ${lyL.act?kr(ls.SL.ex/lyL.act):'—'}</span>${srcBtn(['pos','wf'],'rph',p.id)}</div></div>`;
+  const ex=[];
+  L.forgot.forEach(s=>ex.push(`<li><strong class="err-text">Manglende udstempling</strong> · ${esc(pn(s.emp))}, ${esc(fDate(s.night))}. Stemplet ind kl. ${hm(s.aIn)}, planlagt slut kl. ${hm(s.pE)}. Timerne tælles ikke med. ${can.correctClock(role)?`<button class="btn small" type="button" data-act="fix-clock" data-id="${s.id}">Ret udstempling</button>`:''}</li>`));
+  L.corrections.filter(s=>s.fix&&s.pending).forEach(s=>ex.push(`<li><strong class="warn-text">Rettelse afventer ejer</strong> · ${esc(pn(s.emp))}, ${esc(fDate(s.night))}: ud kl. ${hm(s.fix.corrected)}. ${role==='owner'?`<button class="btn small" type="button" data-act="approve-fix" data-id="${s.id}">Godkend</button>`:''}</li>`));
+  L.extra.forEach(s=>ex.push(`<li><strong class="warn-text">Ikke-planlagt vagt</strong> · ${esc(pn(s.emp))} kl. ${hm(s.aIn)}–${s.aOut&&s.aOut<=L.until?hm(s.aOut):'…'}. ${esc(s.note||'')}</li>`));
+  if(L.unknownWage.length)ex.push(`<li><strong class="warn-text">Lønsats mangler</strong> · ${esc(L.unknownWage.map(pn).join(', '))}. Lønomkostning er en minimumsværdi.</li>`);
+  if(L.unmapped)ex.push(`<li><strong class="warn-text">Ukendt medarbejder-ID</strong> · PD-4471, ${hrs(L.unmapped)} tæller med i timer, men lønnen er ukendt.</li>`);
+  const swaps=role!=='employee'?sc.store.swaps.filter(x=>x.status==='manager'):[];
+  swaps.forEach(x=>{const s=shiftById(tid,x.shiftId);ex.push(`<li><strong>Vagtbytte afventer godkendelse</strong> · ${esc(pn(x.from))} → ${esc(pn(x.to))}${s?`, ${esc(fDate(s.night))} kl. ${hm(s.pS)}`:''}. <button class="btn small" type="button" data-act="swap-approve" data-id="${x.id}">Godkend</button></li>`)});
+  sc.store.claims.filter(x=>x.status==='pending').forEach(x=>{const s=shiftById(tid,x.shiftId);ex.push(`<li><strong>Ønsker ledig vagt</strong> · ${esc(pn(x.emp))}${s?`, ${esc(fDate(s.night))} kl. ${hm(s.pS)}–${hm(s.pE)}`:''}. <button class="btn small" type="button" data-act="claim-approve" data-id="${x.id}">Godkend</button></li>`)});
+  const exHtml=`<section class="card" aria-labelledby="h-ex"><h3 id="h-ex">Kræver opmærksomhed</h3>${ex.length?`<ul class="list">${ex.join('')}</ul>`:'<p class="empty">Ingen manglende stemplinger, rettelser eller anmodninger.</p>'}</section>`;
+  const emps=Object.values(L.byEmp).sort((a,b)=>b.act-a.act);
+  const payOk=can.seePay(role);
+  if(payOk&&!S._payLogged){S._payLogged=true;audit(tid,'Så løndetaljer pr. medarbejder')}
+  const empHtml=`<section class="card" aria-labelledby="h-emp"><div class="card-h"><h3 id="h-emp">Timer pr. medarbejder</h3><span class="small muted">${payOk?'Løn vises for ejer':'Timeløn vises kun for ejer'}</span></div>
+   ${emps.length?emps.map(e=>`<details class="emp"><summary><span class="nm">${esc(PEOPLE[e.emp]?.name||e.emp)}</span><span class="hrs">${!known?'—':e.shifts.some(s=>s.forgot)?(e.act?`mindst ${hrs(e.act)}`:'ukendt'):hrs(e.act)} <span class="muted">/ ${hrs(e.plan)} plan</span></span><span class="sub">${esc([...new Set(e.shifts.map(s=>s.role))].join(', '))}${payOk?` · ${e.shifts.some(s=>s.forgot)?'løn ukendt indtil rettelse · '+kr(sc.members[e.emp]?.wage)+'/t':e.wageKnown?kr(e.cost)+' belastet · '+kr(sc.members[e.emp]?.wage)+'/t':'lønsats mangler'}`:''}${e.shifts.some(s=>s.forgot)?' · <span class="err-text">mangler udstempling</span>':''}${e.shifts.some(s=>s.correction||s.fix)?' · rettet stempling':''}</span></summary>${e.shifts.map(s=>shiftDetail(tid,s,role)).join('')}</details>`).join(''):'<p class="empty">Ingen vagter i perioden.</p>'}
+   ${L.open.length?`<p class="small muted">${L.open.length} ledig vagt i perioden.</p>`:''}${srcBtn(['wf'],'hours',p.id)}</section>`;
+  return pageHead('Personale',esc(p.sub))+tb+banner+kpi+`<div class="two" style="margin-top:12px">${exHtml}${rosterCard(sc)}</div><div style="margin-top:12px">${empHtml}</div>`;
+}
+function shiftDetail(tid,s,role){
+  const over=s.pE&&Dt.s(s.pE)!==s.night;const d=x=>`${hm(x)}${Dt.s(x)!==s.night?' (+1)':''}`;
+  let h=`<div class="evt ${s.forgot?'miss':s.correction||s.fix?'corr':''}"><div><strong>${esc(fDate(s.night))}</strong> · ${esc(s.role)}${over?' · over midnat':''}</div>
+  <div>Planlagt: ${s.pS?`${d(s.pS)}–${d(s.pE)}`:'ikke planlagt'} · Stemplet: ${s.inKnown?d(s.aIn):'ukendt'}–${s.forgot?'<strong class="err-text">mangler</strong>':s.aOut&&s.outKnown?d(s.aOut):s.onNow?'på vagt nu':'ukendt'}</div>`;
+  if(s.correction){const k=s.correction;h+=`<div class="small" style="margin-top:4px"><strong>Rettet stempling.</strong> Oprindelig udstempling ${d(k.orig)} → rettet til ${d(k.corrected)}. Rettet af ${esc(pn(k.actor))} ${esc(fStamp(k.at))}. Årsag: "${esc(k.reason)}" Godkendt af ${esc(pn(k.approvedBy))} ${esc(fStamp(k.approvedAt))}. Den oprindelige hændelse bevares.</div>`}
+  if(s.fix){const k=s.fix;h+=`<div class="small" style="margin-top:4px"><strong>${k.status==='pending'?'Rettelse afventer godkendelse':'Rettet stempling'}.</strong> Udstempling sat til ${d(k.corrected)} af ${esc(pn(k.actor))} ${esc(fStamp(k.at))}. Årsag: "${esc(k.reason)}"${k.approvedBy?` Godkendt af ${esc(pn(k.approvedBy))} ${esc(fStamp(k.approvedAt))}.`:''}</div>`}
+  if(s.forgot&&can.correctClock(role))h+=`<button class="btn small" type="button" data-act="fix-clock" data-id="${s.id}" style="margin-top:6px">Ret udstempling</button>`;
+  return h+'</div>';
+}
+function rosterCard(sc){const{tid}=sc,n=NOW(),td=tradingDate(n,cfg(tid).cutoff);
+  const day=(d,l)=>{const r=roster(tid,d);return`<h4 style="margin:8px 0 4px;font-size:14px">${l} · ${esc(fDate(d))}</h4>${r.length?`<ul class="list">${r.map(s=>`<li style="display:flex;justify-content:space-between;gap:8px;padding:6px 0"><span>${s.emp?esc(pn(s.emp)):'<strong class="warn-text">Ledig vagt</strong>'} <span class="muted small">${esc(s.role)}</span></span><span class="nowrap">${s.pS?hm(s.pS):''}–${s.pE?hm(s.pE):''}</span></li>`).join('')}</ul>`:'<p class="muted small">Lukket.</p>'}`};
+  return`<section class="card" aria-labelledby="h-ros"><h3 id="h-ros">Vagter i dag og i morgen</h3>${day(td,'I dag')}${day(Dt.add(td,1),'I morgen')}${srcBtn(['wf'],'hours','')}</section>`}
+
+/* =====================================================================================
+   16. CONTRIBUTION MARGIN
+   ===================================================================================== */
+function vMargin(sc){const{tid}=sc,acc=srcState('acc'),[y,m]=lastClosedMonth(tid);
+  if(!can.seeMargin(sc.role))return noAccess('Dækningsgrad er kun for ejere.');
+  audit(tid,`Så dækningsgrad for ${MON[m-1]} ${y}`);
+  if(acc==='loading')return pageHead('Dækningsgrad')+`<div class="card" aria-busy="true"><span class="skel w10"></span><p class="muted">Henter varekøb fra e-conomic …</p></div>`;
+  if(acc==='unavailable')return pageHead('Dækningsgrad')+`<div class="state-box bad"><strong>e-conomic svarer ikke.</strong>Varekøb er ukendt, så ingen dækningsgrad vises. Omsætningen alene er ikke nok.</div>`;
+  const r=monthCM(tid,y,m),ly=monthCM(tid,y-1,m),r12=rolling12(tid,y,m);
+  const b=x=>x.measured?'<span class="badge measured">Målt</span>':'<span class="badge indicative">Indikativ</span>';
+  const months=[];let yy=y,mm=m;for(let i=0;i<13;i++){months.push(monthCM(tid,yy,mm));[yy,mm]=prevMonth(yy,mm)}
+  const groups=GROUPS.map(([g,n])=>{const a=r.groups[g],l=ly.groups[g];const flag=(g==='spirit'&&(r.unmappedAcct||r.unmappedPosEx));return`<tr><td>${esc(n)}${flag?' <span class="badge indicative">ufuldstændig</span>':''}</td><td class="num"><strong>${pc(a.cm*100)}</strong></td><td class="num">${pc(l.cm*100)}</td><td class="num">${deltaPts((a.cm-l.cm)*100)}</td><td class="num">${kr(a.ex)}</td><td class="num">${kr(a.cogs)}</td></tr>`}).join('');
+  return pageHead('Dækningsgrad',`${MON[m-1]} ${y} · sidste afsluttede måned`)+
+  `<div class="sales-grid"><div class="tile"><span class="lbl">${esc(MON[m-1])} ${y}</span><span class="big">${pc(r.cm*100)}</span>${b(r)}<span class="cmp">Omsætning ${kr(r.ex)} · vareforbrug ${kr(r.cogs)}</span>${srcBtn(['acc','pos'],'cm','')}</div>
+  <div class="tile"><span class="lbl">${esc(MON[m-1])} ${y-1}</span><span class="big">${pc(ly.cm*100)}</span>${b(ly)}<span class="cmp">${deltaPts((r.cm-ly.cm)*100)} i år</span></div>
+  <div class="tile"><span class="lbl">Rullende 12 mdr.</span><span class="big">${pc(r12.cm*100)}</span><span class="badge ${r12.measured===12?'measured':'indicative'}">${r12.measured} af 12 målt</span><span class="cmp">Udjævner enkeltstående skæve indkøb</span></div></div>
+  ${acc!=='normal'?`<div class="state-box warn" style="margin-top:12px"><strong>${esc(SRC_PROBLEM.acc[acc]?.short||('e-conomic: '+srcInfo('acc').label))}</strong>${esc(SRC_PROBLEM.acc[acc]?.long||'Nye bilag kan mangle. Tallene er markeret, hvor det har betydning.')}</div>`:''}
+  <section class="card" style="margin-top:12px" aria-labelledby="h-grp"><h3 id="h-grp">Pr. varegruppe · ${esc(MON[m-1])} ${y}</h3><div class="tablewrap" tabindex="0" role="region"><table><thead><tr><th>Gruppe</th><th class="num">DG</th><th class="num">Sidste år</th><th class="num">Forskel</th><th class="num">Omsætning</th><th class="num">Vareforbrug</th></tr></thead><tbody>${groups}</tbody></table></div>
+  ${r.unmappedAcct?`<p class="small err-text">Konto 1330 "Varekøb øvrigt" (${kr(r.unmappedAcct)}) er ikke fordelt på en gruppe, men indgår i totalen.</p>`:''}${r.unmappedPosEx?`<p class="small err-text">${kr(r.unmappedPosEx)} salg uden varegruppe i kassen indgår i totalen, men ikke i grupperne.</p>`:''}
+  <p class="small muted">Fadøl og cocktails er typisk der, hvor spild og fri hånd koster mest. Pr. gruppe kræver, at varekøb er konteret pr. varegruppe.</p></section>
+  <section class="card" style="margin-top:12px" aria-labelledby="h-13"><h3 id="h-13">Seneste 13 måneder</h3><div class="tablewrap" tabindex="0" role="region"><table><thead><tr><th>Måned</th><th class="num">DG</th><th>Status</th><th class="num">Omsætning</th><th>Lageroptælling</th></tr></thead><tbody>${months.map(x=>`<tr><td class="nowrap">${MONS[x.m-1]} ${x.y}</td><td class="num">${pc(x.cm*100)}</td><td>${b(x)}</td><td class="num">${kr(x.ex)}</td><td class="small">${x.openCounted?'start ✓':'<span class="warn-text">start mangler</span>'} · ${x.closeCounted?'slut ✓':'<span class="warn-text">slut mangler</span>'}</td></tr>`).join('')}</tbody></table></div>
+  <p class="small muted">Målt: lager er talt ved både månedens start og slut. Indikativ: mindst én optælling mangler, så varekøb bruges som vareforbrug.</p></section>`}
+function deltaPts(v){return`${v>=0.05?'+':v<=-0.05?'−':'±'}${nf1.format(Math.abs(v))} pct.-point`}
+
+/* =====================================================================================
+   17. TASKS AND NOTES
+   ===================================================================================== */
+function taskItem(sc,t,compact){
+  const due=t.due?`<span>Frist ${esc(fStamp(t.due))}${t.due<NOW()&&t.status!=='resolved'?' · <strong class="err-text">overskredet</strong>':''}</span>`:'';
+  const acts=t.status==='resolved'?`<button class="btn small" type="button" data-act="task-status" data-id="${t.id}" data-s="open">Genåbn</button>`:`${t.status==='open'?`<button class="btn small" type="button" data-act="task-status" data-id="${t.id}" data-s="progress">Start</button>`:''}<button class="btn small primary" type="button" data-act="task-status" data-id="${t.id}" data-s="resolved">✓ Markér som løst</button>`;
+  return`<article class="task ${t.urgent&&t.status!=='resolved'?'is-urgent':''}" id="task-${t.id}" aria-labelledby="tt-${t.id}"><div class="pri" aria-hidden="true"></div><div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${t.urgent&&t.status!=='resolved'?'<span class="badge urgent">AKUT</span>':''}<span class="status ${t.status}">${STATUS_NAME[t.status]}</span></div>
+  <h${compact?4:3} class="tt" id="tt-${t.id}" style="margin-top:4px">${esc(t.title)}</h${compact?4:3}>${t.desc&&!compact?`<p style="margin:4px 0 0;font-size:14px">${esc(t.desc)}</p>`:''}${t.photo&&!compact?'<div class="photo" role="img" aria-label="Foto vedhæftet (pladsholder)">Foto (pladsholder)</div>':''}
+  <div class="meta"><span>@${t.assignees.map(a=>esc(pn(a))).join(', @')}</span>${due}<span>Oprettet af ${esc(pn(t.createdBy))} ${esc(fStamp(t.createdAt))}</span>${t.status==='resolved'?`<span>Løst af ${esc(pn(t.resolvedBy))} ${esc(fStamp(t.resolvedAt))}</span>`:''}</div>
+  <div class="acts">${acts}</div></div></article>`;
+}
+function vTasks(sc,param){
+  const{tid}=sc,st=sc.store;const f=S.taskFilter;
+  let list=st.tasks.slice();
+  if(f==='open')list=list.filter(t=>t.status!=='resolved');else if(f==='urgent')list=list.filter(t=>t.urgent&&t.status!=='resolved');else if(f==='mine')list=list.filter(t=>t.assignees.includes(S.user)&&t.status!=='resolved');else if(f==='resolved')list=list.filter(t=>t.status==='resolved').sort((a,b)=>b.resolvedAt-a.resolvedAt);
+  if(f!=='resolved')list.sort((a,b)=>(b.urgent-a.urgent)||((a.due||9e15)-(b.due||9e15)));
+  const fl=[['open','Alle åbne'],['urgent','Akutte'],['mine','Mine'],['resolved','Løst (historik)']];
+  const emptyMsg={open:'Ingen åbne opgaver.',urgent:'Ingen akutte opgaver lige nu.',mine:'Du har ingen åbne opgaver.',resolved:'Ingen løste opgaver endnu.'}[f];
+  return pageHead('Opgaver',`kun ${esc(sc.t.name)}`)+`<div class="toolbar"><button class="btn primary" type="button" data-act="task-new">+ Ny opgave</button><div class="seg" role="group" aria-label="Filter">${fl.map(([k,l])=>`<button type="button" data-act="tfilter" data-id="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}</div></div>
+  <section class="card" aria-label="Opgaveliste">${list.length?list.map(t=>taskItem(sc,t,false)).join(''):`<p class="empty">${emptyMsg}</p>`}</section>`;
+}
+function taskForm(sc){const members=Object.entries(sc.members).filter(([,m])=>m.status!=='removed');
+  return`<form data-form="task" novalidate><div class="dlg-h"><div><h2 id="dlg-title">Ny opgave</h2><div class="sub">Gemmes kun i ${esc(sc.t.name)}</div></div><button class="xbtn" type="button" data-act="dlg-close" aria-label="Luk">×</button></div><div class="dlg-b">
+  <label class="f" for="tk-title">Titel</label><input id="tk-title" name="title" type="text" required maxlength="120" autocomplete="off">
+  <label class="f" for="tk-desc">Beskrivelse <span class="hint">(valgfri)</span></label><textarea id="tk-desc" name="desc" maxlength="1000"></textarea>
+  <div class="checkline"><input id="tk-photo" name="photo" type="checkbox"><label for="tk-photo">Vedhæft foto <span class="hint">(simuleret pladsholder)</span></label></div>
+  <fieldset style="border:0;padding:0;margin:12px 0 0"><legend class="f" style="margin:0 0 4px">Ansvarlige <span class="hint">(kun personer i ${esc(sc.t.name)})</span></legend><div class="checks">${members.map(([id,m])=>`<label><input type="checkbox" name="assignees" value="${id}">@${esc(pn(id))} <span class="muted small">${ROLE_NAME[m.role]}</span></label>`).join('')}</div></fieldset>
+  <div class="checkline"><input id="tk-urgent" name="urgent" type="checkbox"><label for="tk-urgent">Akut <span class="hint">(øverst, markeret med rødt og vist på forsiden)</span></label></div>
+  <label class="f" for="tk-due">Frist <span class="hint">(valgfri)</span></label><div style="display:flex;gap:8px"><input id="tk-due" name="due" type="date"><input id="tk-duet" name="duet" type="time" aria-label="Frist, klokkeslæt" value="12:00"></div>
+  <p class="formerr" id="tk-err" role="alert"></p></div><div class="dlg-f"><button class="btn" type="button" data-act="dlg-close">Annullér</button><button class="btn primary" type="submit">Opret opgave</button></div></form>`}
+function noteForm(sc,date){return`<form data-form="note" data-date="${date}" novalidate><div class="dlg-h"><div><h2 id="dlg-title">Note til ${esc(fDate(date))}</h2><div class="sub">Valgfri. Forklarer, hvorfor dagen afveg.</div></div><button class="xbtn" type="button" data-act="dlg-close" aria-label="Luk">×</button></div><div class="dlg-b">
+  ${sc.store.notes.filter(n=>n.date===date).map(noteView).join('')||'<p class="muted small">Ingen noter på dagen.</p>'}
+  <label class="f" for="nt-text">Ny note</label><textarea id="nt-text" name="text" maxlength="500" placeholder="Fx ølhane i stykker, privat fest, regn hele aftenen"></textarea>
+  <label class="f" for="nt-metric">Knyt til <span class="hint">(valgfri)</span></label><select id="nt-metric" name="metric"><option value="">Hele dagen</option><option value="sales">Salg</option><option value="labour">Løn og timer</option></select>
+  <p class="formerr" id="nt-err" role="alert"></p></div><div class="dlg-f"><button class="btn" type="button" data-act="dlg-close">Luk</button><button class="btn primary" type="submit">Gem note</button></div></form>`}
+
+/* =====================================================================================
+   18. MORE: sources, rules, members, log, settings
+   ===================================================================================== */
+function vMore(sc){const{tid,role}=sc,multi=myTenants().length>1;
+  const it=(href,t,d)=>`<li><a href="${href}" style="display:block;text-decoration:none;color:inherit;padding:4px 0"><strong>${t}</strong><div class="small muted">${d}</div></a></li>`;
+  return pageHead('Mere')+`<section class="card"><ul class="list">
+  ${role!=='employee'?it(`#/${tid}/sources`,'Datakilder','OnlinePOS, vagtplan og e-conomic: friskhed og fejl'):''}
+  ${it(`#/${tid}/rules`,'Beregninger og kalender','Formler, handelsdag, sammenligning og helligdage')}
+  ${role!=='employee'?it(`#/${tid}/members`,'Medlemmer og adgang','Navngivne, inviterede personer'):''}
+  ${role==='owner'?it(`#/${tid}/log`,'Adgangslog','Hvem har set og ændret hvad'):''}
+  ${role!=='employee'?it(`#/${tid}/settings`,'Indstillinger','Skæringstid, lønmål og tillægsfaktor'):''}
+  </ul></section><div class="toolbar" style="margin-top:12px">${multi?'<button class="btn" type="button" data-act="switch">Skift virksomhed</button>':''}<button class="btn" type="button" data-act="logout">Log ud</button></div>
+  <p class="small muted">Prototype. Syntetiske data. Ingen forbindelse til OnlinePOS, vagtplan, e-conomic eller betalingssystemer. Ikke et kassesystem og ikke bogføring.</p>`}
+function vSources(sc){const{tid,t}=sc;
+  const card=k=>{const i=srcInfo(k),S0=SOURCES[k];const box={normal:['ok','Normal','Data er opdaterede.'],loading:['info','Indlæser','Henter data. Berørte tal vises som pladsholdere, ikke som 0.'],stale:['warn','Forældet',`Ingen nye data siden ${fStamp(i.last)}. Grænsen er ${S0.staleAfter>=1440?Math.round(S0.staleAfter/60)+' timer':S0.staleAfter+' minutter'}.`],partial:['warn','Delvist manglende',SRC_PROBLEM[k].partial.long],mapping:['warn','Mapping-fejl',SRC_PROBLEM[k].mapping.long],unavailable:['bad','Utilgængelig',`Kilden svarer ikke. Sidste vellykkede hentning ${fStamp(i.last)}. Berørte tal vises som ukendte.`]}[i.state];
+    return`<section class="card" aria-labelledby="h-src-${k}"><div class="card-h"><h3 id="h-src-${k}">${esc(i.name)}</h3><span class="small muted">${esc(S0.kind)}</span></div><div class="state-box ${box[0]}"><strong>${box[1]}</strong>${esc(box[2])}</div>
+    <dl class="kv"><dt>Seneste hentning</dt><dd>${esc(fStamp(i.last))}</dd><dt>Hentes</dt><dd>${S0.every>=1440?'hver nat kl. 03':`hvert ${S0.every}. minut`}</dd><dt>Leverer</dt><dd style="text-align:right;font-weight:400">${esc(S0.feeds)}</dd><dt>Forbindelse</dt><dd style="text-align:right;font-weight:400">Egen nøgle for ${esc(t.name)} (syntetisk). Kan tilbagekaldes uden at påvirke andre.</dd><dt>Historik</dt><dd>1. jan. 2024 → nu</dd></dl></section>`};
+  return pageHead('Datakilder',`for ${esc(t.name)}`)+`<p class="small muted">Tallene hentes kun ved læsning. Appen skriver aldrig til kassesystem, vagtplan eller bogføring. Manglende data vises som ukendt, aldrig som 0.</p><div class="grid">${['pos','wf','acc'].map(card).join('')}</div>`}
+function vRules(sc){const{tid}=sc,c=cfg(tid),ctx=dayContext(tid),y=Dt.y(ctx.date);
+  const post=sales(tid,T(Dt.add(ctx.date,1),0),T(Dt.add(ctx.date,1),c.cutoff),{noClamp:!ctx.complete?false:true});
+  const ex=[ctx.date,holidayDate(2026,'Kristi himmelfartsdag'),holidayDate(2026,'2. påskedag'),'2026-12-24','2026-12-31','2024-02-29'];
+  const rows=[...new Set(ex)].map(d=>{const w=CMP.weekday(d),h=CMP.holiday(d),d365=Dt.add(d,-365),cal=CMP.calendar(d);const hol=holiday(d),holLy=holiday(w.date);
+    const notes=[];if(w.rule==='w53')notes.push(w.why);if(hol)notes.push(`${hol.name}.`);if(holLy&&(!hol||holLy.name!==hol.name))notes.push(`Sammenligningsdagen er ${holLy.name}.`);if(hol&&!holLy)notes.push('Sammenligningsdagen er en almindelig dag.');if(h)notes.push(`Helligdagsjusteret: ${fDate(h.date,{year:true})}.`);if(d==='2024-02-29')notes.push(`Samme dato: ${fDate(cal.date,{year:true})}.`);
+    return`<li><strong>${esc(fDate(d,{year:true}))}</strong> → sammenlignes med <strong>${esc(fDate(w.date,{year:true}))}</strong><div class="small muted">Ikke dato − 365 dage: <s>${esc(fDate(d365,{year:true}))}</s></div><div class="small">${esc(notes.join(' ')||'Almindelig dag.')}</div></li>`}).join('');
+  const hol=yy=>MOVABLE.map(([,n])=>`${n}: ${fDate(holidayDate(yy,n))}`).join(' · ');
+  const iw=isoWeek(ctx.date);
+  const dstEnd=(()=>{let d=`${y}-10-31`;while(Dt.wd(d)!==6)d=Dt.add(d,-1);return d})();
+  return pageHead('Beregninger og kalender')+`<section class="card"><h3>Handelsdag</h3><p>Skæringstid for ${esc(sc.t.name)}: <strong>kl. ${String(c.cutoff).padStart(2,'0')}:00</strong>. En handelsdag løber fra kl. ${String(c.cutoff).padStart(2,'0')}:00 til kl. ${String(c.cutoff).padStart(2,'0')}:00 næste dag. Et salg kl. 01:30 natten til lørdag hører til fredagens handelsdag.</p>
+  <p class="small">Eksempel fra data: ${ctx.complete?`${esc(fDate(ctx.date))} havde ${kr(post.ex)} salg efter midnat, som tæller med på ${esc(fDate(ctx.date))}.`:'Dagen er i gang.'} Skæringstiden kan ændres under Indstillinger. Alle tal genberegnes deterministisk.</p>
+  <p class="small">Tider er dansk tid. Sommertiden slutter ${esc(fDate(dstEnd,{year:true}))}, så handelsdagen natten til den dag har 25 timer. Timerne vises efter vægur.</p></section>
+  <section class="card" style="margin-top:12px"><h3>Sammenligning med sidste år</h3><ul class="small"><li><strong>Dag:</strong> samme ugedag i samme ISO-uge sidste år (standard). Kan skiftes til samme kalenderdato eller samme helligdag.</li><li><strong>Uge:</strong> samme ISO-ugenummer, mandag til samme ugedag og tidspunkt.</li><li><strong>Måned og år til dato:</strong> samme kalenderdatoer. Ugedagsfordelingen kan afvige.</li><li><strong>Helligdage</strong> markeres, når en helligdag kun ligger i den ene periode.</li><li>Er dagen i gang, sammenlignes med sidste år til samme tidspunkt på handelsdagen.</li></ul>
+  <p class="small">Uge ${iw.week} ${iw.year} = ${esc(fDate(isoDate(iw.year,iw.week,0)))}–${esc(fDate(isoDate(iw.year,iw.week,6)))}. Uge ${iw.week} ${iw.year-1} = ${esc(fDate(isoDate(iw.year-1,iw.week,0)))}–${esc(fDate(isoDate(iw.year-1,iw.week,6)))}.</p>
+  <h4 style="margin:12px 0 4px;font-size:14px">Eksempler på sammenligningsdage</h4><ul class="list">${rows}</ul>
+  <p class="small"><strong>Bevægelige helligdage.</strong> ${y}: ${esc(hol(y))}.<br>${y-1}: ${esc(hol(y-1))}.</p></section>
+  <section class="card" style="margin-top:12px"><h3>Nøgletal</h3><ul class="list">${Object.values(METRICS).map(m=>`<li><strong>${esc(m.name)}</strong> <span class="small muted">· kilde: ${m.src.map(k=>SOURCES[k].name).join(', ')}</span><div class="formula" style="margin:6px 0">${esc(m.formula)}</div><div class="small muted">${esc(m.notes)}</div></li>`).join('')}</ul>
+  <p class="small">Lønmål: ${c.target[0]}–${c.target[1]} % (grøn), over målet rød, under målet gul. Omsætning: grøn over +3 %, gul fra −3 % til +3 %, rød under −3 % mod sidste år.</p>
+  <p class="small muted">Ikke med i prototypen: prognoser, AI-forklaringer, automatisk bogføring og autonome handlinger. Et senere AI-lag må højst forklare verificerede tal.</p></section>`}
+function vMembers(sc){const{tid,role,t}=sc,owner=can.manageMembers(role);
+  const rows=Object.entries(sc.members).filter(([,m])=>m.status!=='removed').sort((a,b)=>['owner','manager','employee'].indexOf(a[1].role)-['owner','manager','employee'].indexOf(b[1].role));
+  return pageHead('Medlemmer og adgang',`${esc(t.name)}`)+`<div class="state-box info"><strong>Kun navngivne, inviterede personer.</strong>E-maildomænet giver ikke adgang i sig selv. Der findes ingen delte adgangskoder. Adgang til mere end én virksomhed tildeles bevidst pr. person af en ejer.</div>
+  <section class="card"><h3>Medlemmer (${rows.length})</h3><ul class="list">${rows.map(([id,m])=>`<li style="display:flex;align-items:center;gap:10px"><span class="avatar" aria-hidden="true">${esc(initials(id))}</span><span style="flex:1;min-width:0"><strong>${esc(PEOPLE[id]?.name||m.name)}</strong><div class="small muted" style="overflow-wrap:anywhere">${esc(PEOPLE[id]?.email||m.email)} · ${ROLE_NAME[m.role]}${m.status==='invited'?' · <span class="warn-text">invitation sendt, ikke accepteret</span>':''}</div></span>${owner&&id!==S.user?`<button class="btn small" type="button" data-act="member-remove" data-id="${id}" aria-label="Fjern ${esc(PEOPLE[id]?.name||m.name)}">Fjern</button>`:''}</li>`).join('')}</ul></section>
+  ${owner?`<section class="card" style="margin-top:12px"><h3>Invitér person</h3><form data-form="invite" novalidate><label class="f" for="iv-name">Navn</label><input id="iv-name" name="name" type="text" autocomplete="off" required><label class="f" for="iv-email">E-mail</label><input id="iv-email" name="email" type="email" autocomplete="off" required><label class="f" for="iv-role">Rolle</label><select id="iv-role" name="role"><option value="employee">Medarbejder</option><option value="manager">Bestyrer</option><option value="owner">Ejer</option></select><p class="formerr" id="iv-err" role="alert"></p><button class="btn primary" type="submit">Send invitation (simuleret)</button></form></section>`:'<p class="small muted">Kun ejere kan invitere og fjerne personer.</p>'}`}
+function vLog(sc){if(sc.role!=='owner')return noAccess('Adgangsloggen er kun for ejere.');
+  return pageHead('Adgangslog',esc(sc.t.name))+`<section class="card"><div class="tablewrap" tabindex="0" role="region"><table><thead><tr><th>Tidspunkt</th><th>Person</th><th>Handling</th></tr></thead><tbody>${sc.store.log.map(l=>`<tr><td class="nowrap">${esc(fStamp(l.at))}</td><td>${esc(pn(l.who))}</td><td>${esc(l.what)}</td></tr>`).join('')}</tbody></table></div><p class="small muted">Loggen tilhører kun ${esc(sc.t.name)}. I produktet skrives den af serveren og kan ikke redigeres.</p></section>`}
+function vSettings(sc){const{tid,role}=sc,c=cfg(tid),ro=!can.settings(role);
+  return pageHead('Indstillinger',esc(sc.t.name))+`<section class="card"><form data-form="settings" novalidate>${ro?'<p class="state-box info">Kun ejere kan ændre indstillinger. Du kan se dem.</p>':''}
+  <label class="f" for="st-cut">Skæringstid for handelsdag</label><select id="st-cut" name="cutoff" ${ro?'disabled':''}>${[0,1,2,3,4,5,6,7,8].map(h=>`<option value="${h}" ${h===c.cutoff?'selected':''}>kl. ${String(h).padStart(2,'0')}:00${h===TENANTS[tid].defaults.cutoff?' (standard)':''}</option>`).join('')}</select><p class="hint">Salg og vagter før skæringstiden tæller på dagen før.</p>
+  <label class="f" for="st-min">Lønprocent, mål fra</label><input id="st-min" name="tmin" type="number" min="5" max="60" step="0.5" value="${c.target[0]}" ${ro?'disabled':''}>
+  <label class="f" for="st-max">Lønprocent, mål til</label><input id="st-max" name="tmax" type="number" min="5" max="60" step="0.5" value="${c.target[1]}" ${ro?'disabled':''}>
+  <label class="f" for="st-load">Tillægsfaktor på løn (%)</label><input id="st-load" name="loading" type="number" min="0" max="60" step="0.5" value="${c.loading}" ${ro?'disabled':''}><p class="hint">Feriepenge, pension, ATP m.m. som én fast procent. Aftales med revisor.</p>
+  <p class="formerr" id="st-err" role="alert"></p>${ro?'':'<button class="btn primary" type="submit">Gem indstillinger</button>'}</form></section>`}
+function noAccess(msg){return`<div class="card empty" role="alert"><strong>Ingen adgang.</strong> ${esc(msg)}</div>`}
+
+/* =====================================================================================
+   19. EMPLOYEE VIEW (own shifts, clock, own history, tasks; no venue financials)
+   ===================================================================================== */
+function myClockState(tid){const ev=storeOf(tid).clockEvents.filter(e=>e.emp===S.user);const last=ev[ev.length-1];
+  if(last)return last.type==='in'?{in:true,since:last.at,src:'app'}:{in:false};
+  const today=roster(tid,dayContext(tid).date).concat(roster(tid,tradingDate(NOW(),cfg(tid).cutoff))).map(s=>shiftView(tid,s)).find(s=>s.emp===S.user&&s.onNow);
+  return today?{in:true,since:today.aIn,src:'vagtplan'}:{in:false};
+}
+function vMe(sc){const{tid}=sc,st=myClockState(tid),up=upcomingShifts(tid,S.user,14),open=openShifts(tid,14);
+  const next=up.find(s=>s.pS>NOW());
+  const clock=`<section class="card" aria-labelledby="h-clk"><h3 id="h-clk">Stempling</h3><p style="margin:0 0 10px">${st.in?`Du er stemplet ind siden <strong>kl. ${hm(st.since)}</strong>.`:'Du er ikke stemplet ind.'}${next?` Næste vagt: ${esc(fDate(next.night))} kl. ${hm(next.pS)}.`:''}</p>
+   <button class="btn primary clockbtn" type="button" data-act="clock" data-s="${st.in?'out':'in'}">${st.in?'Stempl ud':'Stempl ind'}</button><p class="small muted" style="margin:8px 0 0">Tidspunktet sættes af serveren, ikke af telefonen (simuleret: ${hm(NOW())}). Ingen GPS og ingen biometri.</p></section>`;
+  const swapFor=id=>sc.store.swaps.find(x=>x.shiftId===id&&x.status!=='rejected');
+  const upHtml=`<section class="card" aria-labelledby="h-up"><h3 id="h-up">Mine kommende vagter</h3>${up.length?`<ul class="list">${up.map(s=>{const sw=swapFor(s.id);return`<li><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span><strong>${esc(fDate(s.night))}</strong> kl. ${hm(s.pS)}–${hm(s.pE)}${Dt.s(s.pE)!==s.night?' (+1)':''} · ${esc(s.role)}</span>${sw?`<span class="badge neutral">Bytte: ${sw.status==='colleague'?`afventer ${esc(pn(sw.to))}`:sw.status==='manager'?'afventer bestyrer':'godkendt'}</span>`:`<button class="btn small" type="button" data-act="swap" data-id="${s.id}">Byt vagt</button>`}</div></li>`}).join('')}</ul>`:'<p class="empty">Ingen planlagte vagter de næste 14 dage.</p>'}</section>`;
+  const opHtml=`<section class="card" aria-labelledby="h-op"><h3 id="h-op">Ledige vagter</h3>${open.length?`<ul class="list">${open.map(s=>{const cl=sc.store.claims.find(x=>x.shiftId===s.id&&x.emp===S.user);return`<li style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span><strong>${esc(fDate(s.night))}</strong> kl. ${hm(s.pS)}–${hm(s.pE)} · ${esc(s.role)}</span>${cl?'<span class="badge neutral">Anmodet, afventer bestyrer</span>':`<button class="btn small" type="button" data-act="claim" data-id="${s.id}">Anmod om vagten</button>`}</li>`}).join('')}</ul>`:'<p class="empty">Ingen ledige vagter lige nu.</p>'}</section>`;
+  return pageHead(`Hej ${PEOPLE[S.user].name.split(' ')[0]}`,esc(sc.t.name))+`<div class="grid">${clock}<div class="two">${upHtml}${opHtml}</div></div>`}
+function myHistory(tid){const out=[],end=dayContext(tid).date;for(let i=0;i<30;i++){const d=Dt.add(end,-i);for(const s of roster(tid,d))if(s.emp===S.user&&s.pS<=NOW())out.push(shiftView(tid,s))}return out}
+function vHistory(sc){const{tid}=sc,h=myHistory(tid),ev=sc.store.clockEvents.filter(e=>e.emp===S.user);
+  const tot=h.reduce((a,s)=>a+((s.aOut&&s.outKnown&&!s.forgot)?(s.aOut-s.aIn)/HOUR:0),0);
+  return pageHead('Min historik','seneste 30 dage')+`<p class="small muted">Du kan altid se dine egne registreringer. Andre medarbejderes tider og virksomhedens tal vises ikke her.</p>
+  ${ev.length?`<section class="card"><h3>Stemplinger i dag via appen</h3><ul class="list">${ev.map(e=>`<li>${e.type==='in'?'Ind':'Ud'} kl. ${hm(e.at)} <span class="small muted">(servertid, simuleret)</span></li>`).join('')}</ul></section>`:''}
+  <section class="card" style="margin-top:12px"><div class="card-h"><h3>Vagter og stemplinger</h3><button class="btn small" type="button" data-act="csv">Hent som CSV</button></div><p class="small">I alt ${hrs(tot)} stemplet i perioden.</p>
+  ${h.length?h.map(s=>shiftDetail(tid,s,'employee')).join(''):'<p class="empty">Ingen vagter i perioden.</p>'}</section>`}
+
+/* =====================================================================================
+   20. LOGIN AND COMPANY CHOOSER (simulated; no passwords exist)
+   ===================================================================================== */
+function vLogin(){document.body.dataset.tenant='';document.title='Log ind · prototype';
+  return`${protoStrip()}<main id="main" class="gate" tabindex="-1"><p class="small muted">Driftsoverblik · prototype</p><h1 tabindex="-1" data-pagefocus>Log ind</h1><p>Adgang kræver en personlig invitation. Indtast din e-mail, så sender vi et engangslink. Der findes ingen delte adgangskoder.</p>
+  <form data-form="login" novalidate><label class="f" for="lg-email">E-mail</label><input id="lg-email" name="email" type="email" autocomplete="off" placeholder="navn@firma.dk"><p class="formerr" id="lg-err" role="alert"></p><button class="btn primary" type="submit">Send login-link</button></form><div id="lg-sent"></div>
+  <div class="divider">Demo-konti (kun prototype)</div>${DEMO_LOGINS.map(id=>{const ts=TENANT_IDS.filter(t=>S.memberships[t][id]);return`<button class="acct" type="button" data-act="login-as" data-id="${id}"><span class="avatar" aria-hidden="true">${esc(initials(id))}</span><span><span class="n">${esc(PEOPLE[id].name)}</span><div class="r">${ts.map(t=>`${ROLE_NAME[S.memberships[t][id].role]} · ${TENANTS[t].name}`).join(' og ')}</div></span></button>`}).join('')}
+  <p class="small muted" style="margin-top:18px">Syntetiske personer og data. Login simuleres; intet sendes.</p></main>`}
+function vChoose(){document.body.dataset.tenant='';document.title='Vælg virksomhed · prototype';const ts=myTenants();
+  return`${protoStrip()}<main id="main" class="gate" tabindex="-1"><p class="small muted">Logget ind som ${esc(PEOPLE[S.user].name)}</p><h1 tabindex="-1" data-pagefocus>Vælg virksomhed</h1><p>Du har adgang til ${ts.length} selvstændige virksomheder med hver sin ejerkreds. Tallene vises aldrig samlet. Du er inde i én ad gangen.</p>
+  ${ts.map(t=>`<button class="universe ${t}" type="button" data-act="enter" data-id="${t}"><span class="mono">${MONO[t]}</span><span><span class="nm">${esc(TENANTS[t].name)}</span><div class="lg">${esc(TENANTS[t].legal)} · du er ${ROLE_NAME[myRole(t)].toLowerCase()}</div></span></button>`).join('')}
+  <div class="toolbar" style="margin-top:22px"><button class="btn" type="button" data-act="logout">Log ud</button></div></main>`}
+</script>
+<script>
+'use strict';
+/* =====================================================================================
+   21. DIALOGS
+   ===================================================================================== */
+const dlg=document.getElementById('dlg');
+let restoreKey=null;
+function openDlg(html,trigger){
+  if(trigger)restoreKey={act:trigger.dataset.act,id:trigger.dataset.id||'',date:trigger.dataset.date||''};
+  dlg.innerHTML=html;if(!dlg.open)dlg.showModal();
+  const f=dlg.querySelector('[autofocus]')||dlg.querySelector('input:not([type=hidden]):not([type=radio]):not([type=checkbox]),textarea,select')||dlg.querySelector('input[type=radio]:checked')||dlg.querySelector('.xbtn');
+  if(f)f.focus();
+}
+function closeDlg(){if(dlg.open)dlg.close()}
+function restoreFocus(){if(!restoreKey)return;const k=restoreKey;restoreKey=null;
+  let el=document.querySelector(`[data-act="${k.act}"]${k.id?`[data-id="${CSS.escape(k.id)}"]`:''}${k.date?`[data-date="${k.date}"]`:''}`);
+  if(!el)el=document.querySelector('[data-pagefocus]');if(el)el.focus();}
+dlg.addEventListener('close',()=>{dlg.innerHTML='';restoreFocus()});
+dlg.addEventListener('click',e=>{if(e.target===dlg)closeDlg()});
+const dlgHead=(title,sub)=>`<div class="dlg-h"><div><h2 id="dlg-title">${esc(title)}</h2>${sub?`<div class="sub">${sub}</div>`:''}</div><button class="xbtn" type="button" data-act="dlg-close" aria-label="Luk">×</button></div>`;
+
+function metricDialog(sc,id,pid){
+  const m=METRICS[id],tid=sc.tid,P=periodDefs(tid),p=P[pid]||null;
+  const srcs=m.src.map(k=>{const i=srcInfo(k);const cls={normal:'ok',loading:'info',stale:'warn',partial:'warn',mapping:'warn',unavailable:'bad'}[i.state];return`<div class="state-box ${cls}"><strong>${esc(i.name)} · ${esc(SRC_STATES.find(x=>x[0]===i.state)[1])}</strong>Seneste hentning ${esc(fStamp(i.last))}. ${i.state==='normal'?'':esc(i.state==='stale'?`Data dækker kun til ${fStamp(i.until)}.`:i.state==='unavailable'?'Tal fra kilden vises som ukendte.':i.state==='loading'?'Tal vises som pladsholdere.':SRC_PROBLEM[k][i.state].long)}</div>`}).join('');
+  let inputs='';
+  try{
+    if(p&&(id==='salesEx'||id==='avgTicket'||id==='controls')&&srcState('pos')!=='unavailable'&&srcState('pos')!=='loading'){const r=periodSales(tid,p);inputs=`<dl class="kv"><dt>Periode</dt><dd>${esc(p.label)}, ${esc(p.sub)}${r.cutAt?` (til ${hm(r.cutAt)})`:''}</dd><dt>Inkl. moms</dt><dd>${kr(r.cur.gross)}</dd><dt>Moms fra varelinjer</dt><dd>${kr(r.cur.vat)}</dd><dt>Ex. moms</dt><dd>${kr(r.cur.ex)}</dd><dt>Antal boner</dt><dd>${nf0.format(r.cur.tx)}</dd><dt>Sammenligning</dt><dd>${esc(p.cmpText)}</dd><dt>Sidste år ex. moms</dt><dd>${kr(r.ly.ex)}</dd></dl><p class="small">${esc(p.rule.why)}.</p>`}
+    if(p&&(id==='labourPct'||id==='loaded'||id==='hours'||id==='rph')){const ls=labourSummary(tid,p);inputs=`<dl class="kv"><dt>Periode</dt><dd>${esc(p.label)}, ${esc(p.sub)}</dd><dt>Planlagte timer</dt><dd>${hrs(ls.L.plan)}</dd><dt>Stemplede timer</dt><dd>${ls.L.incomplete?'ufuldstændig':hrs(ls.L.act)}</dd><dt>Belastet løn</dt><dd>${ls.L.incomplete?'—':kr(ls.L.cost)}</dd><dt>Tillægsfaktor</dt><dd>${ls.c.loading} %</dd><dt>Omsætning ex. moms</dt><dd>${srcState('pos')==='unavailable'?'—':kr(ls.Sx.ex)}</dd><dt>Lønprocent</dt><dd>${ls.pct==null?'—':pc(ls.pct)}</dd><dt>Mål</dt><dd>${ls.c.target[0]}–${ls.c.target[1]} %</dd></dl>`}
+    if(id==='cm'&&srcState('acc')!=='unavailable'&&srcState('acc')!=='loading'){const[y,mm]=lastClosedMonth(tid),r=monthCM(tid,y,mm);inputs=`<dl class="kv"><dt>Måned</dt><dd>${MON[mm-1]} ${y}</dd><dt>Omsætning ex. moms</dt><dd>${kr(r.ex)}</dd><dt>Varekøb (e-conomic)</dt><dd>${kr(r.purch)}</dd><dt>Lager start</dt><dd>${r.openCounted?'optalt':'mangler'}</dd><dt>Lager slut</dt><dd>${r.closeCounted?'optalt':'mangler'}</dd><dt>Vareforbrug</dt><dd>${kr(r.cogs)}</dd><dt>Status</dt><dd>${r.measured?'Målt':'Indikativ'}</dd></dl>`}
+  }catch(e){inputs=''}
+  return dlgHead(m.name,'Kilde, friskhed og beregning')+`<div class="dlg-b">${srcs}<h3 style="margin-top:12px">Beregning</h3><div class="formula">${esc(m.formula)}</div><p class="small">${esc(m.notes)}</p>${inputs}<p class="small muted">Tallet er beregnet deterministisk af appen ud fra kildedata. Ingen AI og ingen skøn.</p></div>`;
+}
+function sourceDialog(sc,k){const i=srcInfo(k),S0=SOURCES[k];
+  return dlgHead(i.name,esc(S0.kind))+`<div class="dlg-b"><div class="state-box ${i.state==='normal'?'ok':i.state==='unavailable'?'bad':i.state==='loading'?'info':'warn'}"><strong>${esc(i.label)}</strong>${esc(i.state==='normal'?'Alt modtaget.':i.state==='stale'?`Ingen data efter ${fStamp(i.until)}.`:i.state==='unavailable'?'Tal fra kilden vises som ukendte, ikke som 0.':i.state==='loading'?'Henter …':SRC_PROBLEM[k][i.state].long)}</div><dl class="kv"><dt>Leverer</dt><dd style="font-weight:400;text-align:right">${esc(S0.feeds)}</dd><dt>Forældet efter</dt><dd>${S0.staleAfter>=1440?Math.round(S0.staleAfter/60)+' timer':S0.staleAfter+' min.'}</dd></dl><p><a href="#/${sc.tid}/sources">Se alle datakilder</a></p></div>`}
+function scenarioDialog(){
+  return`<form data-form="scenario">${dlgHead('Testscenarie','Kun til test af prototypen. Findes ikke i produktet.')}<div class="dlg-b"><fieldset style="border:0;padding:0;margin:0"><legend class="sr-only">Scenarie</legend>${SCENARIOS.map(s=>`<label class="acct" style="align-items:flex-start;cursor:pointer"><input type="radio" name="sc" value="${s.id}" ${s.id===S.scenario?'checked':''} style="margin-top:4px;width:18px;height:18px"><span><span class="n">${esc(s.name)}</span><div class="r">${esc(s.desc)}</div></span></label>`).join('')}</fieldset>
+  <h3 style="margin-top:16px">Datakilder</h3><p class="small muted" style="margin-top:0">Overstyr kildens tilstand for at se normal, indlæsning, forældet, delvist manglende, mapping-fejl og utilgængelig.</p>
+  ${['pos','wf','acc'].map(k=>`<label class="f" for="sc-${k}">${SOURCES[k].name}</label><select id="sc-${k}" name="${k}"><option value="">Scenariets standard (${esc(SRC_STATES.find(x=>x[0]===(scen().src[k]||'normal'))[1])})</option>${SRC_STATES.map(([v,l])=>`<option value="${v}" ${S.srcOverride[k]===v?'selected':''}>${l}</option>`).join('')}</select>`).join('')}
+  <p class="small muted">At skifte scenarie nulstiller testdata (opgaver, noter og stemplinger) til scenariets udgangspunkt.</p></div><div class="dlg-f"><button class="btn" type="button" data-act="dlg-close">Annullér</button><button class="btn primary" type="submit">Anvend</button></div></form>`}
+function issuesDialog(sc){const P=periodDefs(sc.tid),iss=computeIssues(sc,P);
+  return dlgHead('Forhold der kræver opmærksomhed',`${iss.length} i ${esc(sc.t.name)}, vigtigste først`)+`<div class="dlg-b"><ul class="list">${iss.map(x=>`<li><div class="small ${x.sev==='bad'?'err-text':'warn-text'}"><strong>${esc(x.kicker)}</strong></div><div><strong>${esc(x.title)}</strong></div><div class="small">${esc(x.detail)}</div><a class="btn small" style="margin-top:6px" href="${x.href}" data-act="dlg-go">${esc(x.act)}</a></li>`).join('')}</ul><p class="small muted">Rækkefølgen er fast: akutte opgaver, utilgængelige kilder, lønprocent over mål, usædvanlige kontroltal, forældede kilder, manglende stemplinger, datafejl.</p></div>`}
+function fixDialog(sc,id){const s=shiftView(sc.tid,shiftById(sc.tid,id));const def=hm(s.pE);
+  return`<form data-form="fix" data-id="${id}" novalidate>${dlgHead('Ret udstempling',`${esc(PEOPLE[s.emp].name)} · ${esc(fDate(s.night))}`)}<div class="dlg-b"><p class="small">Stemplet ind kl. ${hm(s.aIn)}. Planlagt slut kl. ${hm(s.pE)}. Den oprindelige, åbne stempling bevares. Rettelsen gemmes som en ny hændelse med dig som ansvarlig.</p>
+  <label class="f" for="fx-time">Korrekt udstempling</label><input id="fx-time" name="time" type="time" value="${def}" required><p class="hint">Tider før kl. 12 tolkes som natten efter vagtens start.</p>
+  <label class="f" for="fx-reason">Årsag <span class="hint">(påkrævet)</span></label><textarea id="fx-reason" name="reason" maxlength="400" placeholder="Fx bekræftet af bestyrer og kasseafslutning"></textarea>
+  <p class="small">${sc.role==='owner'?'Du er ejer, så rettelsen godkendes med det samme.':'Rettelsen skal godkendes af en ejer, før timerne tæller.'}</p><p class="formerr" id="fx-err" role="alert"></p></div><div class="dlg-f"><button class="btn" type="button" data-act="dlg-close">Annullér</button><button class="btn primary" type="submit">Gem rettelse</button></div></form>`}
+function swapDialog(sc,id){const s=shiftById(sc.tid,id);const col=Object.entries(sc.members).filter(([p,m])=>m.role==='employee'&&p!==S.user&&m.status!=='removed');
+  return`<form data-form="swap" data-id="${id}">${dlgHead('Byt vagt',`${esc(fDate(s.night))} kl. ${hm(s.pS)}–${hm(s.pE)}`)}<div class="dlg-b"><label class="f" for="sw-to">Byt med kollega i ${esc(sc.t.name)}</label><select id="sw-to" name="to">${col.map(([p])=>`<option value="${p}">${esc(PEOPLE[p].name)}</option>`).join('')}</select><p class="small">Kollegaen skal acceptere, derefter godkender bestyreren. Indtil da er vagten stadig din.</p></div><div class="dlg-f"><button class="btn" type="button" data-act="dlg-close">Annullér</button><button class="btn primary" type="submit">Send anmodning</button></div></form>`}
+function confirmRemove(sc,id){return`<form data-form="remove" data-id="${id}">${dlgHead('Fjern adgang',esc(sc.t.name))}<div class="dlg-b"><p>Fjern <strong>${esc(PEOPLE[id]?.name||id)}</strong> fra ${esc(sc.t.name)}? Personen mister adgang med det samme. Adgang til andre virksomheder påvirkes ikke. Historik og log bevares.</p></div><div class="dlg-f"><button class="btn" type="button" data-act="dlg-close">Annullér</button><button class="btn danger" type="submit">Fjern adgang</button></div></form>`}
+
+/* =====================================================================================
+   22. ROUTER
+   ===================================================================================== */
+let lastHash=null;
+function go(h){if(location.hash===h)render(true);else location.hash=h}
+function homeFor(){const ts=myTenants();if(ts.length===1){const t=ts[0];return `#/${t}/${myRole(t)==='employee'?'me':'home'}`}return'#/choose'}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;document.getElementById('toasts').appendChild(el);document.getElementById('live').textContent=msg;setTimeout(()=>el.remove(),3800)}
+const EMP_PAGES=['me','history','tasks','more','rules'];
+function render(fromNav){
+  const parts=location.hash.replace(/^#\/?/,'').split('/').filter(Boolean);
+  const app=document.getElementById('app');let html;
+  if(!S.user){html=vLogin()}
+  else if(!parts.length||parts[0]==='login'){location.replace(homeFor());return}
+  else if(parts[0]==='choose'){S.tenant=null;html=vChoose()}
+  else{
+    const[tid,page='home',param]=parts;
+    let sc;try{sc=scope(tid)}catch(e){document.body.dataset.tenant='';html=`${protoStrip()}<main id="main" class="gate" tabindex="-1"><h1 tabindex="-1" data-pagefocus>Ingen adgang</h1><p>Du har ikke et medlemskab, der giver adgang til denne side. Forsøget er logget.</p><a class="btn primary" href="${homeFor()}">Tilbage</a></main>`;app.innerHTML=html;focusPage(fromNav);return}
+    if(S.tenant!==tid){S.tenant=tid;S._payLogged=false;resetMemo();audit(tid,'Åbnede virksomheden');}
+    const role=sc.role;let body;
+    if(role==='employee'&&!EMP_PAGES.includes(page)){location.replace(`#/${tid}/me`);return}
+    switch(page){
+      case'home':body=vHome(sc);break;case'sales':body=vSales(sc,param);break;case'labour':body=vLabour(sc);break;case'margin':body=vMargin(sc);break;
+      case'tasks':body=vTasks(sc,param);break;case'more':body=vMore(sc);break;case'sources':body=vSources(sc);break;case'rules':body=vRules(sc);break;
+      case'members':body=vMembers(sc);break;case'log':body=vLog(sc);break;case'settings':body=vSettings(sc);break;case'me':body=vMe(sc);break;case'history':body=vHistory(sc);break;
+      default:body=noAccess('Siden findes ikke.');
+    }
+    const act=['sources','rules','members','log','settings'].includes(page)?'more':page;
+    html=frame(sc,act,body);
+    app.innerHTML=html;labelTables();
+    if(page==='tasks'&&param){const el=document.getElementById('task-'+param);if(el){el.scrollIntoView({block:'center'});el.setAttribute('tabindex','-1');el.focus();return}}
+    if(page==='sales'&&param==='controls'&&fromNav){const el=document.getElementById('controls');if(el){el.scrollIntoView();el.setAttribute('tabindex','-1');el.focus();return}}
+    focusPage(fromNav);return;
+  }
+  app.innerHTML=html;labelTables();focusPage(fromNav);
+}
+/* Scrollable tables are focusable regions; name each after its card heading so landmarks stay unique */
+function labelTables(){const seen={};document.querySelectorAll('.tablewrap').forEach(w=>{const h=w.closest('section,details,.card')?.querySelector('h3,summary');let l='Tabel'+(h?': '+h.textContent.trim():'');seen[l]=(seen[l]||0)+1;if(seen[l]>1)l+=` (${seen[l]})`;w.setAttribute('aria-label',l)})}
+function focusPage(fromNav){if(!fromNav)return;const h=document.querySelector('[data-pagefocus]');if(h){h.focus({preventScroll:true});window.scrollTo(0,0)}}
+window.addEventListener('hashchange',()=>{closeDlg();render(true)});
+/* Re-render in place after an action, keeping focus on the equivalent control */
+function rerender(){const a=document.activeElement;const key=a&&a.dataset?{act:a.dataset.act,id:a.dataset.id,date:a.dataset.date}:null;render(false);
+  if(key&&key.act){const el=document.querySelector(`[data-act="${key.act}"]${key.id?`[data-id="${CSS.escape(key.id)}"]`:''}${key.date?`[data-date="${key.date}"]`:''}`);if(el){el.focus();return}}
+  const h=document.querySelector('[data-pagefocus]');if(h&&!dlg.open)h.focus({preventScroll:true})}
+
+/* =====================================================================================
+   23. EVENTS
+   ===================================================================================== */
+function curScope(){return S.tenant?scope(S.tenant):null}
+function login(id){S.user=id;S.tenant=null;S.store={};resetMemo();TENANT_IDS.forEach(t=>{if(S.memberships[t][id])audit(t,'Loggede ind via engangslink (simuleret)')});location.hash=homeFor()}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;const act=b.dataset.act,id=b.dataset.id;
+  const sc=()=>curScope();
+  switch(act){
+    case'dlg-close':e.preventDefault();closeDlg();break;
+    case'dlg-go':closeDlg();break;
+    case'scenario':openDlg(scenarioDialog(),b);break;
+    case'login-as':login(id);break;
+    case'enter':location.hash=`#/${id}/${myRole(id)==='employee'?'me':'home'}`;break;
+    case'switch':S.tenant=null;resetMemo();location.hash='#/choose';break;
+    case'logout':S.user=null;S.tenant=null;location.hash='#/login';render(true);break;
+    case'metric':openDlg(metricDialog(sc(),id,b.dataset.p),b);break;
+    case'source':openDlg(sourceDialog(sc(),id),b);break;
+    case'issues':openDlg(issuesDialog(sc()),b);break;
+    case'note-add':case'day':if(sc().role==='employee')break;openDlg(noteForm(sc(),b.dataset.date),b);break;
+    case'task-new':openDlg(taskForm(sc()),b);break;
+    case'task-status':{const s=sc(),t=s.store.tasks.find(x=>x.id===id);if(!t)break;const ns=b.dataset.s;t.status=ns;if(ns==='resolved'){t.resolvedBy=S.user;t.resolvedAt=NOW()}else{delete t.resolvedBy;delete t.resolvedAt}audit(s.tid,`Satte opgaven "${t.title}" til ${STATUS_NAME[ns].toLowerCase()}`);toast(`"${t.title}" er nu ${STATUS_NAME[ns].toLowerCase()}.`);rerender();break}
+    case'tfilter':S.taskFilter=id;rerender();break;
+    case'period':S.salesPeriod=id;history.replaceState(null,'',`#/${S.tenant}/sales/${id}`);rerender();break;
+    case'cmp':S.cmpMode=id;resetMemo();rerender();break;
+    case'lperiod':S.labourPeriod=id;rerender();break;
+    case'fix-clock':openDlg(fixDialog(sc(),id),b);break;
+    case'approve-fix':{const s=sc(),f=manualFix(s.tid,id);if(f){f.status='approved';f.approvedBy=S.user;f.approvedAt=NOW();audit(s.tid,`Godkendte rettet stempling for ${pn(shiftById(s.tid,id).emp)}`);resetMemo();toast('Rettelsen er godkendt. Timerne tæller nu med.');rerender()}break}
+    case'swap':openDlg(swapDialog(sc(),id),b);break;
+    case'swap-approve':{const s=sc(),x=s.store.swaps.find(y=>y.id===id);if(x){x.status='approved';audit(s.tid,`Godkendte vagtbytte ${pn(x.from)} → ${pn(x.to)}`);toast('Vagtbyttet er godkendt (simuleret besked til begge).');rerender()}break}
+    case'claim':{const s=sc();s.store.claims.push({id:nid(s.tid,'claim'),shiftId:id,emp:S.user,status:'pending',at:NOW()});audit(s.tid,'Anmodede om en ledig vagt');toast('Anmodning sendt til bestyreren (simuleret).');rerender();break}
+    case'claim-approve':{const s=sc(),x=s.store.claims.find(y=>y.id===id);if(x){x.status='approved';audit(s.tid,`Godkendte ledig vagt til ${pn(x.emp)}`);toast('Vagten er tildelt (simuleret).');rerender()}break}
+    case'clock':{const s=sc(),type=b.dataset.s;s.store.clockEvents.push({emp:S.user,type,at:NOW()});audit(s.tid,`Stemplede ${type==='in'?'ind':'ud'} (servertid)`);toast(`Stemplet ${type==='in'?'ind':'ud'} kl. ${hm(NOW())}.`);rerender();break}
+    case'csv':{const s=sc(),rows=[['dato','rolle','planlagt_start','planlagt_slut','stemplet_ind','stemplet_ud','timer','rettet']];myHistory(s.tid).forEach(x=>rows.push([x.night,x.role,hm(x.pS),hm(x.pE),hm(x.aIn),x.forgot||!x.aOut?'':hm(x.aOut),x.forgot||!x.aOut?'':((x.aOut-x.aIn)/HOUR).toFixed(2),x.correction||x.fix?'ja':'nej']));
+      const blob=new Blob(['﻿'+rows.map(r=>r.join(';')).join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`min-historik-${s.tid}.csv`;document.body.appendChild(a);a.click();a.remove();toast('Din historik er hentet som CSV.');break}
+    case'member-remove':openDlg(confirmRemove(sc(),id),b);break;
+  }
+});
+function formErr(id,msg){const el=document.getElementById(id);if(el)el.textContent=msg}
+document.addEventListener('submit',e=>{
+  const f=e.target.closest('form[data-form]');if(!f)return;e.preventDefault();const fd=new FormData(f),kind=f.dataset.form;
+  if(kind==='login'){const em=String(fd.get('email')||'').trim().toLowerCase();if(!em){formErr('lg-err','Skriv din e-mail.');return}
+    const id=Object.keys(PEOPLE).find(p=>PEOPLE[p].email===em);const has=id&&TENANT_IDS.some(t=>S.memberships[t][id]&&S.memberships[t][id].status!=='removed');
+    if(!has){formErr('lg-err','Der findes ingen invitation til denne e-mail. Adgang kræver en personlig invitation fra en ejer. E-maildomænet giver ikke adgang i sig selv.');return}
+    formErr('lg-err','');document.getElementById('lg-sent').innerHTML=`<div class="state-box ok" role="status"><strong>Login-link sendt til ${esc(em)} (simuleret).</strong>Linket virker én gang i 15 minutter.</div><button class="btn primary" type="button" data-act="login-as" data-id="${id}">Åbn login-linket</button>`;return}
+  const sc=curScope();
+  if(kind==='scenario'){S.scenario=fd.get('sc');S.srcOverride={};['pos','wf','acc'].forEach(k=>{const v=fd.get(k);if(v)S.srcOverride[k]=v});S.store={};S._payLogged=false;resetMemo();closeDlg();toast(`Scenarie: ${scen().name}`);render(false);const h=document.querySelector('[data-pagefocus]');if(h)h.focus();return}
+  if(kind==='task'){const title=String(fd.get('title')||'').trim(),as=fd.getAll('assignees');
+    if(!title){formErr('tk-err','Giv opgaven en titel.');f.querySelector('#tk-title').focus();return}
+    if(!as.length){formErr('tk-err','Vælg mindst én ansvarlig.');return}
+    if(as.some(a=>!sc.members[a]||sc.members[a].status==='removed')){formErr('tk-err','Kun personer i denne virksomhed kan tildeles.');return}
+    const dd=fd.get('due');const due=dd?T(dd,(()=>{const[h,m]=String(fd.get('duet')||'12:00').split(':').map(Number);return h+m/60})()):null;
+    const t={id:nid(sc.tid,'task'),title,desc:String(fd.get('desc')||'').trim(),assignees:as,urgent:!!fd.get('urgent'),due,status:'open',createdBy:S.user,createdAt:NOW(),photo:!!fd.get('photo')};
+    sc.store.tasks.unshift(t);audit(sc.tid,`Oprettede opgave "${title}"${t.urgent?' (akut)':''}`);closeDlg();
+    toast(`${as.map(pn).join(', ')} får besked på e-mail${t.urgent?' med det samme':''} (simuleret).`);if(t.urgent)S.taskFilter='open';rerender();return}
+  if(kind==='note'){const text=String(fd.get('text')||'').trim();if(!text){formErr('nt-err','Skriv en note, eller luk vinduet. Noter er valgfri.');return}
+    sc.store.notes.push({id:nid(sc.tid,'note'),date:f.dataset.date,text,by:S.user,at:NOW(),metric:fd.get('metric')||null});audit(sc.tid,`Tilføjede note til ${fDate(f.dataset.date)}`);closeDlg();toast('Noten er gemt.');rerender();return}
+  if(kind==='fix'){const reason=String(fd.get('reason')||'').trim(),tm=String(fd.get('time')||'');const s=shiftById(sc.tid,f.dataset.id);
+    if(!tm){formErr('fx-err','Angiv et tidspunkt.');return}if(reason.length<5){formErr('fx-err','Skriv en årsag. Rettelser uden årsag gemmes ikke.');f.querySelector('#fx-reason').focus();return}
+    const[h,m]=tm.split(':').map(Number);const t=T(h<12?Dt.add(s.night,1):s.night,h+m/60);if(t<=s.aIn){formErr('fx-err','Udstempling skal ligge efter indstemplingen.');return}
+    const owner=sc.role==='owner';sc.store.clockFixes.push({shiftId:s.id,corrected:t,actor:S.user,at:NOW(),reason,status:owner?'approved':'pending',approvedBy:owner?S.user:null,approvedAt:owner?NOW():null});
+    audit(sc.tid,`Rettede udstempling for ${pn(s.emp)} (${fDate(s.night)}) til ${hm(t)}. Årsag: ${reason}`);resetMemo();closeDlg();toast(owner?'Rettelsen er gemt og godkendt.':'Rettelsen er gemt og afventer ejerens godkendelse.');rerender();return}
+  if(kind==='swap'){sc.store.swaps.push({id:nid(sc.tid,'swap'),shiftId:f.dataset.id,from:S.user,to:fd.get('to'),status:'colleague',createdAt:NOW()});audit(sc.tid,'Anmodede om vagtbytte');closeDlg();toast(`Anmodning sendt til ${pn(fd.get('to'))} (simuleret).`);rerender();return}
+  if(kind==='remove'){const id=f.dataset.id;sc.members[id].status='removed';audit(sc.tid,`Fjernede adgang for ${pn(id)}`);closeDlg();toast(`${pn(id)} har ikke længere adgang til ${sc.t.name}.`);rerender();return}
+  if(kind==='invite'){const name=String(fd.get('name')||'').trim(),email=String(fd.get('email')||'').trim().toLowerCase(),role=fd.get('role');
+    if(!name||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){formErr('iv-err','Skriv navn og en gyldig e-mail.');return}
+    const pid='p'+hashStr(email).toString(36);if(sc.members[pid]&&sc.members[pid].status!=='removed'){formErr('iv-err','Personen er allerede inviteret.');return}
+    PEOPLE[pid]={name,short:name.split(' ')[0]+(name.split(' ')[1]?' '+name.split(' ')[1][0]+'.':''),email};sc.members[pid]={role,status:'invited'};
+    audit(sc.tid,`Inviterede ${name} som ${ROLE_NAME[role].toLowerCase()}`);toast(`Invitation til ${email} er oprettet (simuleret, intet sendt).`);rerender();return}
+  if(kind==='settings'){const c=cfg(sc.tid),cut=+fd.get('cutoff'),mn=+fd.get('tmin'),mx=+fd.get('tmax'),ld=+fd.get('loading');
+    if(!(mn>0&&mx>mn&&mx<=60)){formErr('st-err','Målet skal være et interval, hvor "fra" er mindre end "til".');return}if(!(ld>=0&&ld<=60)){formErr('st-err','Tillægsfaktoren skal være mellem 0 og 60 %.');return}
+    const ch=[];if(cut!==c.cutoff)ch.push(`skæringstid ${c.cutoff}:00 → ${cut}:00`);if(mn!==c.target[0]||mx!==c.target[1])ch.push(`lønmål ${c.target.join('–')} % → ${mn}–${mx} %`);if(ld!==c.loading)ch.push(`tillæg ${c.loading} % → ${ld} %`);
+    c.cutoff=cut;c.target=[mn,mx];c.loading=ld;resetMemo();if(ch.length)audit(sc.tid,`Ændrede indstillinger: ${ch.join(', ')}`);toast(ch.length?'Indstillingerne er gemt. Alle tal er genberegnet.':'Ingen ændringer.');rerender();return}
+});
+
+/* =====================================================================================
+   24. START
+   ===================================================================================== */
+S.memberships=JSON.parse(JSON.stringify(MEMBERSHIP_SEED));
+for(const t of TENANT_IDS)for(const p in S.memberships[t])S.memberships[t][p].status='active';
+/* Optional deep link for testing: #/login?as=mathias&sc=labour is not supported on purpose;
+   the scenario switcher is the only test control. */
+render(false);
+</script>
+</body>
+</html>

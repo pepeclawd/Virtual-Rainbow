@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /streamline-ai/
+Disallow: /streamline-ai/hospitality-os/
 
 Sitemap: https://virtualrainbow.xyz/sitemap.xml
