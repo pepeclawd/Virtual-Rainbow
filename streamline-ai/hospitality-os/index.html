@@ -37,8 +37,8 @@ a{color:var(--info)}
 /* prototype strip */
 .proto{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;justify-content:space-between;background:#20262b;color:#f1f3f4;font-size:12.5px;padding:6px 16px}
 .proto strong{font-weight:600}
-.proto button{background:transparent;border:1px solid #6b757d;color:#f1f3f4;border-radius:999px;padding:3px 10px;font-size:12.5px;cursor:pointer;white-space:nowrap}
-.proto button:hover{background:#343c43}
+.proto button,.proto .back{background:transparent;border:1px solid #6b757d;color:#f1f3f4;border-radius:999px;padding:3px 10px;font-size:12.5px;cursor:pointer;white-space:nowrap;text-decoration:none}
+.proto button:hover,.proto .back:hover{background:#343c43}
 .proto .clock{opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* layout */
@@ -929,7 +929,7 @@ const SRC_PROBLEM={
 /* =====================================================================================
    12. SCREEN FRAME
    ===================================================================================== */
-function protoStrip(){const sc=scen();return`<div class="proto" role="region" aria-label="Prototype"><span class="clock"><strong>PROTOTYPE</strong> · syntetiske data · ${esc(fDate(Dt.s(NOW()),{year:true}))} ${hm(NOW())}</span><button type="button" data-act="scenario" aria-haspopup="dialog">Testscenarie: ${esc(sc.name)} ▾</button></div>`}
+function protoStrip(){const sc=scen();return`<div class="proto" role="region" aria-label="Prototype"><span class="clock"><strong>PROTOTYPE</strong> · syntetiske data · ${esc(fDate(Dt.s(NOW()),{year:true}))} ${hm(NOW())}</span><div style="display:flex;align-items:center;gap:8px"><a class="back" href="https://virtualrainbow.xyz/streamline-ai/hospitality-os/">Tilbage til Virtual Rainbow</a><button type="button" data-act="scenario" aria-haspopup="dialog">Testscenarie: ${esc(sc.name)} ▾</button></div></div>`}
 function tabsFor(sc,active){
   const tid=sc.tid,items=sc.role==='employee'?[['me','Min side','me'],['history','Historik','history'],['tasks','Opgaver','tasks'],['more','Mere','more']]:[['home','Overblik','home'],['sales','Salg','sales'],['labour','Personale','labour'],['tasks','Opgaver','tasks'],['more','Mere','more']];
   if(sc.role==='owner')items.splice(3,0,['margin','Dækningsgrad','margin']);
