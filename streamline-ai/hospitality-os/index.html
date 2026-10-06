@@ -506,30 +506,46 @@ html[data-theme=aften] .ref-hour .col .bar.peak{background:#8a8173}
 .ref-tag{flex:none;max-width:none;white-space:nowrap}
 </style>
 <style>
-/* Dag PDF page 2: paper canvas, white detail panels and solid status fills. */
+/* Dag: warm paper canvas with neutral cards and clear status text. */
 html[data-theme=dag]{--bg:#f4f1ea;--surface:#fff;--surface-2:#faf8f3;--ink:#262422;--ink-2:#504b44;--muted:#6f685e;--line:#c9c2b7;--line-2:#e2ddd3;--na-bg:#ebe6dc;--status-good:#2f6b3c;--status-warn:#8a6d12;--status-bad:#a3352b;--status-ink:#fff;--good:#1f4f2a;--good-bg:#e4f0e6;--warn:#705507;--warn-bg:#f6edcc;--bad:#982b22;--bad-bg:#f7dfdb}
-html[data-theme=dag] .ref-good{background:#2f6b3c;color:#fff;border-color:#2f6b3c}
-html[data-theme=dag] .ref-warn{background:#8a6d12;color:#fff;border-color:#8a6d12}
-html[data-theme=dag] .ref-bad{background:#a3352b;color:#fff;border-color:#a3352b}
 html[data-theme=dag] .ref-inclusive,html[data-theme=dag] .ref-last,html[data-theme=dag] .ref-kv dt{opacity:1}
-html[data-theme=dag] .ref-good .ref-badge,html[data-theme=dag] .ref-bad .ref-badge{background:rgba(255,255,255,.08)}
-html[data-theme=dag] .ref-warn .ref-badge{background:rgba(0,0,0,.1)}
 html[data-theme=dag] .ref-hour .col .bar{background:#ebe6dc}
 html[data-theme=dag] .ref-hour .col .bar.peak,html[data-theme=dag] .ref-hour .legend i.cur{background:#7a7265}
-html[data-theme=dag] .ref-control.good{background:#e4f0e6;color:#1f4f2a;border-color:#2f6b3c}
-html[data-theme=dag] .ref-control.warn{background:#f6edcc;color:#705507;border-color:#8a6d12}
-html[data-theme=dag] .ref-control.bad{background:#f7dfdb;color:#982b22;border-color:#a3352b}
 html[data-theme=dag] .ref-control{border-left-width:3px}
 html[data-theme=dag] .ref-shift,html[data-theme=dag] .ref-more{background:#faf8f3}
-html[data-theme=dag] .ref-groups i{background:rgba(255,255,255,.15)}
-html[data-theme=dag] .ref-groups i:before{background:rgba(255,255,255,.45)}
 html[data-theme=dag] nav.tabs a[aria-current=page]{background:#fff}
 html[data-theme=dag] .ref-alert a,html[data-theme=dag] .ref-alert button{background:#f6c3bb;color:#4b2924}
 @media(min-width:960px){html[data-theme=dag] .shell{max-width:1220px;grid-template-columns:216px minmax(0,1fr)}html[data-theme=dag] .ref-stat{min-height:180px}html[data-theme=dag] .ref-lab,html[data-theme=dag] .ref-margin{min-height:265px}html[data-theme=dag] .ref-hour,html[data-theme=dag] .ref-controls{min-height:315px}html[data-theme=dag] .ref-roster,html[data-theme=dag] .ref-tasks,html[data-theme=dag] .ref-notes{min-height:270px}}
 </style>
 <style>
-html[data-theme=dag] .ref-warn .gauge-scale{color:#fff;opacity:1}
+html[data-theme=dag] .ref-warn .gauge-scale{opacity:1}
 html[data-theme=dag] .ref-control.bad small{color:#982b22}
+</style>
+<style>
+/* Both themes use neutral cards; semantic status lives in the text and badge. */
+html[data-theme=dag] .ref-good,html[data-theme=dag] .ref-warn,html[data-theme=dag] .ref-bad{background:#fff;border:1px solid #e2ddd3;--muted:#6f685e}
+html[data-theme=dag] .ref-good{color:#2f6b3c;--ink-2:#2f6b3c}
+html[data-theme=dag] .ref-warn{color:#8a6d12;--ink-2:#8a6d12}
+html[data-theme=dag] .ref-bad{color:#a3352b;--ink-2:#a3352b}
+html[data-theme=dag] .ref-good .ref-badge{background:#e4f0e6;color:#245432}
+html[data-theme=dag] .ref-warn .ref-badge{background:#f6edcc;color:#705507}
+html[data-theme=dag] .ref-bad .ref-badge{background:#f7dfdb;color:#982b22}
+html[data-theme=dag] .ref-good .ref-inclusive,html[data-theme=dag] .ref-good .ref-last,html[data-theme=dag] .ref-warn .ref-inclusive,html[data-theme=dag] .ref-warn .ref-last,html[data-theme=dag] .ref-bad .ref-inclusive,html[data-theme=dag] .ref-bad .ref-last{color:#6f685e}
+html[data-theme=dag] .ref-statbottom{border-color:#e2ddd3}
+html[data-theme=dag] .ref-alert.ref-bad{color:#a3352b;background:#fff;border:1px solid #e2ddd3}
+html[data-theme=dag] .ref-alert.ref-good{color:#2f6b3c;background:#fff;border:1px solid #e2ddd3}
+html[data-theme=dag] .ref-lab .gauge{background:#ebe6dc}
+html[data-theme=dag] .ref-lab .gauge .band{background:#d8d1c3}
+html[data-theme=dag] .ref-lab .gauge .mark{background:#8a6d12}
+html[data-theme=dag] .ref-warn .gauge-scale{color:#705507}
+html[data-theme=dag] .ref-lab .gauge-scale{color:#6f685e;opacity:1}
+html[data-theme=dag] .ref-groups i{background:#ebe6dc}
+html[data-theme=dag] .ref-groups i:before{background:#8a8173}
+html[data-theme=dag] .ref-control.good,html[data-theme=dag] .ref-control.warn,html[data-theme=dag] .ref-control.bad{background:#fff;border-color:#e2ddd3}
+html[data-theme=dag] .ref-control.good{color:#2f6b3c}
+html[data-theme=dag] .ref-control.warn{color:#8a6d12}
+html[data-theme=dag] .ref-control.bad{color:#a3352b}
+html[data-theme=dag] .ref-control.good small,html[data-theme=dag] .ref-control.warn small,html[data-theme=dag] .ref-control.bad small{color:#6f685e}
 </style>
 </head>
 <body>
