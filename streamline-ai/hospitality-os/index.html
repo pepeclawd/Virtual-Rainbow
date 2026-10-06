@@ -357,6 +357,68 @@ html[data-theme=aften] .photo{background:var(--surface-2)}
 .card[aria-labelledby=h-lab]:has(.card-h .delta.good){background:var(--good-bg)}
 .card[aria-labelledby=h-lab]:has(.card-h .delta.warn){background:var(--warn-bg)}
 .card[aria-labelledby=h-lab]:has(.card-h .delta.bad){background:var(--bad-bg);--muted:var(--ink-2)}
+/* Mathias's October screen hierarchy: quiet rail, status cards, then the operating details. */
+.home-toolbar{display:flex;align-items:center;justify-content:flex-end;margin:-48px 0 16px;min-height:42px}
+.home-toolbar .seg button{min-height:34px;font-size:12px}
+.home-grid{gap:12px}
+.home-grid .card,.home-grid .tile,.home-grid .urgent{border-radius:7px}
+.home-grid .sales-grid{gap:10px}
+.home-grid .sales-grid .tile{min-height:165px;padding:15px}
+.home-grid .sales-grid .tile .lbl{font-size:11px;letter-spacing:.08em}
+.home-grid .sales-grid .tile .big{font-size:25px;margin-top:5px}
+.home-grid .sales-grid .tile .delta{order:-1;align-self:flex-end;margin:0 0 -23px;font-size:11px;background:rgba(255,255,255,.16);color:inherit}
+.home-grid .sales-grid .tile .cmp{border-top:1px solid rgba(255,255,255,.17);padding-top:8px;margin-top:auto}
+.home-grid .sales-grid .tile .srcbtn{font-size:11px}
+.home-grid .urgent{align-items:center}
+.home-grid .urgent .acts{margin:0 0 0 auto}
+.home-grid .urgent .t{font-size:16px}
+.home-grid .urgent .d{font-size:12px}
+.home-grid .home-lower{min-height:220px}
+.home-grid .home-lower h3{font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.home-task{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border:1px solid var(--line);border-left:3px solid var(--line);border-radius:5px;margin:7px 0;background:var(--surface-2);text-decoration:none;color:var(--ink)}
+.home-task.bad{border-color:var(--bad);background:var(--bad-bg)}
+.home-task.warn{border-color:var(--warn-mark);background:var(--warn-bg)}
+.home-task.good{border-color:var(--good);background:var(--good-bg)}
+.home-task .small{color:var(--ink-2)}
+.home-grid .home-footer{align-self:end}
+.home-grid .home-footer .sources{grid-template-columns:repeat(3,minmax(0,1fr))}
+.home-grid .chart .bar{background:#8b857a}
+html[data-theme=aften] .home-grid .chart .bar{background:#a9a195}
+.gate{margin:30px auto;padding:26px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:10px}
+.universe.soehesten,.universe.rannor{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.universe .mono{background:var(--brand-soft);border:0;color:var(--brand)}
+.universe.soehesten .mono{background:#0a4f5c;color:#fff}
+.universe.rannor .mono{background:#8e3514;color:#fff}
+.universe .lg{color:var(--muted)}
+.universe:hover{border-color:var(--brand-mid);filter:none}
+@media (min-width:960px){
+  .shell{grid-template-columns:212px minmax(0,1fr);grid-template-rows:auto 1fr}
+  .shell>.brandbar{grid-column:1;grid-row:1;background:var(--surface-2);border:0;padding:22px 18px 8px}
+  .brandbar .row{display:block}
+  .brandbar .id{align-items:flex-start;gap:8px}
+  .brandbar .mono{width:13px;height:13px;border:0;border-radius:50%;margin-top:6px;background:var(--brand)}
+  .brandbar .mono svg{display:none}
+  .brandbar h1{font-size:15px}
+  .brandbar .legal{display:none}
+  .brandbar .who{display:flex;flex-direction:column-reverse;align-items:flex-start;gap:2px;margin-top:4px;padding-left:21px}
+  .brandbar .chipbtn{font-size:12px;background:none;border:0;padding:4px 0}
+  nav.tabs{grid-column:1;grid-row:2;min-height:0;border-right:1px solid var(--line);background:var(--surface-2);padding-top:12px}
+  nav.tabs a{font-size:13px;min-height:38px}
+  nav.tabs a[aria-current=page]{background:var(--surface)}
+  .shell>main{grid-column:2;grid-row:1 / 3;max-width:none;padding:26px 26px 42px}
+  .home-grid .home-wide{grid-column:span 12}
+  .home-grid .home-half{grid-column:span 6}
+  .home-grid .home-third{grid-column:span 4}
+}
+@media (max-width:639px){
+  .gate{margin:12px;background:var(--surface-2)}
+  .home-toolbar{margin:0 0 12px;justify-content:flex-start}
+  .home-grid .sales-grid{grid-template-columns:1fr}
+  .home-grid .sales-grid .tile{min-height:132px}
+  .home-grid .home-footer .sources{grid-template-columns:1fr}
+  .home-grid .urgent{align-items:flex-start;flex-wrap:wrap}
+  .home-grid .urgent .acts{margin:0}
+}
 </style>
 </head>
 <body>
@@ -999,8 +1061,13 @@ function vHome(sc){
   const urgentTasks=sc.store.tasks.filter(t=>t.urgent&&t.status!=='resolved');
   const utHtml=urgentTasks.length?`<section class="span-12 card" aria-labelledby="h-ut"><div class="card-h"><h3 id="h-ut">Akutte opgaver</h3><a class="btn small" href="#/${tid}/tasks">Alle opgaver</a></div>${urgentTasks.map(t=>taskItem(sc,t,true)).join('')}</section>`:'';
   const dayNotes=sc.store.notes.filter(n=>n.date===ctx.date);
-  const noteHtml=`<section class="span-12" aria-label="Note til dagen"><div class="toolbar">${dayNotes.map(n=>noteView(n)).join('')}<button type="button" class="addnote" data-act="note-add" data-date="${ctx.date}">+ Tilføj note til ${esc(fDate(ctx.date))}</button></div></section>`;
-  return pageHead('Overblik',`${esc(fDate(ctx.date))}`)+ctxLine+`<div class="home-grid"><div class="span-12">${topHtml}</div>${resHomeCard(sc)}${salesHtml}${labHtml?`<div class="${cmHtml?'span-7':'span-12'}">${labHtml}</div>`:''}${cmHtml?`<div class="${labHtml?'span-5':'span-12'}">${cmHtml}</div>`:''}${srcHtml}${utHtml}${noteHtml}</div>`;
+  const noteHtml=`<section class="card home-lower home-third" aria-labelledby="h-homenote"><div class="card-h"><h3 id="h-homenote">Note til ${esc(fDate(ctx.date))}</h3><span class="badge neutral">Valgfri</span></div>${dayNotes.map(noteView).join('')||'<p class="small muted">Ingen note til dagen endnu.</p>'}<button type="button" class="addnote" data-act="note-add" data-date="${ctx.date}">+ Tilføj note</button></section>`;
+  const tasks=sc.store.tasks.filter(t=>t.status!=='resolved').sort((a,b)=>(b.urgent-a.urgent)||((a.due||9e15)-(b.due||9e15))).slice(0,3);
+  const taskHtml=`<section class="card home-lower home-third" aria-labelledby="h-hometask"><div class="card-h"><h3 id="h-hometask">Opgaver</h3><a class="btn small" href="#/${tid}/tasks">Se alle</a></div>${tasks.length?tasks.map(t=>`<a class="home-task task ${t.urgent?'is-urgent bad':t.status==='progress'?'warn':''}" href="#/${tid}/tasks/${t.id}"><span><strong>${esc(t.title)}</strong><br><span class="small">${esc(STATUS_NAME[t.status])}${t.urgent?' · Akut':''}</span></span><span class="small">@${esc(pn(t.assignees[0]||t.createdBy))}</span></a>`).join(''):'<p class="small muted">Ingen åbne opgaver.</p>'}</section>`;
+  const rosterHtml=can.seeLabour(role)?`<div class="home-third home-lower">${rosterCard(sc)}</div>`:'';
+  const operations=can.seeSales(role)&&srcState('pos')!=='loading'&&srcState('pos')!=='unavailable'?`<div class="home-half">${hourChart(tid,P.day)}</div><div class="home-half">${controlsCard(tid,P.day,periodSales(tid,P.day))}</div>`:'';
+  const compare=`<div class="home-toolbar"><div class="seg" role="group" aria-label="Sammenligning for dagen"><button type="button" data-act="cmp" data-id="weekday" aria-pressed="${S.cmpMode==='weekday'}">Samme ugedag</button><button type="button" data-act="cmp" data-id="calendar" aria-pressed="${S.cmpMode==='calendar'}">Samme dato</button></div></div>`;
+  return pageHead('Overblik',`${esc(fDate(ctx.date))}`)+compare+ctxLine+`<div class="home-grid"><div class="home-wide">${topHtml}</div>${salesHtml}${labHtml?`<div class="home-half">${labHtml}</div>`:''}${cmHtml?`<div class="home-half">${cmHtml}</div>`:''}${operations}${rosterHtml}${taskHtml}${noteHtml}${resHomeCard(sc)}<div class="home-wide home-footer">${srcHtml}</div></div>`;
 }
 function salesTile(tid,p){
   const pos=srcState('pos');if(pos==='loading')return skelTile(p.label);
