@@ -527,6 +527,10 @@ html[data-theme=dag] nav.tabs a[aria-current=page]{background:#fff}
 html[data-theme=dag] .ref-alert a,html[data-theme=dag] .ref-alert button{background:#f6c3bb;color:#4b2924}
 @media(min-width:960px){html[data-theme=dag] .shell{max-width:1220px;grid-template-columns:216px minmax(0,1fr)}html[data-theme=dag] .ref-stat{min-height:180px}html[data-theme=dag] .ref-lab,html[data-theme=dag] .ref-margin{min-height:265px}html[data-theme=dag] .ref-hour,html[data-theme=dag] .ref-controls{min-height:315px}html[data-theme=dag] .ref-roster,html[data-theme=dag] .ref-tasks,html[data-theme=dag] .ref-notes{min-height:270px}}
 </style>
+<style>
+html[data-theme=dag] .ref-warn .gauge-scale{color:#fff;opacity:1}
+html[data-theme=dag] .ref-control.bad small{color:#982b22}
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Spring til indhold</a>
@@ -1131,7 +1135,7 @@ const SRC_PROBLEM={
 /* =====================================================================================
    12. SCREEN FRAME
    ===================================================================================== */
-function protoStrip(){const sc=scen();return`<div class="proto" role="region" aria-label="Prototype"><span class="clock"><strong>PROTOTYPE</strong> · syntetiske data · ${esc(fDate(Dt.s(NOW()),{year:true}))} ${hm(NOW())}</span><div style="display:flex;align-items:center;gap:8px"><a class="back" href="https://virtualrainbow.xyz/streamline-ai/hospitality-os/">Tilbage til startsiden</a><button type="button" data-act="theme" title="Skift mellem dagtema og aftentema" aria-pressed="${document.documentElement.dataset.theme==='aften'}">Tema: ${document.documentElement.dataset.theme==='aften'?'Aften':'Dag'}</button><button type="button" data-act="scenario" aria-haspopup="dialog">Testscenarie: ${esc(sc.name)} ▾</button></div></div>`}
+function protoStrip(){const sc=scen(),mock=new URLSearchParams(location.search).get('mockup')==='1';return`<div class="proto" role="region" aria-label="Prototype"><span class="clock"><strong>${mock?'PDF-DEMO':'PROTOTYPE'}</strong> · ${mock?'eksempeltal fra Mathias’ oplæg':'syntetiske data · '+esc(fDate(Dt.s(NOW()),{year:true}))+' '+hm(NOW())}</span><div style="display:flex;align-items:center;gap:8px"><a class="back" href="https://virtualrainbow.xyz/streamline-ai/hospitality-os/">Tilbage til startsiden</a><button type="button" data-act="theme" title="Skift mellem dagtema og aftentema" aria-pressed="${document.documentElement.dataset.theme==='aften'}">Tema: ${document.documentElement.dataset.theme==='aften'?'Aften':'Dag'}</button><button type="button" data-act="scenario" aria-haspopup="dialog">Testscenarie: ${esc(sc.name)} ▾</button></div></div>`}
 function tabsFor(sc,active){
   const tid=sc.tid,items=sc.role==='employee'?[['me','Min side','me'],['history','Historik','history'],['tasks','Opgaver','tasks'],['more','Mere','more']]:[['home','Overblik','home'],['sales','Salg','sales'],['labour','Personale','labour'],['tasks','Opgaver','tasks'],['more','Mere','more']];
   if(sc.role==='owner')items.splice(3,0,['margin','Dækningsgrad','margin']);
@@ -1176,7 +1180,24 @@ function vHomeDetailed(sc){
   const compare=`<div class="home-toolbar"><div class="seg" role="group" aria-label="Sammenligning for dagen"><button type="button" data-act="cmp" data-id="weekday" aria-pressed="${S.cmpMode==='weekday'}">Samme ugedag</button><button type="button" data-act="cmp" data-id="calendar" aria-pressed="${S.cmpMode==='calendar'}">Samme dato</button></div></div>`;
   return pageHead('Overblik',`${esc(fDate(ctx.date))}`)+compare+ctxLine+`<div class="home-grid"><div class="home-wide">${topHtml}</div>${salesHtml}${labHtml?`<div class="home-half">${labHtml}</div>`:''}${cmHtml?`<div class="home-half">${cmHtml}</div>`:''}${operations}${rosterHtml}${taskHtml}${noteHtml}${resHomeCard(sc)}<div class="home-wide home-footer">${srcHtml}</div></div>`;
 }
+function vHomePdfDemo(sc){
+  const tid=sc.tid,stats=[['I går','48.210 kr.','60.263 kr. inkl. moms','▲ +6,4 %','+2.902 kr.','fre. 3/10-25','45.308 kr.','good'],['Uge 40','131.440 kr.','164.300 kr. inkl. moms','● +1,2 %','+1.560 kr.','man.–fre.','129.880 kr.','warn'],['Oktober','71.920 kr.','89.900 kr. inkl. moms','▼ −4,8 %','−3.630 kr.','1.–2. okt.','75.550 kr.','bad'],['År til dato','7,41 mio.','9,26 mio. inkl. moms','▲ +7,9 %','+543.000 kr.','1/1–2/10','6,87 mio.','good']];
+  const stat=([label,value,inc,delta,diff,period,ly,tone],i)=>`<a class="ref-stat ref-${tone} ref-${['day','week','month','ytd'][i]}" href="#/${tid}/sales/${['day','week','month','ytd'][i]}"><div class="ref-cardhead"><span>${label}</span><span class="ref-badge">${delta}</span></div><strong class="ref-value">${value}</strong><span class="ref-inclusive">${inc}</span><div class="ref-statbottom"><span>${diff}</span><span>${period}</span></div><span class="ref-last">Sidste år: ${ly}</span></a>`;
+  const barHeights=[8,14,19,27,34,47,61,72,95,88,66,44,22],bars=barHeights.map((height,i)=>`<div class="col"><div class="bar ${height>=88?'peak':''}" style="height:${height}%"></div></div>`).join('');
+  const control=(label,sub,value,tone)=>`<a class="ref-control ${tone}" href="#/${tid}/sales/controls"><span>${label}<small>${sub}</small></span><strong>${value}</strong></a>`;
+  const task=(title,sub,person,tone)=>`<a class="ref-control task ${tone==='bad'?'is-urgent ':''}${tone}" href="#/${tid}/tasks"><span>□ &nbsp;${title}<small>${sub}</small></span><span class="ref-tag">@${person}</span></a>`;
+  const head=(label,extra='')=>`<div class="ref-cardhead"><span>${label}</span>${extra}</div>`;
+  return`<div class="ref-heading"><div><p>Fredag 2. oktober · handelsdag 10:00–04:00</p><h2 tabindex="-1" data-pagefocus>Overblik</h2></div><div class="seg"><button aria-pressed="true">Samme ugedag</button><button aria-pressed="false">Samme dato</button></div></div><div class="ref-grid"><section class="ref-alert ref-bad"><span class="ref-alerticon">!</span><span><strong>1 akut opgave</strong> · Fadølsanlæg hane 3 lækker — tagget: @Luca</span><a href="#/${tid}/tasks">Se opgave</a></section>${stats.map(stat).join('')}
+  <section class="ref-panel ref-lab ref-warn">${head('Lønprocent i går','<span class="ref-badge">● Tæt på grænsen</span>')}<strong class="ref-value">28,6 %</strong><div class="gauge"><div class="band" style="left:48%;width:10%"></div><div class="mark" style="left:57.2%"></div></div><div class="gauge-scale"><span>0 %</span><span>Mål 24–29 %</span><span>50 %</span></div><dl class="ref-kv"><dt>Planlagt / stemplet</dt><dd>58,0 t / 61,5 t</dd><dt>Lønomkostning (belastet)</dt><dd>13.790 kr.</dd><dt>Omsætning pr. bemandet time</dt><dd>784 kr.</dd><dt>Sidste år samme dag</dt><dd>27,1 %</dd></dl><span class="ref-mobile-target">Mål 24–29 %</span></section>
+  <section class="ref-panel ref-margin ref-good">${head('Dækningsgrad · september','<span class="ref-badge">▲ Over sidste år</span>')}<strong class="ref-value">72,4 %</strong><dl class="ref-kv"><dt>September 2025</dt><dd>70,9 %</dd><dt>Rullende 12 mdr.</dt><dd>71,6 %</dd></dl><div class="ref-groups">${[['Fadøl','68 %','−2,1',68],['Cocktails','76 %','+1,4',76],['Vin','64 %','±0,3',64],['Spiritus','79 %','+0,8',79]].map(([name,pct,diff,w])=>`<div><span>${name}</span><i style="--w:${w}%"></i><span>${pct} &nbsp; ${diff}</span></div>`).join('')}</div></section>
+  <section class="ref-hour"><div class="card">${head('Timefordeling · i går','<span class="pill">■ Travleste timer</span>')}<div class="chart">${bars}</div><div class="xlabels">${['16','17','18','19','20','21','22','23','00','01','02','03','04'].map(x=>`<span>${x}</span>`).join('')}</div><p class="small muted">Højeste time: 00–01 · 7.840 kr. · 9 på vagt</p></div></section>
+  <section class="ref-panel ref-controls">${head('Kontrol · i går','<span class="pill">Rabat · nulbon · annullering</span>')}${control('Rabatter','4 stk.','620 kr.','good')}${control('Personalesalg','7 stk.','910 kr.','good')}${control('Nulboner','3 stk. · over normalen','0 kr.','warn')}${control('Annulleringer','11 stk. · normalt 3–5','1.480 kr.','bad')}</section>
+  <section class="ref-panel ref-roster">${head('Vagter i dag','<span class="pill">lør. 3/10</span>')}${[['Luca Berg','Bestyrer','17:00'],['Freja Lund','Bar','19:00'],['Oskar Riis','Bar','21:00']].map(([n,r,h])=>`<div class="ref-shift"><span>${n}<small>${r}</small></span><span>${h}</span></div>`).join('')}<a class="ref-more" href="#/${tid}/labour"><span>+ 5 mere</span><span>i morgen →</span></a></section>
+  <section class="ref-panel ref-tasks">${head('Opgaver','<span class="pill">2 åbne</span>')}${task('Hane 3 lækker','Akut · i dag','Luca','bad')}${task('Bestil citroner','I gang','Freja','warn')}${task('Skift pære i gården','Løst i går','Oskar','good')}<a class="ref-textbtn" href="#/${tid}/tasks">+ Ny opgave · □ Akut</a></section>
+  <section class="ref-panel ref-notes">${head('Note til i går','<span class="pill">Valgfri</span>')}<p>“DJ-aften med lang kø fra 23. Regn indtil 21, så terrassen var lukket.”</p><p class="small muted">Luca · 04:12</p><a class="ref-textbtn" href="#/${tid}/sales/day">+ Tilføj note</a></section><footer class="ref-sources"><span>● OnlinePOS · 08:28</span><span>● Planday · eksempeltal, ikke tilsluttet</span><span>● Varekøb · afventer eksempel</span></footer></div>`;
+}
 function vHome(sc){
+  if(new URLSearchParams(location.search).get('mockup')==='1'&&sc.tid==='soehesten')return vHomePdfDemo(sc);
   if(['pos','wf','acc'].some(k=>srcState(k)!=='normal'))return vHomeDetailed(sc);
   const {tid,role}=sc,P=periodDefs(tid),ctx=P.ctx,c=cfg(tid),ls=labourSummary(tid,P.day),issues=computeIssues(sc,P),top=issues[0];
   if(ls.blocked||ls.qual.length||!ctx.complete)return vHomeDetailed(sc);
@@ -1874,8 +1895,8 @@ document.addEventListener('submit',e=>{
    ===================================================================================== */
 S.memberships=JSON.parse(JSON.stringify(MEMBERSHIP_SEED));
 for(const t of TENANT_IDS)for(const p in S.memberships[t])S.memberships[t][p].status='active';
-/* Optional deep link for testing: #/login?as=mathias&sc=labour is not supported on purpose;
-   the scenario switcher is the only test control. */
+/* A design-reference URL opens the synthetic PDF example directly for visual review. */
+if(new URLSearchParams(location.search).get('mockup')==='1'){S.user='mathias';S.tenant='soehesten';location.hash='#/soehesten/home'}
 render(false);
 </script>
 </body>
