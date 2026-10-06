@@ -420,6 +420,58 @@ html[data-theme=aften] .home-grid .chart .bar{background:#a9a195}
   .home-grid .urgent .acts{margin:0}
 }
 </style>
+<style>
+/* Reference-led screens, with the PDF's compact proportions and quiet navigation. */
+body{font-family:Arial,'Segoe UI',sans-serif;font-size:14px;font-weight:400}
+:root{--radius:5px;--status-good:#2e693d;--status-warn:#8a6d10;--status-bad:#a5332a}
+.proto{font-size:10px;padding:5px 16px;background:var(--surface-2);color:var(--muted);border-bottom:1px solid var(--line-2)}
+.proto button,.proto .back{font-size:10px;color:var(--muted);border-color:var(--line-2);padding:2px 7px}
+.proto button:hover,.proto .back:hover{background:var(--na-bg)}
+.shell{background:var(--surface-2)}
+.ref-heading{display:flex;justify-content:space-between;align-items:flex-end;margin:0 0 20px;gap:14px}
+.ref-heading p{font-size:12px;color:var(--muted);margin:0 0 3px}
+.ref-heading h2{font-size:32px;letter-spacing:-1.2px;line-height:1.1;margin:0;font-weight:700}
+.ref-heading .seg{border-radius:4px}.ref-heading .seg button{font-size:12px;min-height:32px;padding:6px 12px}
+.ref-heading .seg button[aria-pressed=true]{background:var(--na-bg);color:var(--ink);font-weight:400}
+.ref-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}
+.ref-grid>*{min-width:0}
+.ref-panel,.ref-stat{padding:18px;border-radius:5px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);text-decoration:none}
+.ref-good{background:var(--status-good);color:var(--status-ink);--muted:var(--status-ink);--ink-2:var(--status-ink)}
+.ref-warn{background:var(--status-warn);color:var(--status-ink);--muted:var(--status-ink);--ink-2:var(--status-ink)}
+.ref-bad{background:var(--status-bad);color:var(--status-ink);--muted:var(--status-ink);--ink-2:var(--status-ink)}
+.ref-cardhead{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;letter-spacing:.055em;text-transform:uppercase;margin-bottom:15px;font-weight:400}
+.ref-cardhead a{color:inherit;text-decoration:none}.ref-cardhead .pill{text-transform:none;letter-spacing:0;font-size:10px;border:0}
+.ref-badge{padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.18);font-size:10px;letter-spacing:0;text-transform:none;white-space:nowrap}
+.ref-value{display:block;font-size:29px;line-height:1.15;letter-spacing:-1px;font-weight:700;font-variant-numeric:tabular-nums}
+.ref-stat{grid-column:span 3;min-height:190px;display:flex;flex-direction:column}
+.ref-inclusive,.ref-last{font-size:11px;opacity:.85;display:block;margin-top:5px}
+.ref-statbottom{display:flex;justify-content:space-between;gap:6px;border-top:1px solid rgba(255,255,255,.15);padding-top:12px;margin-top:16px;font-size:11px}
+.ref-lab,.ref-margin{grid-column:span 6;min-height:260px}
+.ref-kv{display:grid;grid-template-columns:1fr auto;gap:8px 12px;margin:16px 0 0;font-size:12px}
+.ref-kv dt{opacity:.8}.ref-kv dd{margin:0;text-align:right}
+.ref-lab .gauge{height:8px;background:rgba(0,0,0,.1);margin-top:18px}.ref-lab .gauge .band{background:rgba(255,255,255,.22);border:0}.ref-lab .gauge .mark{background:var(--status-ink);height:18px;top:-5px;width:2px}.ref-lab .gauge-scale{font-size:10px;opacity:.85}
+.ref-mobile-target{display:none}
+.ref-groups{margin-top:18px;display:grid;gap:9px;font-size:12px}.ref-groups>div{display:grid;grid-template-columns:1fr 1fr 50px;gap:12px;align-items:center}.ref-groups i{height:5px;background:rgba(255,255,255,.16);border-radius:2px}.ref-groups i:before{content:'';display:block;width:var(--w);height:100%;background:rgba(255,255,255,.4)}
+.ref-alert{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:5px;font-size:13px;min-height:60px}
+.ref-alerticon{border:1px solid currentColor;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;flex:none}.ref-alert a,.ref-alert button{margin-left:auto;background:rgba(255,255,255,.8);color:#262422;border:0;border-radius:4px;padding:9px 13px;text-decoration:none;font-size:12px;white-space:nowrap;cursor:pointer}
+.ref-hour,.ref-controls{grid-column:span 6;min-height:285px}.ref-hour .card{height:100%;padding:18px;border-radius:5px}.ref-hour h3{font-size:11px;text-transform:uppercase;font-weight:400;letter-spacing:.05em}.ref-hour .chart{height:166px;border:0}.ref-hour .bar{background:#817a6e}.ref-hour .lytick{border-color:var(--line)}.ref-hour .legend,.ref-hour .small{font-size:10px}.ref-hour details{font-size:11px}.ref-hour .xlabels span{font-size:10px}
+.ref-control{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-left-width:3px;border-radius:4px;background:var(--surface-2);margin:7px 0;font-size:12px;color:var(--ink);text-decoration:none}.ref-control strong{font-weight:400;white-space:nowrap}.ref-control small,.ref-shift small{display:block;font-size:10px;color:var(--muted);margin-top:4px}.ref-control.good{background:var(--good-bg);border-color:var(--good);color:var(--good)}.ref-control.warn{background:var(--warn-bg);border-color:var(--warn-mark);color:var(--warn)}.ref-control.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.ref-roster,.ref-tasks,.ref-notes{grid-column:span 4;min-height:260px}.ref-shift{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:4px;margin:7px 0;font-size:12px}.ref-more{display:flex;justify-content:space-between;font-size:11px;padding:9px 12px;color:var(--muted);text-decoration:none;background:var(--surface-2)}.ref-tag{font-size:10px;border:1px solid var(--line);padding:1px 5px;border-radius:12px;white-space:nowrap}.ref-textbtn{padding:8px 0;background:none;border:0;color:var(--muted);font-size:11px;cursor:pointer}.ref-notes p{font-size:13px;line-height:1.7}.ref-res{grid-column:1/-1}.ref-res .card{border:0;background:transparent;padding:5px 0}.ref-res h3{font-size:12px}.ref-res .small{font-size:11px}.ref-sources{grid-column:1/-1;display:flex;gap:18px;flex-wrap:wrap}.ref-sources button{display:flex;align-items:center;gap:5px;background:none;border:0;color:var(--muted);font-size:10px;padding:4px 0;cursor:pointer}.ref-sources .sdot{width:6px;height:6px;box-shadow:none}
+@media(min-width:960px){.shell{max-width:1380px;margin:24px auto;border:1px solid var(--line-2);border-radius:9px;grid-template-columns:192px minmax(0,1fr);overflow:clip}.shell>main{padding:28px;max-width:none}.shell>.brandbar{padding:24px 20px 10px;border-right:1px solid var(--line-2)}.brandbar h1{font-size:14px}.brandbar .mono{width:9px;height:9px;margin-top:3px}.brandbar .role{font-size:11px;color:var(--muted)}nav.tabs{height:100%;border-color:var(--line-2);padding:12px}nav.tabs a{font-size:13px;font-weight:400;min-height:42px;border-radius:4px;padding:10px}nav.tabs a svg{display:none}nav.tabs a[aria-current=page]{color:var(--ink);font-weight:400}.brandbar .who{padding-left:17px}}
+@media(max-width:959px){.ref-stat{grid-column:span 6}.ref-roster,.ref-tasks,.ref-notes{grid-column:span 12}}
+@media(max-width:639px){.brandbar{padding:20px 18px 12px;border:0}.brandbar .legal{display:none}.brandbar .mono{width:8px;height:8px;border:0;background:var(--brand);border-radius:50%}.brandbar .mono svg{display:none}.brandbar h1{font-size:19px}.brandbar .id{gap:8px}.brandbar .who{border:0;padding-top:4px}.brandbar .role{font-size:10px}.brandbar .chipbtn{font-size:10px;padding:3px 0;border:0;background:none}.shell>main{padding:12px 18px 90px}.ref-heading{display:none}.ref-grid{gap:10px}.ref-stat{grid-column:1/-1;min-height:138px;padding:17px;order:5}.ref-day{order:1}.ref-week{order:2}.ref-lab{order:3;min-height:138px}.ref-alert{order:4;padding:12px;font-size:11px;flex-wrap:wrap}.ref-cardhead{font-size:11px;margin-bottom:18px}.ref-value{font-size:28px}.ref-statbottom,.ref-inclusive{display:none}.ref-last{margin-top:8px}.ref-panel,.ref-hour{grid-column:1/-1;order:6}.ref-lab{grid-column:1/-1;order:3}.ref-lab .ref-kv,.ref-lab .gauge,.ref-lab .gauge-scale{display:none}.ref-mobile-target{display:block;font-size:11px;margin-top:9px}.ref-margin{order:7}.ref-hour,.ref-controls{order:8}.ref-roster,.ref-tasks,.ref-notes{order:9;min-height:0}.ref-res,.ref-sources{order:10}nav.tabs a svg{display:none}nav.tabs a{font-size:10px;min-height:48px}nav.tabs{background:var(--surface-2)}.ref-sources{gap:8px}.ref-badge{font-size:10px}}
+</style>
+<style>
+@media(min-width:960px){.shell>.brandbar{z-index:2;align-self:start}nav.tabs{grid-row:1 / 3;padding-top:116px;z-index:1;position:static}.brandbar .chipbtn{margin-top:7px}}
+html[data-theme=aften] .ref-heading .seg button[aria-pressed=true]{color:var(--ink)}
+.ref-panel .pill{color:var(--ink-2)}
+.ref-hour .legend i.cur{background:#817a6e}
+.task:not(.ref-control){border:1px solid var(--line-2);border-radius:5px;padding:14px;margin:9px 0;background:var(--surface-2)}
+.task:not(.ref-control):has(.status.progress){background:var(--warn-bg);border-color:var(--warn-mark)}
+.task:not(.ref-control):has(.status.resolved){background:var(--good-bg);border-color:var(--good)}
+.task.is-urgent:not(.ref-control){background:var(--bad-bg);border-color:var(--bad)}
+</style>
+<style>.proto .clock,.brandbar .role{opacity:1}.ref-badge{background:rgba(0,0,0,.12)}.ref-kv dt{opacity:1}@media(max-width:639px){.ref-heading{display:block;position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.ref-heading .seg{display:none}}</style>
 </head>
 <body>
 <a class="skip" href="#main">Spring til indhold</a>
@@ -1047,7 +1099,7 @@ function skelTile(label){return`<div class="tile" aria-busy="true"><span class="
 /* =====================================================================================
    13. OWNER / MANAGER HOME
    ===================================================================================== */
-function vHome(sc){
+function vHomeDetailed(sc){
   const{tid,role}=sc,P=periodDefs(tid),ctx=P.ctx,issues=computeIssues(sc,P),c=cfg(tid);
   const top=issues[0];
   const topHtml=top?`<section class="urgent sev-${top.sev}" aria-labelledby="top-issue"><div class="ic" aria-hidden="true">!</div><div><div class="k">Vigtigst nu · ${esc(top.kicker)}</div><div class="t" id="top-issue">${esc(top.title)}</div><div class="d">${esc(top.detail)}</div><div class="acts"><a class="btn small primary" href="${top.href}">${esc(top.act)}</a>${issues.length>1?`<button class="btn small" type="button" data-act="issues">Se alle ${issues.length} forhold</button>`:''}</div></div></section>`
@@ -1068,6 +1120,24 @@ function vHome(sc){
   const operations=can.seeSales(role)&&srcState('pos')!=='loading'&&srcState('pos')!=='unavailable'?`<div class="home-half">${hourChart(tid,P.day)}</div><div class="home-half">${controlsCard(tid,P.day,periodSales(tid,P.day))}</div>`:'';
   const compare=`<div class="home-toolbar"><div class="seg" role="group" aria-label="Sammenligning for dagen"><button type="button" data-act="cmp" data-id="weekday" aria-pressed="${S.cmpMode==='weekday'}">Samme ugedag</button><button type="button" data-act="cmp" data-id="calendar" aria-pressed="${S.cmpMode==='calendar'}">Samme dato</button></div></div>`;
   return pageHead('Overblik',`${esc(fDate(ctx.date))}`)+compare+ctxLine+`<div class="home-grid"><div class="home-wide">${topHtml}</div>${salesHtml}${labHtml?`<div class="home-half">${labHtml}</div>`:''}${cmHtml?`<div class="home-half">${cmHtml}</div>`:''}${operations}${rosterHtml}${taskHtml}${noteHtml}${resHomeCard(sc)}<div class="home-wide home-footer">${srcHtml}</div></div>`;
+}
+function vHome(sc){
+  if(['pos','wf','acc'].some(k=>srcState(k)!=='normal'))return vHomeDetailed(sc);
+  const {tid,role}=sc,P=periodDefs(tid),ctx=P.ctx,c=cfg(tid),ls=labourSummary(tid,P.day),issues=computeIssues(sc,P),top=issues[0];
+  if(ls.blocked||ls.qual.length||!ctx.complete)return vHomeDetailed(sc);
+  const head=(label,extra='')=>`<div class="ref-cardhead"><span>${label}</span>${extra}</div>`;
+  const badge=(text)=>`<span class="ref-badge">${text}</span>`;
+  const stat=k=>{const p=P[k],r=periodSales(tid,p),pct=r.ly.ex?(r.cur.ex-r.ly.ex)/r.ly.ex*100:0,tn=r.comparable?tone(pct):'na';return`<a class="ref-stat ref-${tn} ref-${k}" href="#/${tid}/sales/${k}">${head(esc(p.label),badge(`${tn==='good'?'▲':tn==='bad'?'▼':'●'} ${pcS(pct)}`))}<strong class="ref-value">${kr(r.cur.ex)}</strong><span class="ref-inclusive">${kr(r.cur.gross)} inkl. moms</span><div class="ref-statbottom"><span>${kr(r.cur.ex-r.ly.ex)}</span><span>${esc(p.sub)}</span></div><span class="ref-last">Sidste år: ${kr(r.ly.ex)}</span>${p.hol?`<span class="ref-last">${esc(holText(p.hol))}</span>`:''}</a>`};
+  const lab=can.seeLabour(role)?`<section class="ref-panel ref-lab ref-${ls.tn}" aria-labelledby="h-lab">${head(`<a id="h-lab" href="#/${tid}/labour">Lønprocent ${esc(ctx.label.toLowerCase())}</a>`,badge(`${ls.tn==='good'?'✓ I mål':ls.tn==='bad'?'▲ Over målet':'● Under målet'}`))}<strong class="ref-value">${pc(ls.pct)}</strong>${gauge(ls.pct,c)}<dl class="ref-kv"><dt>Planlagt / stemplet</dt><dd>${hrs(ls.L.plan)} / ${hrs(ls.L.act)}</dd><dt>Lønomkostning (belastet)</dt><dd>${kr(ls.L.cost)}</dd><dt>Omsætning pr. bemandet time</dt><dd>${ls.L.act?kr(ls.Sx.ex/ls.L.act):'—'}</dd><dt>Sidste år samme dag</dt><dd>${pc(ls.lyPct)}</dd></dl><span class="ref-mobile-target">Mål ${c.target[0]}–${c.target[1]} %</span></section>`:'';
+  const [y,m]=lastClosedMonth(tid),cm=monthCM(tid,y,m),ly=monthCM(tid,y-1,m),roll=rolling12(tid,y,m),cmTone=!cm.measured?'warn':cm.cm>=ly.cm?'good':'bad';
+  const margin=can.seeMargin(role)?`<section class="ref-panel ref-margin ref-${cmTone}">${head(`<a id="h-cm" href="#/${tid}/margin">Dækningsgrad · ${esc(MON[m-1])}</a>`,badge(cm.measured?(cm.cm>=ly.cm?'▲ Over sidste år · Målt':'▼ Under sidste år · Målt'):'● Indikativ'))}<strong class="ref-value">${pc(cm.cm*100)}</strong>${!cm.measured?'<p class="small">Mangler lageroptælling. Varekøb bruges som vareforbrug.</p>':''}<dl class="ref-kv"><dt>${esc(MON[m-1])} ${y-1}</dt><dd>${pc(ly.cm*100)}</dd><dt>Rullende 12 mdr.</dt><dd>${pc(roll.cm*100)}</dd></dl><div class="ref-groups">${GROUPS.filter(([g])=>cm.groups[g].ex>0).slice(0,4).map(([g,n])=>`<div><span>${esc(n)}</span><i style="--w:${Math.max(0,cm.groups[g].cm*100)}%"></i><span>${pc(cm.groups[g].cm*100)}</span></div>`).join('')}</div></section>`:'';
+  const cur=periodSales(tid,P.day).cur,norm=normalControls(tid,P.day.from);
+  const ctl=(label,value,normal,flag)=>`<a class="ref-control ${flag?'bad':'good'}" href="#/${tid}/sales/controls"><span>${label}<small>Normalt ${normal}</small></span><strong>${value}</strong></a>`;
+  const controls=`<section class="ref-panel ref-controls">${head('Kontrol · '+esc(ctx.label.toLowerCase()),'<span class="pill">Rabat · nulbon · annullering</span>')}${ctl('Rabatter',kr(cur.disc),kr(norm.disc),cur.disc>2*norm.disc)}${ctl('Personalesalg',kr(cur.staff),kr(norm.staff),cur.staff>2.5*norm.staff)}${ctl('Nulboner',nf0.format(cur.voids),nf0.format(Math.round(norm.voids)),cur.voids>=Math.max(6,3*norm.voids))}${ctl('Annulleringer',kr(cur.cxAmt),nf0.format(Math.round(norm.cxN))+' stk.',cur.cxN>=Math.max(8,3*norm.cxN))}</section>`;
+  const td=tradingDate(NOW(),c.cutoff),shifts=roster(tid,td),tasks=sc.store.tasks.slice().sort((a,b)=>(b.urgent&&b.status!=='resolved')-(a.urgent&&a.status!=='resolved')).slice(0,3),notes=sc.store.notes.filter(n=>n.date===ctx.date);
+  const rosterHtml=`<section class="ref-panel ref-roster">${head('Vagter i dag',`<span class="pill">${esc(fDate(td))}</span>`)}${shifts.slice(0,3).map(s=>`<div class="ref-shift"><span>${s.emp?esc(pn(s.emp)):'Ledig vagt'}<small>${esc(s.role)}</small></span><span>${hm(s.pS)}</span></div>`).join('')}<a class="ref-more" href="#/${tid}/labour">${shifts.length>3?'+ '+(shifts.length-3)+' mere':'Se vagtplan'} <span>I morgen →</span></a></section>`;
+  const taskHtml=`<section class="ref-panel ref-tasks">${head('Opgaver',`<span class="pill">${sc.store.tasks.filter(t=>t.status!=='resolved').length} åbne</span>`)}${tasks.map(t=>`<a class="ref-control task ${t.urgent&&t.status!=='resolved'?'is-urgent bad':t.status==='progress'?'warn':t.status==='resolved'?'good':''}" href="#/${tid}/tasks/${t.id}"><span>□ &nbsp;${esc(t.title)}<small>${t.urgent&&t.status!=='resolved'?'Akut · ':''}${STATUS_NAME[t.status]}</small></span><span class="ref-tag">@${esc(pn(t.assignees[0]||t.createdBy))}</span></a>`).join('')}<button class="ref-textbtn" data-act="task-new">+ Ny opgave · □ Akut</button></section>`;
+  return `<div class="ref-heading"><div><p>${esc(fDateLong(ctx.date))} · handelsdag ${String(c.cutoff).padStart(2,'0')}:00–${String(c.cutoff).padStart(2,'0')}:00</p><h2 tabindex="-1" data-pagefocus>Overblik</h2></div><div class="seg"><button data-act="cmp" data-id="weekday" aria-pressed="${S.cmpMode==='weekday'}">Samme ugedag</button><button data-act="cmp" data-id="calendar" aria-pressed="${S.cmpMode==='calendar'}">Samme dato</button></div></div><div class="ref-grid"><section class="ref-alert ref-${top?top.sev:'good'}"><span class="ref-alerticon">${top?'!':'✓'}</span><span><strong>${top?esc(top.kicker):'Intet kræver handling'}</strong> · ${top?esc(top.title):'Alle datakilder er opdaterede.'}</span>${top?`<a href="${top.href}">${esc(top.act)}</a>`:''}${issues.length>1?'<button data-act="issues">Alle forhold</button>':''}</section>${['day','week','month','ytd'].map(stat).join('')}${lab}${margin}<div class="ref-hour">${hourChart(tid,P.day)}</div>${controls}${rosterHtml}${taskHtml}<section class="ref-panel ref-notes">${head('Note til '+esc(ctx.label.toLowerCase()),'<span class="pill">Valgfri</span>')}${notes.map(noteView).join('')||'<p class="muted">Ingen note til dagen endnu.</p>'}<button class="ref-textbtn" data-act="note-add" data-date="${ctx.date}">+ Tilføj note</button></section><div class="ref-res">${resHomeCard(sc)}</div><footer class="ref-sources">${['pos','wf','acc'].map(k=>{const i=srcInfo(k);return`<button data-act="source" data-id="${k}"><span class="sdot ${i.state}"></span>${esc(i.name)} · ${esc(i.label)}</button>`}).join('')}</footer></div>`;
 }
 function salesTile(tid,p){
   const pos=srcState('pos');if(pos==='loading')return skelTile(p.label);
