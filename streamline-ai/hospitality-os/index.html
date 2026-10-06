@@ -12,6 +12,7 @@
   not an authorization design. See prototype/README.md.
 -->
 <style>
+/* Mathias's October palette; semantic colours retain words and symbols. */
 :root{
   --bg:#f3f4f1; --surface:#ffffff; --surface-2:#f7f8f6; --ink:#16191c; --ink-2:#3f474e; --muted:#5d666e;
   --line:#d9dde0; --line-2:#e9ecee; --focus:#1a5fd0;
@@ -326,6 +327,37 @@ dialog::backdrop{background:rgba(15,20,25,.5)}
 .card-h h3 a{color:inherit}
 @media (forced-colors:active){.bar,.catbar,.hbar{forced-color-adjust:none}}
 </style>
+<style>
+:root{--bg:#f4f1ea;--surface:#fff;--surface-2:#faf8f3;--ink:#262422;--ink-2:#504b44;--muted:#6f685e;--line:#c9c2b7;--line-2:#e2ddd3;--na-bg:#ebe6dc;--radius:10px;--good:#236335;--good-bg:#e3f0e6;--warn:#755a09;--warn-bg:#f5edcd;--bad:#9e3028;--bad-bg:#f5dfdb;--status-good:#2d683c;--status-warn:#80630c;--status-bad:#a33128;--status-ink:#fff;--shadow:none}
+html[data-theme=aften]{color-scheme:dark;--bg:#262422;--surface:#34302c;--surface-2:#2e2b28;--ink:#f2ede4;--ink-2:#d7d0c5;--muted:#bcb4a8;--line:#71695f;--line-2:#514a42;--focus:#a9caff;--good:#b5ddbd;--good-bg:#304b37;--warn:#f3df94;--warn-bg:#514721;--warn-mark:#e0c56c;--bad:#f6b9b0;--bad-bg:#592d28;--info:#b3d0fb;--info-bg:#303f53;--na:#c5bdb1;--na-bg:#3c3833;--ly:#b5ac9d;--status-good:#304b37;--status-warn:#514721;--status-bad:#592d28;--status-ink:#f2ede4}
+html[data-theme=aften] body{--brand:#c6c0b6;--brand-soft:#3c3833;--brand-mid:#a79c8b;--brand-ink:#262422}
+html[data-theme=aften] body[data-tenant=soehesten]{--brand:#9bc9c4;--brand-soft:#2b4240;--brand-mid:#87b6b0}
+html[data-theme=aften] body[data-tenant=rannor]{--brand:#e2ad86;--brand-soft:#4b372b;--brand-mid:#d09b75}
+.brandbar{background:var(--surface-2);color:var(--ink);border-bottom:3px solid var(--brand)}
+.brandbar .mono{background:var(--brand-soft);color:var(--brand);border-color:var(--brand)}
+.chipbtn{color:var(--ink);background:var(--surface);border-color:var(--line)}
+.chipbtn:hover{background:var(--na-bg)}
+.sales-grid .tile:has(.delta.good){background:var(--status-good);--ink:var(--status-ink);--ink-2:var(--status-ink);--muted:var(--status-ink)}
+.sales-grid .tile:has(.delta.warn){background:var(--status-warn);--ink:var(--status-ink);--ink-2:var(--status-ink);--muted:var(--status-ink)}
+.sales-grid .tile:has(.delta.bad){background:var(--status-bad);--ink:var(--status-ink);--ink-2:var(--status-ink);--muted:var(--status-ink)}
+.sales-grid .tile{color:var(--ink)}
+.skip,input[type=text],input[type=email],input[type=date],input[type=time],input[type=number],select,textarea,.dlg-h,dialog{background:var(--surface);color:var(--ink)}
+.srcchip.state-stale,.srcchip.state-partial,.srcchip.state-mapping,.note{background:var(--warn-bg);border-color:var(--warn-mark)}
+.srcchip.state-unavailable{background:var(--bad-bg);border-color:var(--bad)}
+.gauge .band{background:var(--good-bg)}
+.lytick,.legend i.ly{border-color:var(--ink-2)}
+html[data-theme=aften] .btn.primary,html[data-theme=aften] .seg button[aria-pressed=true],html[data-theme=aften] .btn.danger,html[data-theme=aften] .badge.urgent,html[data-theme=aften] .urgent .ic,html[data-theme=aften] nav.tabs .dot{color:#262422}
+html[data-theme=aften] .urgent.sev-warn .ic{background:var(--warn)}
+html[data-theme=aften] .photo{background:var(--surface-2)}
+.proto>div{flex-wrap:wrap}
+.resd>summary{border-left:4px solid var(--warn-mark);padding-left:10px;background:var(--warn-bg);border-radius:6px}
+.brandbar .mono svg{stroke:var(--brand)}
+.sales-grid .tile:has(.delta.good) .lowerb,.sales-grid .tile:has(.delta.warn) .lowerb,.sales-grid .tile:has(.delta.bad) .lowerb{color:var(--ink)}
+.srcchip.state-unavailable .s{color:var(--ink-2)}
+.card[aria-labelledby=h-lab]:has(.card-h .delta.good){background:var(--good-bg)}
+.card[aria-labelledby=h-lab]:has(.card-h .delta.warn){background:var(--warn-bg)}
+.card[aria-labelledby=h-lab]:has(.card-h .delta.bad){background:var(--bad-bg);--muted:var(--ink-2)}
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Spring til indhold</a>
@@ -523,6 +555,7 @@ const SOURCES={
 /* =====================================================================================
    5. SESSION STATE
    ===================================================================================== */
+try{document.documentElement.dataset.theme=localStorage.getItem('hospitality-theme')==='aften'?'aften':'dag'}catch{document.documentElement.dataset.theme='dag'}
 const S={user:null,tenant:null,route:'login',param:null,scenario:'normal',srcOverride:{},cfg:{},cmpMode:'weekday',salesPeriod:'day',labourPeriod:'day',taskFilter:'open',store:{},memberships:null,lastFocus:null};
 function scen(){return SCENARIOS.find(x=>x.id===S.scenario)}
 function NOW(){const n=scen().now;return T(n[0],n[1])}
@@ -929,7 +962,7 @@ const SRC_PROBLEM={
 /* =====================================================================================
    12. SCREEN FRAME
    ===================================================================================== */
-function protoStrip(){const sc=scen();return`<div class="proto" role="region" aria-label="Prototype"><span class="clock"><strong>PROTOTYPE</strong> · syntetiske data · ${esc(fDate(Dt.s(NOW()),{year:true}))} ${hm(NOW())}</span><div style="display:flex;align-items:center;gap:8px"><a class="back" href="https://virtualrainbow.xyz/streamline-ai/hospitality-os/">Tilbage til startsiden</a><button type="button" data-act="scenario" aria-haspopup="dialog">Testscenarie: ${esc(sc.name)} ▾</button></div></div>`}
+function protoStrip(){const sc=scen();return`<div class="proto" role="region" aria-label="Prototype"><span class="clock"><strong>PROTOTYPE</strong> · syntetiske data · ${esc(fDate(Dt.s(NOW()),{year:true}))} ${hm(NOW())}</span><div style="display:flex;align-items:center;gap:8px"><a class="back" href="https://virtualrainbow.xyz/streamline-ai/hospitality-os/">Tilbage til startsiden</a><button type="button" data-act="theme" title="Skift mellem dagtema og aftentema" aria-pressed="${document.documentElement.dataset.theme==='aften'}">Tema: ${document.documentElement.dataset.theme==='aften'?'Aften':'Dag'}</button><button type="button" data-act="scenario" aria-haspopup="dialog">Testscenarie: ${esc(sc.name)} ▾</button></div></div>`}
 function tabsFor(sc,active){
   const tid=sc.tid,items=sc.role==='employee'?[['me','Min side','me'],['history','Historik','history'],['tasks','Opgaver','tasks'],['more','Mere','more']]:[['home','Overblik','home'],['sales','Salg','sales'],['labour','Personale','labour'],['tasks','Opgaver','tasks'],['more','Mere','more']];
   if(sc.role==='owner')items.splice(3,0,['margin','Dækningsgrad','margin']);
@@ -1319,18 +1352,18 @@ function vChoose(){document.body.dataset.tenant='';document.title='Vælg virksom
    view mirrors Mathias's Google Sheet with exactly his seven columns. Matching data (guest
    e-mail, status, mail reference) stays in the app's own per-company store.
    ===================================================================================== */
-const RES_TERMS='[Pladsholder: jeres betingelser, fx om ankomsttid, afbud og depositum. Erstattes af jeres egen tekst.]';
+const RES_TERMS='No sexism, racism, homophobia or transphobia. Zero tolerance for intolerance.\nAge limit on weekends: 23+.\nA reservation includes no extra service. Drinks are bought at the bar like everyone else.\nIf you are not here at the reserved time, the table is released.\nBachelor parties, party buses and private parties are not welcome. Please respect the doorman’s decision.\nNo outside food.';
 const RES_TEMPLATES=[
-  {id:'standard',name:'Standard',use:'Almindelig bordreservation',body:'Hej {fornavn}\n\nTak for din reservation. Vi har sat et bord af til {antal} personer {dato} kl. {tid}.{tilføjelse}\n\nReservationen er først endelig, når du har læst betingelserne herunder og bekræftet ved at svare på denne mail.\n\n{betingelser}\n\nVi glæder os til at se jer.\n\nMange hilsner\n{sted}'},
-  {id:'birthday',name:'Fødselsdag',use:'Mailen nævner fødselsdag eller et rundt tal',body:'Hej {fornavn}\n\nTillykke med fødselsdagen! Vi har sat plads af til {antal} personer {dato} kl. {tid}, og vi gør vores bedste for, at I kan sidde samlet.{tilføjelse}\n\nReservationen er først endelig, når du har læst betingelserne herunder og bekræftet ved at svare på denne mail.\n\n{betingelser}\n\nVi glæder os til at fejre dagen med jer.\n\nMange hilsner\n{sted}'},
-  {id:'regular',name:'Stamgæst',use:'Afsenderen har reserveret mindst 3 gange før',body:'Hej igen {fornavn}\n\nDejligt at høre fra dig. Bordet til {antal} personer {dato} kl. {tid} er sat af.{tilføjelse}\n\nSom altid gælder betingelserne herunder. Svar blot på denne mail for at bekræfte.\n\n{betingelser}\n\nVi ses!\n{sted}'},
-  {id:'company',name:'Firma',use:'Mailen kommer fra et firma eller handler om et firmaarrangement',body:'Hej {fornavn}\n\nTak for jeres forespørgsel på vegne af {firma}. Vi har noteret {antal} personer {dato} kl. {tid}.{tilføjelse}\n\nReservationen er først endelig, når I har læst betingelserne herunder og bekræftet ved at svare på denne mail.\n\n{betingelser}\n\nVi glæder os til at se jer.\n\nMange hilsner\n{sted}'},
-  {id:'missing',name:'Mangler oplysninger',use:'Dato, tidspunkt eller antal gæster mangler i mailen',body:'Hej {fornavn}\n\nTak for din mail. For at vi kan reservere, mangler vi {mangler}. Svar gerne på denne mail, så vender vi hurtigt tilbage.{tilføjelse}\n\nMange hilsner\n{sted}'},
-  {id:'full',name:'Fuldt booket',use:'Der er ikke plads den ønskede dag',body:'Hej {fornavn}\n\nTak for din forespørgsel. Desværre er vi fuldt booket {dato}. Du er meget velkommen til at foreslå en anden dag.{tilføjelse}\n\nMange hilsner\n{sted}'},
+  {id:'standard',name:'Standard',body:'Hi {fornavn}\n\nSure thing. There is a table for {antal} people on {dato} at {tid}.{tilføjelse}\n\nThe rules are below. Just reply "ok" once you have read them.\n\n{betingelser}\n\nSee you\n{sted}'},
+  {id:'birthday',name:'Fødselsdag',body:'Hi {fornavn}\n\nHappy birthday! That calls for a celebration. We have got a table for {antal} people on {dato} at {tid}.{tilføjelse}\n\nHave a quick look at the rules below and send us a short "got it".\n\n{betingelser}\n\nCheers\n{sted}'},
+  {id:'regular',name:'Tidligere gæst',body:'Hi {fornavn}\n\nNice to hear from you again. There is a table for {antal} people on {dato} at {tid}.{tilføjelse}\n\nThe rules are below. Just reply "ok" once you have read them.\n\n{betingelser}\n\nSee you\n{sted}'},
+  {id:'company',name:'Kollegaer',body:'Hi {fornavn}\n\nGreat that you are bringing the team down. We have got room for {antal} people on {dato} from {tid}.{tilføjelse}\n\nThe table is yours, and drinks are bought at the bar like everyone else. Give the rules below a quick read and drop us a short reply.\n\n{betingelser}\n\nCheers\n{sted}'},
+  {id:'missing',name:'Mangler oplysninger',body:'Hi {fornavn}\n\nThanks for your email. Before we can reserve a table, please send us {mangler}.{tilføjelse}\n\nAlso, please let us know you have read the rules below.\n\n{betingelser}\n\nCheers\n{sted}'},
+  {id:'full',name:'Fuldt booket',body:'Hi {fornavn}\n\nSorry, we are fully booked on {dato}. You are welcome to suggest another day.{tilføjelse}\n\nThe rules are below.\n\n{betingelser}\n\nCheers\n{sted}'},
 ];
 const RES_NEEDS_BOOKING=['standard','birthday','regular','company'];
-const RES_STATUS={pending:'Venter på dig',sent:'Venter på gæstens bekræftelse',asked:'Venter på gæstens oplysninger',confirmed:'Bekræftet af gæsten',declined:'Afvist',manual:'Overtaget manuelt'};
-const RES_REGULAR_MIN=3; /* open question for Mathias */
+const RES_STATUS={pending:'Venter på dig',sent:'Godkendt · afventer læste husregler',asked:'Venter på gæstens oplysninger',confirmed:'Godkendt · husregler læst',declined:'Afvist',manual:'Overtaget manuelt'};
+const RES_REGULAR_MIN=1; /* Any prior booking is shown; email match in synthetic data. */
 const RES_GUESTS={
   soehesten:['Birgitte Kjær','Rasmus Bech','Camilla Dam','Louise Nygaard','Jakob Thygesen','Signe Mørk','Mette Iversen','Ulrik Sønder','Maria Borg','Søren Hviid'],
   rannor:['Laura Vestergaard','Mathilde Brink','Pernille Aagaard','Nikolaj Heide','Emma Kragh','Jesper Bøgh','Line Østergaard','Ditte Rask','Thomas Kjeldsen','Hanne Sand'],
@@ -1342,9 +1375,9 @@ function seedReservations(tid){
   /* The simulated sheet: upcoming days plus past rows that make up guest history */
   const rows=[],pool=RES_GUESTS[tid];let k=0;
   for(let i=0;i<21;i++){const d=Dt.add(today,i),wd=Dt.wd(d);
-    const cnt=tid==='soehesten'?(wd>=4&&wd<=5?2+Math.floor(rnd(`${tid}|resn|${d}`)*3):wd===3?Math.floor(rnd(`${tid}|resn|${d}`)*2):0):(wd>=5?2+Math.floor(rnd(`${tid}|resn|${d}`)*2):Math.floor(rnd(`${tid}|resn|${d}`)*2));
+    const cnt=tid==='soehesten'?(wd>=4&&wd<=5?2+Math.floor(rnd(`${tid}|resn|${d}`)*3):wd===3?Math.floor(rnd(`${tid}|resn|${d}`)*2):0):(wd===4?0:wd>=5?2+Math.floor(rnd(`${tid}|resn|${d}`)*2):Math.floor(rnd(`${tid}|resn|${d}`)*2));
     for(let j=0;j<cnt;j++){const r=x=>rnd(`${tid}|res|${d}|${j}|${x}`);const name=pool[(k++)%pool.length];
-      const h=tid==='soehesten'?18+Math.floor(r('h')*5):(wd>=5?9.5+Math.floor(r('h')*4):17+Math.floor(r('h')*3));
+      const h=tid==='soehesten'?18+Math.floor(r('h')*(wd===3?2:4)):(wd>=5?9.5+Math.floor(r('h')*4):17+Math.floor(r('h')*3));
       rows.push({id:`${tid}-row-${d}-${j}`,date:d,approved:i<2||r('a')<0.8?'ja':'nej',name,guests:2+Math.floor(r('g')*7),time:`${String(Math.floor(h)).padStart(2,'0')}:${h%1?'30':'00'}`,table:r('t')<0.4?`Bord ${1+Math.floor(r('b')*12)}`:'',comment:r('c')<0.25?['Fødselsdag','Har barnevogn med','Vil gerne sidde ved vinduet','Kommer lidt senere'][Math.floor(r('cc')*4)]:''})}}
   const regular=tid==='soehesten'?{name:'Mikkel Toft',email:'mikkel.toft@example.com',past:4}:{name:'Katrine Lyng',email:'katrine.lyng@example.com',past:5};
   const history=[];for(let i=0;i<regular.past;i++)history.push({email:regular.email,date:Dt.add(today,-30*(i+1))});
@@ -1389,14 +1422,23 @@ function resStore(tid){const s=storeOf(tid);return s.res||(s.res=seedReservation
 function resDay(tid,date,exceptId){const rows=resStore(tid).rows.filter(r=>r.date===date&&r.id!==exceptId);return{count:rows.length,guests:rows.reduce((a,r)=>a+(+r.guests||0),0),rows}}
 function resMissing(f){const m=[];if(!f.date)m.push('dato');if(!f.time)m.push('tidspunkt');if(!f.guests)m.push('antal gæster');return m}
 function resFill(sc,r){const tpl=RES_TEMPLATES.find(t=>t.id===r.template);if(!tpl)return'';const f=r.fields;const miss=resMissing(f);
-  const join=a=>a.length>1?a.slice(0,-1).join(', ')+' og '+a[a.length-1]:a[0]||'';
-  return tpl.body.replace(/\{(\w+|tilføjelse)\}/g,(m,k)=>({fornavn:(f.name||r.from).split(' ')[0],antal:f.guests||'[antal]',dato:f.date?dayText(f.date):'[dato]',tid:f.time||'[tid]',firma:f.company||'[firma]',sted:sc.t.name,betingelser:RES_TERMS,mangler:join(miss)||'[oplysninger]',tilføjelse:r.extra?'\n\n'+r.extra:''}[k]??m));
+  const join=a=>a.length>1?a.slice(0,-1).join(', ')+' and '+a[a.length-1]:a[0]||'';
+  return tpl.body.replace(/\{(\w+|tilføjelse)\}/g,(m,k)=>({fornavn:(f.name||r.from).split(' ')[0],antal:f.guests||'[antal]',dato:f.date?`${WD_EN[Dt.wd(f.date)]} ${Dt.d(f.date)} ${MON_EN[Dt.m(f.date)-1]} ${Dt.y(f.date)}`:'[date]',tid:f.time||'[tid]',firma:f.company||'[firma]',sted:sc.t.name,betingelser:sc.tid==='soehesten'?RES_TERMS:'[Rannør house rules and approved templates are still required.]',mangler:join(miss.map(x=>({'dato':'the date','tidspunkt':'the arrival time','antal gæster':'the number of guests'}[x])))||'[oplysninger]',tilføjelse:r.extra?'\n\n'+r.extra:''}[k]??m));
+}
+function resBookingRule(tid,f){
+  if(tid==='rannor'&&f.date&&Dt.wd(f.date)===4)return 'Rannør tager som udgangspunkt ikke reservationer om fredagen. Foreslå en anden dag, eller overtag selv.';
+  const limit=tid==='soehesten'?'21:00':'20:00';
+  if(f.time&&f.time>limit)return `Ankomst efter ${limit}. Foreslå et tidligere tidspunkt, eller overtag selv for en undtagelse.`;
+  if(tid==='soehesten'&&f.date&&Dt.wd(f.date)===1)return 'Tirsdag er quiz: ingen reservationer. Overtag mailen og foreslå en anden dag.';
+  if(tid==='soehesten'&&f.date&&[2,3].includes(Dt.wd(f.date))&&f.time&&f.time>='20:00')return 'Onsdag/torsdag: kun ankomst før 20:00, og der kan ikke reserveres til jazz.';
+  return '';
 }
 function resReminder(tid,r){const f=r.fields;if(!f.date)return`<div class="state-box warn" id="res-rem-${r.id}"><strong>Dato mangler.</strong>Påmindelsen kan først vises, når datoen er kendt.</div>`;
   const d=resDay(tid,f.date);const tot=d.guests+(+f.guests||0);
   return`<div class="state-box info" id="res-rem-${r.id}" role="status"><strong>${d.count?`Der er allerede ${d.count} reservation${d.count>1?'er':''} med ${d.guests} gæster ${esc(dayText(f.date))}`:`Ingen reservationer endnu ${esc(dayText(f.date))}`}</strong>${f.guests?`Med denne bliver det ${tot} gæster.`:''} ${d.rows.length?`<span class="small">(${esc(d.rows.map(x=>`kl. ${x.time}: ${x.guests}`).join(' · '))})</span>`:''}<div class="small">Grænsen for en rød påmindelse er ikke fastsat endnu.</div></div>`}
 function resCard(sc,r){
   const tid=sc.tid,f=r.fields;
+  const prior=resStore(tid).history.filter(x=>x.email===r.email).length;
   const head=`<summary class="ressum"><div><h3 id="rh-${r.id}">${esc(f.name||r.from)}${f.guests?` · ${esc(f.guests)} pers.`:''}${f.date?` · ${esc(fDate(f.date))}`:''}</h3><div class="small muted">${esc(r.subject)} · modtaget ${esc(fStamp(r.receivedAt))} · ${esc(r.email)}</div></div>${r.escalate?'<span class="badge urgent">Overtag selv</span>':`<span class="badge brand">${esc(RES_TEMPLATES.find(t=>t.id===r.template)?.name||'')}</span>`}</summary>
   <details class="tbl"><summary>Vis den oprindelige mail</summary><div class="note" style="white-space:pre-wrap;background:var(--surface-2);border-color:var(--line-2)">${esc(r.body)}</div></details>`;
   const open=S.resOpen===r.id?'open':'';
@@ -1404,13 +1446,14 @@ function resCard(sc,r){
   const fld=(k,l,type,extra='')=>`<div><label class="f" for="rf-${r.id}-${k}">${l}</label><input id="rf-${r.id}-${k}" type="${type}" data-res="${r.id}" data-k="${k}" value="${esc(f[k]??'')}" ${extra}></div>`;
   const miss=resMissing(f);
   return`<article class="card" id="res-${r.id}" aria-labelledby="rh-${r.id}"><details class="resd" data-resd="${r.id}" ${open}>${head}
-  ${r.lang==='en'?'<p class="flag warn" style="display:flex">Gæsten skriver på engelsk. Der findes endnu ingen engelske standardsvar, så udkastet er på dansk.</p>':''}
-  ${resReminder(tid,r)}
+  ${r.lang==='en'?'<p class="flag warn" style="display:flex">Gæsten skriver på engelsk. Svaret er på engelsk, som aftalt.</p>':''}
+  ${prior?`<p class="small"><strong>Tidligere gæst:</strong> ${prior} tidligere reservation${prior===1?'':'er'} med denne e-mail i denne virksomhed.</p>`:''}
+  ${resReminder(tid,r)}<p class="state-box warn" id="res-rule-${r.id}" ${resBookingRule(tid,f)?'':'hidden'}>${esc(resBookingRule(tid,f))}</p>
   <fieldset style="border:0;padding:0;margin:8px 0 0"><legend class="small" style="font-weight:650">Aflæst fra mailen. Tjek felterne, før du godkender.</legend>
   <div class="resgrid">${fld('date','Dato','date')}${fld('time','Ankomst','time')}${fld('guests','Antal gæster','number','min="1" max="200"')}${fld('name','Navn','text')}${fld('table','Bord/rum','text')}${fld('comment','Kommentar','text')}</div></fieldset>
   ${miss.length?`<p class="small warn-text" id="res-miss-${r.id}">Mangler: ${esc(miss.join(', '))}.</p>`:`<p class="small" id="res-miss-${r.id}"></p>`}
   <label class="f" for="rt-${r.id}">Standardsvar</label><select id="rt-${r.id}" data-res="${r.id}" data-k="template">${RES_TEMPLATES.map(t=>`<option value="${t.id}" ${t.id===r.template?'selected':''}>${esc(t.name)}</option>`).join('')}</select>
-  <p class="small muted" style="margin:4px 0 0">Foreslået: ${esc(RES_TEMPLATES.find(t=>t.id===r.suggested)?.name||'')}. ${esc(r.reason)} Svarene er pladsholdere, indtil jeres egne kommer.</p>
+  <p class="small muted" style="margin:4px 0 0">Foreslået: ${esc(RES_TEMPLATES.find(t=>t.id===r.suggested)?.name||'')}. ${esc(r.reason)} ${sc.tid==='soehesten'?'Engelsk prøveudkast baseret på de modtagne skabeloner.':'Engelsk pladsholder. Rannørs egne skabeloner mangler.'}</p>
   <label class="f" for="rx-${r.id}">Personlig tilføjelse <span class="hint">(valgfri, indsættes i svaret)</span></label><textarea id="rx-${r.id}" data-res="${r.id}" data-k="extra" maxlength="400" style="min-height:60px">${esc(r.extra)}</textarea>
   <h4 style="margin:12px 0 4px;font-size:14px">Svaret der sendes til ${esc(r.email)}</h4><div class="mailprev" id="res-prev-${r.id}">${esc(resFill(sc,r))}</div>
   <p class="formerr" id="res-err-${r.id}" role="alert"></p>
@@ -1423,11 +1466,11 @@ function vReservations(sc,param){
   const list={pending:pend,waiting:wait,done}[f];
   if(!pend.some(r=>r.id===S.resOpen))S.resOpen=pend[0]?.id||null;
   const empty={pending:'Ingen mails venter på dig.',waiting:'Ingen svar venter på gæsten.',done:'Intet afsluttet endnu.'}[f];
-  const small=r=>`<li><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span><strong>${esc(r.fields.name||r.from)}</strong> · ${r.fields.guests?esc(r.fields.guests)+' pers. · ':''}${r.fields.date?esc(fDate(r.fields.date)):''}${r.fields.time?' kl. '+esc(r.fields.time):''}</span><span class="badge neutral">${RES_STATUS[r.status]}</span></div><div class="small muted">${esc(RES_TEMPLATES.find(t=>t.id===r.template)?.name||'Ingen skabelon')}${r.decidedBy?` · ${r.status==='manual'?'overtaget':'godkendt'} af ${esc(pn(r.decidedBy))} ${esc(fStamp(r.decidedAt))}`:''}${r.confirmedAt?` · bekræftet ${esc(fStamp(r.confirmedAt))}`:''}</div>${r.status==='sent'?`<button class="btn small" type="button" data-act="res-confirm" data-id="${r.id}" style="margin-top:6px">Simulér: gæsten bekræfter</button>`:''}</li>`;
+  const small=r=>`<li><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span><strong>${esc(r.fields.name||r.from)}</strong> · ${r.fields.guests?esc(r.fields.guests)+' pers. · ':''}${r.fields.date?esc(fDate(r.fields.date)):''}${r.fields.time?' kl. '+esc(r.fields.time):''}</span><span class="badge neutral">${RES_STATUS[r.status]}</span></div><div class="small muted">${esc(RES_TEMPLATES.find(t=>t.id===r.template)?.name||'Ingen skabelon')}${r.decidedBy?` · ${r.status==='manual'?'overtaget':'godkendt'} af ${esc(pn(r.decidedBy))} ${esc(fStamp(r.decidedAt))}`:''}${r.confirmedAt?` · bekræftet ${esc(fStamp(r.confirmedAt))}`:''}</div>${r.status==='sent'?`<button class="btn small" type="button" data-act="res-confirm" data-id="${r.id}" style="margin-top:6px">Simulér: gæsten har læst reglerne</button>`:''}</li>`;
   const upcoming=st.rows.filter(x=>x.date>=Dt.s(NOW())).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.time<b.time?-1:1).slice(0,40);
   const sheet=`<section class="card" style="margin-top:12px" aria-labelledby="h-sheet"><div class="card-h"><h3 id="h-sheet">Reservationsark</h3><span class="small muted">Google Sheets (simuleret)</span></div>
   <div class="tablewrap" tabindex="0" role="region"><table><thead><tr><th>Dato</th><th>Godkendt</th><th>Navn</th><th class="num">Antal gæster</th><th>Ankomst</th><th>Bord/rum</th><th>Kommentar</th></tr></thead><tbody>${upcoming.map(x=>`<tr${x.fromApp?' style="background:var(--brand-soft)"':''}><td class="nowrap">${esc(fDate(x.date))}</td><td>${x.approved==='ja'?'<span class="good-text"><strong>ja</strong></span>':'nej'}</td><td>${esc(x.name)}</td><td class="num">${esc(x.guests)}</td><td>${esc(x.time)}</td><td>${esc(x.table)}</td><td>${esc(x.comment)}</td></tr>`).join('')}</tbody></table></div>
-  <p class="small muted">Arket har kun jeres syv kolonner. Mail, status og henvisning til mailtråden gemmer appen selv. Rækker fra appen er fremhævet. "Godkendt" bliver ja, når gæsten har bekræftet betingelserne.</p></section>`;
+  <p class="small muted">Arket har kun jeres syv kolonner. Mail, status og henvisning til mailtråden gemmer appen selv. Rækker fra appen er fremhævet. "Godkendt" er ja, når en bruger har godkendt bookingen. Gæstens kvittering for husreglerne registreres særskilt i appen.</p></section>`;
   return pageHead('Reservationer',`kun ${esc(sc.t.name)}`)+`<p class="small muted">Prototype: mails og afsendelse er simulerede. Intet sendes, før en person har godkendt. Reservationsmail · hentet ${esc(fStamp(NOW()-2*MIN))}.</p>
   <div class="toolbar"><div class="seg" role="group" aria-label="Filter">${[['pending',`Venter på dig (${pend.length})`],['waiting',`Venter på gæst (${wait.length})`],['done',`Afsluttet (${done.length})`]].map(([k,l])=>`<button type="button" data-act="res-filter" data-id="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}</div></div>
   ${list.length?(f==='pending'?`<div class="grid">${list.map(r=>resCard(sc,r)).join('')}</div>`:`<section class="card"><ul class="list">${list.map(small).join('')}</ul></section>`):`<div class="card empty">${empty}</div>`}${sheet}`;
@@ -1440,20 +1483,22 @@ function resOnInput(el){const sc=curScope();if(!sc)return;const r=resStore(sc.ti
   const prev=document.getElementById('res-prev-'+r.id);if(prev)prev.textContent=resFill(sc,r);
   const rem=document.getElementById('res-rem-'+r.id);if(rem)rem.outerHTML=resReminder(sc.tid,r);
   const miss=resMissing(r.fields),mEl=document.getElementById('res-miss-'+r.id);if(mEl){mEl.className=miss.length?'small warn-text':'small';mEl.textContent=miss.length?`Mangler: ${miss.join(', ')}.`:''}
+  const rule=document.getElementById('res-rule-'+r.id);if(rule){rule.textContent=resBookingRule(sc.tid,r.fields);rule.hidden=!rule.textContent;}
   const err=document.getElementById('res-err-'+r.id);if(err)err.textContent='';
 }
 function resAct(act,id){const sc=curScope(),st=resStore(sc.tid),r=st.requests.find(x=>x.id===id);if(!r)return;
   const err=m=>{const e=document.getElementById('res-err-'+id);if(e)e.textContent=m};
   if(act==='res-send'){
     if(RES_NEEDS_BOOKING.includes(r.template)){const miss=resMissing(r.fields);if(miss.length||!r.fields.name){err(`Udfyld ${[...miss,...(r.fields.name?[]:['navn'])].join(', ')}, eller vælg "Mangler oplysninger".`);return}
-      st.rows.push({id:`${sc.tid}-row-app-${r.id}`,date:r.fields.date,approved:'nej',name:r.fields.name,guests:+r.fields.guests,time:r.fields.time,table:r.fields.table,comment:r.fields.comment,fromApp:true});r.rowId=`${sc.tid}-row-app-${r.id}`;r.status='sent';
-      toast(`Svar sendt til ${r.email} (simuleret). Reservationen står i arket med "Godkendt: nej", indtil gæsten bekræfter.`)}
+      const rule=resBookingRule(sc.tid,r.fields);if(rule){err(rule);return}
+      st.rows.push({id:`${sc.tid}-row-app-${r.id}`,date:r.fields.date,approved:'ja',name:r.fields.name,guests:+r.fields.guests,time:r.fields.time,table:r.fields.table,comment:r.fields.comment,fromApp:true});r.rowId=`${sc.tid}-row-app-${r.id}`;r.status='sent';
+      toast(`Svar sendt til ${r.email} (simuleret). Reservationen er godkendt og står i arket med "Godkendt: ja".`)}
     else if(r.template==='missing'){r.status='asked';toast(`Svar sendt til ${r.email} (simuleret). Vi venter på gæstens oplysninger.`)}
     else{r.status='declined';toast(`Afslag sendt til ${r.email} (simuleret).`)}
     r.decidedBy=S.user;r.decidedAt=NOW();r.sentText=resFill(sc,r);audit(sc.tid,`Godkendte og sendte svar til ${r.fields.name||r.from} (${RES_TEMPLATES.find(t=>t.id===r.template).name})`);
   }else if(act==='res-decline'){r.template='full';r.status='declined';r.decidedBy=S.user;r.decidedAt=NOW();r.sentText=resFill(sc,r);audit(sc.tid,`Sendte "fuldt booket" til ${r.fields.name||r.from}`);toast(`"Fuldt booket" sendt til ${r.email} (simuleret).`)}
   else if(act==='res-manual'){r.status='manual';r.decidedBy=S.user;r.decidedAt=NOW();audit(sc.tid,`Overtog reservationsmail fra ${r.fields.name||r.from} manuelt`);toast('Markeret som overtaget. Svar gæsten direkte fra mailen.')}
-  else if(act==='res-confirm'){r.status='confirmed';r.confirmedAt=NOW();const row=st.rows.find(x=>x.id===r.rowId);if(row)row.approved='ja';audit(sc.tid,`${r.fields.name} bekræftede reservationen (simuleret)`);toast(`${r.fields.name} har bekræftet. "Godkendt" er nu ja i arket.`)}
+  else if(act==='res-confirm'){r.status='confirmed';r.confirmedAt=NOW();audit(sc.tid,`${r.fields.name} bekræftede reservationen (simuleret)`);toast(`${r.fields.name} har læst husreglerne. Bookingen var allerede godkendt i arket.`)}
   rerender();
 }
 </script>
@@ -1563,6 +1608,7 @@ document.addEventListener('click',e=>{
     case'dlg-close':e.preventDefault();closeDlg();break;
     case'dlg-go':closeDlg();break;
     case'scenario':openDlg(scenarioDialog(),b);break;
+    case'theme':{const night=document.documentElement.dataset.theme!=='aften';document.documentElement.dataset.theme=night?'aften':'dag';b.textContent='Tema: '+(night?'Aften':'Dag');b.setAttribute('aria-pressed',String(night));try{localStorage.setItem('hospitality-theme',night?'aften':'dag')}catch{}break;}
     case'login-as':login(id);break;
     case'enter':location.hash=`#/${id}/${myRole(id)==='employee'?'me':'home'}`;break;
     case'switch':S.tenant=null;resetMemo();location.hash='#/choose';break;
