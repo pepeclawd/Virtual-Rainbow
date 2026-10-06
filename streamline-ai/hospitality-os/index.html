@@ -472,6 +472,39 @@ html[data-theme=aften] .ref-heading .seg button[aria-pressed=true]{color:var(--i
 .task.is-urgent:not(.ref-control){background:var(--bad-bg);border-color:var(--bad)}
 </style>
 <style>.proto .clock,.brandbar .role{opacity:1}.ref-badge{background:rgba(0,0,0,.12)}.ref-kv dt{opacity:1}@media(max-width:639px){.ref-heading{display:block;position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.ref-heading .seg{display:none}}</style>
+<style>
+/* Aften PDF page 2: neutral card fills, semantic text, a 55/45 middle row. */
+html[data-theme=aften]{--good:#bfe5c6;--warn:#f3e2a0;--bad:#f6c3bb;--line:#514a42;--line-2:#443f39;--surface:#34302c;--surface-2:#2e2b28}
+html[data-theme=aften] .ref-good,html[data-theme=aften] .ref-warn,html[data-theme=aften] .ref-bad{background:#34302c;border:1px solid #443f39;--muted:#b4ab9d}
+html[data-theme=aften] .ref-good{color:#bfe5c6;--ink-2:#bfe5c6}
+html[data-theme=aften] .ref-warn{color:#f3e2a0;--ink-2:#f3e2a0}
+html[data-theme=aften] .ref-bad{color:#f6c3bb;--ink-2:#f6c3bb}
+html[data-theme=aften] .ref-good .ref-badge{background:#454d40}
+html[data-theme=aften] .ref-warn .ref-badge{background:#504b35}
+html[data-theme=aften] .ref-bad .ref-badge{background:#54413b}
+html[data-theme=aften] .ref-control,html[data-theme=aften] .task:not(.ref-control){background:#2e2b28;border:1px solid #443f39;border-radius:4px}
+html[data-theme=aften] .ref-control.good,html[data-theme=aften] .task:has(.status.resolved){background:#2e2b28;color:#bfe5c6;border-color:#443f39}
+html[data-theme=aften] .ref-control.warn,html[data-theme=aften] .task:has(.status.progress){background:#2e2b28;color:#f3e2a0;border-color:#443f39}
+html[data-theme=aften] .ref-control.bad,html[data-theme=aften] .task.is-urgent{background:#2e2b28;color:#f6c3bb;border-color:#443f39}
+html[data-theme=aften] .ref-alert a,html[data-theme=aften] .ref-alert button{background:#f6c3bb;color:#4b2924}
+html[data-theme=aften] .ref-inclusive,html[data-theme=aften] .ref-last{opacity:1;color:#b1ac9d}
+html[data-theme=aften] .ref-kv dt{color:inherit;opacity:.85}
+html[data-theme=aften] .ref-groups i{background:#3c3833}
+html[data-theme=aften] .ref-groups i:before{background:#8a8173}
+html[data-theme=aften] .ref-lab .gauge{background:#3c3833}
+html[data-theme=aften] .ref-lab .gauge .mark{background:#f3e2a0}
+html[data-theme=aften] .ref-hour .bar{background:#3c3833}
+.ref-hour .lytick{display:none}.ref-hour .legend{display:none}.ref-hour .chart{height:175px}.ref-hour details{margin-top:5px}
+.ref-hour .xlabels span{font-size:9px}.ref-stat{min-height:192px}.ref-value{font-size:28px}.ref-cardhead{font-size:10px;line-height:1.5;letter-spacing:.065em}.ref-badge{font-size:9px;padding:2px 7px}.ref-kv{font-size:11px}.ref-panel,.ref-stat{padding:16px}.ref-grid{gap:12px}.ref-tag{font-size:9px;max-width:70px;white-space:normal}.ref-control{font-size:11px}.ref-heading h2{font-size:31px}
+@media(min-width:960px){.shell{max-width:1100px;grid-template-columns:216px minmax(0,1fr)}.shell>main{padding:28px 26px}.ref-lab,.ref-hour{grid-column:span 7}.ref-margin,.ref-controls{grid-column:span 5}.ref-lab,.ref-margin{min-height:282px}.ref-roster,.ref-tasks,.ref-notes{min-height:285px}.ref-controls,.ref-hour{min-height:315px}.shell>.brandbar{position:static}.brandbar .chipbtn{position:absolute;bottom:22px;left:22px;border-top:1px solid var(--line-2);border-radius:0;width:170px;text-align:left;padding-top:14px}.shell{position:relative}.brandbar .who{padding-left:0}.brandbar .role{font-size:11px}.brandbar h1{font-size:14px}.brandbar .id{gap:7px}nav.tabs{padding:112px 14px 50px}nav.tabs a{min-height:37px;font-size:12px}.ref-statbottom{flex-wrap:wrap;font-size:10px}.ref-last,.ref-inclusive{font-size:10px}.ref-value{font-size:27px}}
+@media(max-width:639px){.ref-stat,.ref-lab{min-height:132px}.ref-cardhead{font-size:11px}.ref-value{font-size:27px}.ref-alert{font-size:11px}.ref-statbottom{display:none}.ref-lab .ref-kv{display:none}.ref-hour .chart{height:150px}}
+</style>
+<style>
+.proto button:hover,.proto .back:hover{color:var(--ink)}
+html[data-theme=aften] .ref-hour .col .bar{background:#3c3833}
+html[data-theme=aften] .ref-hour .col .bar.peak{background:#8a8173}
+.ref-tag{flex:none;max-width:none;white-space:nowrap}
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Spring til indhold</a>
@@ -669,7 +702,7 @@ const SOURCES={
 /* =====================================================================================
    5. SESSION STATE
    ===================================================================================== */
-try{document.documentElement.dataset.theme=localStorage.getItem('hospitality-theme')==='aften'?'aften':'dag'}catch{document.documentElement.dataset.theme='dag'}
+try{const theme=new URLSearchParams(location.search).get('theme')||localStorage.getItem('hospitality-theme')||'aften';document.documentElement.dataset.theme=theme==='dag'?'dag':'aften'}catch{document.documentElement.dataset.theme='aften'}
 const S={user:null,tenant:null,route:'login',param:null,scenario:'normal',srcOverride:{},cfg:{},cmpMode:'weekday',salesPeriod:'day',labourPeriod:'day',taskFilter:'open',store:{},memberships:null,lastFocus:null};
 function scen(){return SCENARIOS.find(x=>x.id===S.scenario)}
 function NOW(){const n=scen().now;return T(n[0],n[1])}
@@ -1246,7 +1279,7 @@ function hourChart(tid,p){
     if(!(cur&&cur.ex)&&!ly.ex)continue;rows.push({h:h%24,next:h>=24,cur:fut?null:cur,ly,miss,fut});max=Math.max(max,cur?.ex||0,ly.ex)}
   if(!rows.length)return`<section class="card"><h3>Omsætning pr. time</h3><p class="empty">Ingen salg i perioden endnu.</p></section>`;
   const notesOn=storeOf(tid).notes.filter(n=>n.date===p.from);
-  const cols=rows.map(r=>`<div class="col" title="kl. ${String(r.h).padStart(2,'0')}: ${r.fut?'ikke nået endnu':kr(r.cur?.ex)} · sidste år ${kr(r.ly.ex)}">${r.miss?'<span class="nm" aria-hidden="true">!</span>':''}<div class="bar ${r.miss?'missing':''} ${r.fut?'future':''}" style="height:${r.cur?r.cur.ex/max*100:0}%"></div><div class="lytick" style="bottom:${r.ly.ex/max*100}%"></div></div>`).join('');
+  const cols=rows.map(r=>`<div class="col" title="kl. ${String(r.h).padStart(2,'0')}: ${r.fut?'ikke nået endnu':kr(r.cur?.ex)} · sidste år ${kr(r.ly.ex)}">${r.miss?'<span class="nm" aria-hidden="true">!</span>':''}<div class="bar ${r.cur&&r.cur.ex>=max*.75?'peak':''} ${r.miss?'missing':''} ${r.fut?'future':''}" style="height:${r.cur?r.cur.ex/max*100:0}%"></div><div class="lytick" style="bottom:${r.ly.ex/max*100}%"></div></div>`).join('');
   const labels=rows.map((r,i)=>`<span>${i%2===0||rows.length<12?String(r.h).padStart(2,'0'):''}</span>`).join('');
   const firstNext=rows.find(r=>r.next);
   return`<section class="card" aria-labelledby="h-hour"><div class="card-h"><h3 id="h-hour">Omsætning pr. time</h3>${notesOn.length?'<span class="badge brand">✎ note på dagen</span>':''}</div>
