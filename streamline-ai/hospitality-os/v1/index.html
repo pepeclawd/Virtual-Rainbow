@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f1ea">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Driftsoverblik">
+  
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+  <title>Driftsoverblik</title>
+</head>
+<body>
+  <a class="skip" href="#main">Spring til indhold</a>
+  <div class="app" id="app">
+    <aside class="side" id="side" aria-label="Virksomhed og menu"></aside>
+    <div class="col">
+      <header class="top" id="top"></header>
+      <main id="main" tabindex="-1"><p class="loading" role="status">Indlæser…</p></main>
+    </div>
+  </div>
+  <nav class="bottom" id="bottom" aria-label="Hovedmenu (mobil)"></nav>
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+  <script src="demo-backend.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
