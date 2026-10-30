@@ -356,6 +356,7 @@ async function caseView(id) {
   put(reply, h('p', { class: 'meta' }, `Til: ${d.to} · Emne: ${d.subject}`));
   const bodyArea = h('textarea', { id: 'body', rows: 14, disabled: decided, 'aria-label': 'Svartekst' }, d.body);
   put(reply, bodyArea);
+  if (d.body.includes('{godkender}')) put(reply, h('p', { class: 'hint' }, '{godkender} i signaturen erstattes med navnet på den, der godkender.'));
   if (!decided) put(reply, h('div', { class: 'row' },
     h('button', { type: 'button', onclick: () => saveDraft(c, { body: bodyArea.value }) }, 'Gem tekst'),
     d.bodyEdited ? h('button', { type: 'button', class: 'ghost', onclick: () => saveDraft(c, { body: null }) }, 'Gendan skabelontekst') : null));
@@ -516,7 +517,7 @@ async function settingsView() {
     h('button', { type: 'button', onclick: async ev => { ev.target.disabled = true; try { const r = await api('/mail/sync', { method: 'POST', body: {} }); say(`Tjekket: ${r.inbound} nye mails.`); await refreshMeta(); route(); } catch (e) { put(wrap, errorBox(e)); } } }, 'Tjek mail nu')));
   const sig = h('textarea', { id: 'sig', rows: 3, maxlength: 500, disabled: !owner }, st.signature ?? '');
   put(wrap, h('section', { class: 'card' }, h('h2', {}, 'Signatur'),
-    h('p', { class: 'hint' }, 'Skabelonerne slutter uden hilsen, fordi Apple Mail plejer at tilføje signaturen. Svar sendt fra appen får ikke Apple Mails signatur – kun teksten her.'),
+    h('p', { class: 'hint' }, 'Svar sendt fra appen får ikke Apple Mails signatur – kun teksten her. Skriv {godkender}, hvor navnet på den, der godkender svaret, skal stå.'),
     !st.signature ? h('p', { class: 'warn-text' }, 'Ingen signatur er sat: svar fra appen sendes uden signatur.') : null,
     h('label', { for: 'sig' }, 'Signatur til svar fra appen'), sig,
     owner ? h('button', { type: 'button', onclick: async () => { await api('/settings', { method: 'POST', body: { signature: sig.value } }); say('Signatur gemt.'); route(); } }, 'Gem signatur') : h('p', { class: 'hint' }, 'Kun ejere kan ændre indstillinger.')));
@@ -537,9 +538,10 @@ async function settingsView() {
 
   if (owner) {
     const dev = h('section', { class: 'card' }, h('h2', {}, 'iPad-visning'),
-      h('p', { class: 'hint' }, 'Én fælles visning pr. bar. Opret en engangskode og indtast den på iPaden under /device. Koden udløber efter 10 minutter.'));
+      h('p', { class: 'hint' }, 'Én fælles visning pr. bar. Opret en engangskode og indtast den på iPaden under /device. Koden udløber efter 10 minutter.'),
+      S.instance.demo ? h('p', { class: 'warn-text' }, 'Demo: alt gemmes kun i denne browser, så en kode herfra virker ikke på en anden enhed. Åbn ', h('a', { href: 'device.html' }, 'iPad-visningen'), ' i samme browser, eller tryk »Prøv iPad-visningen« direkte på iPaden.') : null);
     const codeOut = h('p', { class: 'code', 'aria-live': 'polite' });
-    put(dev, h('button', { type: 'button', onclick: async () => { const r = await api('/devices/pairing', { method: 'POST', body: { label: 'Bar-iPad' } }); codeOut.textContent = `Kode: ${r.code} (gyldig til ${fmtTime(r.expiresAt)})`; } }, 'Opret parringskode'), codeOut);
+    put(dev, h('button', { type: 'button', onclick: async () => { const r = await api('/devices/pairing', { method: 'POST', body: { label: 'Bar-iPad' } }); codeOut.textContent = `Kode: ${r.code} (gyldig i 10 minutter)`; } }, 'Opret parringskode'), codeOut);
     const dl = h('ul', {});
     for (const d of devices) put(dl, h('li', {}, `${d.label} · oprettet ${fmtTime(d.createdAt)} · udløber ${fmtTime(d.expiresAt)} · ${d.revokedAt ? 'Tilbagekaldt' : d.expiresAt < nowMs() ? 'Udløbet' : 'Aktiv'}${d.lastSeenAt ? ` · sidst set ${fmtTime(d.lastSeenAt)}` : ''}`,
       !d.revokedAt ? h('button', { type: 'button', class: 'danger', onclick: async () => { await api(`/devices/${d.id}/revoke`, { method: 'POST', body: {} }); route(); } }, 'Tilbagekald') : null));

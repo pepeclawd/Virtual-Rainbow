@@ -5,7 +5,7 @@ const $main = document.getElementById('main');
 const $conn = document.getElementById('conn');
 const KEY = 'hos-device-token';
 const OCC = { birthday: 'Fødselsdag', anniversary: 'Jubilæum', colleagues: 'Kollegaer', bachelor: 'Polterabend/privatfest', other: 'Andet' };
-let company = null; let day = null; let timer = null; let lastOk = null;
+let company = null; let demo = false; let day = null; let timer = null; let lastOk = null;
 
 function h(tag, attrs = {}, ...kids) {
   const el = document.createElement(tag);
@@ -26,6 +26,9 @@ function pairView(message) {
   const form = h('form', { class: 'card login' }, h('h1', {}, 'Aktivér iPad-visning'),
     h('p', {}, 'En ejer opretter en engangskode under Indstillinger → iPad-visning.'),
     h('label', { for: 'code' }, 'Parringskode'), input, h('button', { type: 'submit', class: 'primary' }, 'Aktivér'), err);
+  // The static demo keeps everything in this browser, so a code made on another device is unknown here.
+  if (demo) form.append(h('p', { class: 'hint' }, 'Demo: alt gemmes kun i denne browser, så en kode fra en anden enhed virker ikke her.'),
+    h('button', { type: 'button', onclick: async () => { input.value = (await (await fetch('/api/demo/pair', { method: 'POST' })).json()).code; form.requestSubmit(); } }, 'Prøv iPad-visningen'));
   form.addEventListener('submit', async ev => {
     ev.preventDefault();
     try {
@@ -84,7 +87,7 @@ function render(data) {
 }
 
 (async () => {
-  try { company = (await (await fetch('/api/instance', { cache: 'no-store' })).json()).company; } catch { setConn('offline', 'Ingen forbindelse'); return; }
+  try { ({ company, demo = false } = await (await fetch('/api/instance', { cache: 'no-store' })).json()); } catch { setConn('offline', 'Ingen forbindelse'); return; }
   document.body.dataset.company = company.id;
   document.getElementById('name').textContent = `${company.displayName ?? company.name} · reservationer`;
   const themeBtn = document.getElementById('theme');
